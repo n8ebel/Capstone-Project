@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.widget.Toast
 
 import com.firebase.client.Firebase
-import com.n8.intouch.dependency_injection.DaggerApplicationComponent
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -20,6 +19,6 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        firebase.child("foo").setValue("goobaroo")
+        firebase.child("foo").setValue("goobaroo, goobaroo")
     }
 }

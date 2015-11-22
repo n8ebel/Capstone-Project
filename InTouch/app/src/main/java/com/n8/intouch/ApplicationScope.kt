@@ -1,4 +1,4 @@
-package com.n8.intouch.dependency_injection
+package com.n8.intouch
 
 import javax.inject.Qualifier
 

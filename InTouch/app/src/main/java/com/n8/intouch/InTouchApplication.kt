@@ -3,11 +3,7 @@ package com.n8.intouch
 import android.app.Application
 import android.widget.Toast
 import com.firebase.client.Firebase
-import com.n8.intouch.dependency_injection.ApplicationComponent
-import com.n8.intouch.dependency_injection.ApplicationModule
-import com.n8.intouch.dependency_injection.DaggerApplicationComponent
-import javax.inject.Inject
-import javax.inject.Named
+import com.n8.intouch.DaggerApplicationComponent
 
 class InTouchApplication : android.app.Application() {
 
