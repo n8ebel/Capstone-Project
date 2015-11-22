@@ -16,9 +16,6 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var firebase: Firebase
 
-    @field:[Inject Named("something")]
-    lateinit var somestring: String
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -37,7 +34,5 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
-
-        Toast.makeText(this, "$somestring", Toast.LENGTH_LONG).show();
     }
 }

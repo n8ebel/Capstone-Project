@@ -2,6 +2,7 @@ package com.n8.intouch
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import com.firebase.client.Firebase
 import com.n8.intouch.R
 import dagger.Module
@@ -31,16 +32,7 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
-    @Named("something")
-    fun provideSomething(): String {
-        return "goobaroo"
+    fun provideSharedPreferences(): SharedPreferences {
+        return application.getSharedPreferences(application.javaClass.simpleName, Context.MODE_PRIVATE)
     }
-
-    @Provides
-    @Singleton
-    @Named("somethingElse")
-    fun provideSomethingElse(): String {
-        return "somethingElse"
-    }
-
 }
