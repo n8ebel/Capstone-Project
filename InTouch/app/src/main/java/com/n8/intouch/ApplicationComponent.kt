@@ -1,7 +1,7 @@
 package com.n8.intouch
 
 import com.n8.intouch.InTouchApplication
-import com.n8.intouch.MainActivity
+import com.n8.intouch.main.MainActivity
 import dagger.Component
 import javax.inject.Singleton
 
