@@ -2,6 +2,7 @@ package com.n8.intouch.main
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.firebase.client.DataSnapshot
 
@@ -13,7 +14,25 @@ import com.n8.intouch.R
 import javax.inject.Inject
 import javax.inject.Named
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainView {
+
+    val TAG = "MainActivity"
+
+    // region Implements MainView
+
+    override fun showProgress() {
+        Log.d(TAG, "showing progress")
+    }
+
+    override fun hideProgress() {
+        Log.d(TAG, "hide progress")
+    }
+
+    override fun showResult(result: String) {
+        Toast.makeText(this, result, Toast.LENGTH_LONG).show()
+    }
+
+    // endregion Implements MainView
 
     @Inject
     lateinit var firebase: Firebase
@@ -25,20 +44,11 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        firebase.child("goo").addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot?) {
-                var data: String = snapshot?.getValue(String::class.java) ?: "error"
-                Toast.makeText(getApplication(), data, Toast.LENGTH_LONG).show();
-            }
+        var presenter = MainPresenterImpl(this, MainInteractorImpl(firebase))
 
-            override fun onCancelled(p0: FirebaseError?) {
-
-            }
-
-        })
-
-        var foo = Foo(DaggerMainComponent.builder().mainModule(MainModule()).build())
-
-        Toast.makeText(this, foo.goo, Toast.LENGTH_LONG).show()
+        var button = findViewById(R.id.theButton)
+        button.setOnClickListener {
+            presenter.onClick()
+        }
     }
 }

@@ -8,4 +8,12 @@
 
     <TextView android:text="Hello World!" android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/theButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="Press Me"
+        />
+
 </RelativeLayout>
