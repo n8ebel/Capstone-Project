@@ -3,14 +3,21 @@ package com.n8.intouch
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import com.firebase.client.DataSnapshot
 
 import com.firebase.client.Firebase
+import com.firebase.client.FirebaseError
+import com.firebase.client.ValueEventListener
 import javax.inject.Inject
+import javax.inject.Named
 
 class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var firebase: Firebase
+
+    @field:[Inject Named("something")]
+    lateinit var somestring: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,6 +26,18 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
 
-        firebase.child("foo").setValue("goobaroo, goobaroo")
+        firebase.child("goo").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot?) {
+                var data: String = snapshot?.getValue(String::class.java) ?: "error"
+                Toast.makeText(getApplication(), data, Toast.LENGTH_LONG).show();
+            }
+
+            override fun onCancelled(p0: FirebaseError?) {
+
+            }
+
+        })
+
+        Toast.makeText(this, "$somestring", Toast.LENGTH_LONG).show();
     }
 }
