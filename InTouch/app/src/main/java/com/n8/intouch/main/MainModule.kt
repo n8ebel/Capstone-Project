@@ -7,7 +7,6 @@ import javax.inject.Singleton
 @Module
 class MainModule {
 
-    @Singleton
     @Provides
     fun providesGoobar(): String{
         return "Goobar"

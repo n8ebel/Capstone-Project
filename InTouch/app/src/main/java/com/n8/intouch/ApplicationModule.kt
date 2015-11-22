@@ -14,19 +14,16 @@ import javax.inject.Singleton
 class ApplicationModule(private val application: Application) {
 
     @Provides
-    @Singleton
     fun provideApplicationContext(): Context {
         return application
     }
 
     @Provides
-    @Singleton
     fun provideFirebase(): Firebase {
         return Firebase(application.getString(R.string.firebase_url))
     }
 
     @Provides
-    @Singleton
     fun provideSharedPreferences(): SharedPreferences {
         return application.getSharedPreferences(application.javaClass.simpleName, Context.MODE_PRIVATE)
     }

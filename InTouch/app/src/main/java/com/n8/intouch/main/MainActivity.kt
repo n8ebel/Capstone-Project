@@ -40,7 +40,13 @@ class MainActivity : AppCompatActivity(), MainView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        InTouchApplication.graph.inject(this)
+        //InTouchApplication.graph.inject(this)
+
+        DaggerMainComponent.builder()
+                .applicationComponent(InTouchApplication.graph)
+                .mainModule(MainModule())
+                .build()
+                .inject(this)
 
         setContentView(R.layout.activity_main)
 
