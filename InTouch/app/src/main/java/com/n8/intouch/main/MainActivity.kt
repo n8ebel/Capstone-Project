@@ -36,5 +36,9 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
+
+        var foo = Foo(DaggerMainComponent.builder().mainModule(MainModule()).build())
+
+        Toast.makeText(this, foo.goo, Toast.LENGTH_LONG).show()
     }
 }
