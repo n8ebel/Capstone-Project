@@ -1,6 +1,5 @@
 package com.n8.intouch.main
 
-import android.widget.Toast
 import com.firebase.client.DataSnapshot
 import com.firebase.client.Firebase
 import com.firebase.client.FirebaseError
