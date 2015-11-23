@@ -11,4 +11,9 @@ class MainModule {
     fun providesGoobar(): String{
         return "Goobar"
     }
+
+    @Provides
+    fun providesFoo(): Foo{
+        return Foo()
+    }
 }

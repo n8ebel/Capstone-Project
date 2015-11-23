@@ -17,6 +17,5 @@ class InTouchApplication : android.app.Application() {
         Firebase.setAndroidContext(this);
 
         graph = DaggerApplicationComponent.builder().applicationModule(ApplicationModule(this)).build()
-        graph.inject(this)
     }
 }

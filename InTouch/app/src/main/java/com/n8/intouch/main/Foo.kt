@@ -6,13 +6,7 @@ import javax.inject.Inject
 /**
  * Created by n8 on 11/21/15.
  */
-class Foo(mainComponent: MainComponent) {
+class Foo() {
 
-    @Inject
-    lateinit var goo:String
-
-    init{
-        Log.d("foo","initFoo")
-        mainComponent.inject(this)
-    }
+    val data = "Foobar"
 }

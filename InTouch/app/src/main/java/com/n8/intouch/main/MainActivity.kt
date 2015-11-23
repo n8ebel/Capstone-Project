@@ -37,6 +37,9 @@ class MainActivity : AppCompatActivity(), MainView {
     @Inject
     lateinit var firebase: Firebase
 
+    @Inject
+    lateinit var foo: Foo
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
