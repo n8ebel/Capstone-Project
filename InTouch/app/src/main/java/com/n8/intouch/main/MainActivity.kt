@@ -32,6 +32,9 @@ class MainActivity : AppCompatActivity(), MainView {
         Toast.makeText(this, result, Toast.LENGTH_LONG).show()
     }
 
+    @Inject
+    lateinit var presenter: MainPresenter
+
     // endregion Implements MainView
 
     @Inject
@@ -47,13 +50,13 @@ class MainActivity : AppCompatActivity(), MainView {
 
         DaggerMainComponent.builder()
                 .applicationComponent(InTouchApplication.graph)
-                .mainModule(MainModule())
+                .mainModule(MainModule(this))
                 .build()
                 .inject(this)
 
         setContentView(R.layout.activity_main)
 
-        var presenter = MainPresenterImpl(this, MainInteractorImpl(firebase))
+        //var presenter = MainPresenterImpl(this, MainInteractorImpl(firebase))
 
         var button = findViewById(R.id.theButton)
         button.setOnClickListener {
