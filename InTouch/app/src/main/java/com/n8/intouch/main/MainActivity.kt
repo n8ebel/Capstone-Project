@@ -9,6 +9,7 @@ import android.widget.Toast
 
 import com.n8.intouch.InTouchApplication
 import com.n8.intouch.R
+import com.n8.intouch.contentprovider.ProviderContract
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), MainView {
@@ -40,7 +41,12 @@ class MainActivity : AppCompatActivity(), MainView {
 
         var button = findViewById(R.id.theButton)
         button.setOnClickListener {
-            presenter.onClick()
+            presenter.showFirebaseToast()
+        }
+
+        var contentProviderButton = findViewById(R.id.contentProviderButton)
+        contentProviderButton.setOnClickListener {
+            presenter.showData(contentResolver, "selection args go here", arrayOf("foo", "goo"))
         }
     }
 
