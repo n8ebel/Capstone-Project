@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.n8.intouch">
+    package="com.n8.intouch" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
         android:name=".InTouchApplication"
@@ -10,8 +11,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".main.MainActivity">
+        android:theme="@style/AppTheme" >
+        <activity android:name=".main.MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,9 +24,12 @@
             android:name=".contentprovider.InTouchContentProvider"
             android:authorities="com.n8.intouch.provider"
             android:enabled="true"
-            android:exported="true"
-            />
+            android:exported="true" />
 
+        <receiver
+            android:name=".alarm.CustomAlarmReceiver"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>

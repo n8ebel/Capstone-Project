@@ -2,14 +2,13 @@ package com.n8.intouch.main
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.TextInputLayout
 import android.support.v4.widget.ContentLoadingProgressBar
 import android.util.Log
-import android.widget.ProgressBar
 import android.widget.Toast
 
 import com.n8.intouch.InTouchApplication
 import com.n8.intouch.R
-import com.n8.intouch.contentprovider.ProviderContract
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), MainView {
@@ -46,7 +45,13 @@ class MainActivity : AppCompatActivity(), MainView {
 
         var contentProviderButton = findViewById(R.id.contentProviderButton)
         contentProviderButton.setOnClickListener {
-            presenter.showData(contentResolver, "selection args go here", arrayOf("foo", "goo"))
+            presenter.showData("selection args go here", arrayOf("foo", "goo"))
+        }
+
+        var phoneNumberInputLayout = findViewById(R.id.phoneNumber_textInputLayout) as TextInputLayout
+        var scheduleTextButton = findViewById(R.id.scheduleText_button)
+        scheduleTextButton.setOnClickListener {
+            presenter.scheduleText(phoneNumberInputLayout.editText.text.toString())
         }
     }
 

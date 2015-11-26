@@ -1,5 +1,6 @@
 package com.n8.intouch.main
 
+import android.content.Context
 import com.firebase.client.Firebase
 import dagger.Module
 import dagger.Provides
@@ -9,18 +10,8 @@ import javax.inject.Singleton
 class MainModule(val mainView: MainView) {
 
     @Provides
-    fun providesGoobar(): String {
-        return "Goobar"
-    }
-
-    @Provides
-    fun providesFoo(): Foo {
-        return Foo()
-    }
-
-    @Provides
-    fun providesInteractor(firebase: Firebase): MainInteractor {
-        return MainInteractorImpl(firebase)
+    fun providesInteractor(context: Context, firebase: Firebase): MainInteractor {
+        return MainInteractorImpl(context, firebase)
     }
 
     @Provides

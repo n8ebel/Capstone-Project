@@ -8,7 +8,9 @@ import android.content.ContentResolver
 interface MainPresenter {
     fun showFirebaseToast()
 
-    fun showData(contentResolver:ContentResolver, arg1:String, arg2:Array<String>)
+    fun showData(arg1:String, arg2:Array<String>)
 
     fun handleError(exception: Exception)
+
+    fun scheduleText(phoneNumber:String)
 }

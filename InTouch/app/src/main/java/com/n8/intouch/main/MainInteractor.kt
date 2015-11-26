@@ -8,5 +8,7 @@ import android.content.ContentResolver
 interface MainInteractor {
     fun handleClick( body : (result:String) -> Unit)
 
-    fun getData(contentResolver: ContentResolver, arg1:String, arg2:Array<String>)
+    fun getData(arg1:String, arg2:Array<String>)
+
+    fun scheduleText(phoneNumber:String)
 }
