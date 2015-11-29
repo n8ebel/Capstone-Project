@@ -9,6 +9,7 @@ import android.widget.Toast
 
 import com.n8.intouch.InTouchApplication
 import com.n8.intouch.R
+import com.n8.intouch.tabbedscreen.TabbedFragment
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), MainView {
@@ -29,29 +30,20 @@ class MainActivity : AppCompatActivity(), MainView {
 
         graph = DaggerMainComponent.builder()
                 .applicationComponent(InTouchApplication.graph)
-                .mainModule(MainModule(this))
+                .mainModule(MainModule(this, supportFragmentManager))
                 .build()
 
         graph.inject(this)
 
         setContentView(R.layout.activity_main)
 
-        progressBar = ContentLoadingProgressBar(this)
-
-        var button = findViewById(R.id.theButton)
-        button.setOnClickListener {
-            presenter.showFirebaseToast()
-        }
-
-        var contentProviderButton = findViewById(R.id.contentProviderButton)
-        contentProviderButton.setOnClickListener {
-            presenter.showData("selection args go here", arrayOf("foo", "goo"))
-        }
-
-        var phoneNumberInputLayout = findViewById(R.id.phoneNumber_textInputLayout) as TextInputLayout
-        var scheduleTextButton = findViewById(R.id.scheduleText_button)
-        scheduleTextButton.setOnClickListener {
-            presenter.scheduleText(phoneNumberInputLayout.editText.text.toString())
+        // Only add the tabbed fragment the first time the activity is created
+        //
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction().
+                    add(R.id.fragmentContainer, TabbedFragment(), null).
+                    addToBackStack("foo").
+                    commit()
         }
     }
 
