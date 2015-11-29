@@ -1,4 +1,4 @@
-package com.n8.intouch.tabbedscreen
+package com.n8.intouch.browsescreen
 
 
 import android.os.Bundle
@@ -14,7 +14,7 @@ import com.n8.intouch.common.TitleProvider
 /**
  * A simple [Fragment] subclass.
  */
-class ContactsFragment : Fragment(), TitleProvider {
+class EventsListFragment : Fragment(), TitleProvider {
 
     // region Implements TitleProvider
 
@@ -22,7 +22,7 @@ class ContactsFragment : Fragment(), TitleProvider {
         // Use app context here so if this fragment is nested in another, and its title is needed before
         // it's created, the string resource can be found
         //
-        return InTouchApplication.graph.getContext().getString(R.string.contacts)
+        return InTouchApplication.graph.getContext().getString(R.string.events)
     }
 
     // endregion Implements TitleProvider
@@ -30,7 +30,7 @@ class ContactsFragment : Fragment(), TitleProvider {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater!!.inflate(R.layout.fragment_contacts, container, false)
+        return inflater!!.inflate(R.layout.fragment_events_list, container, false)
     }
 
 }// Required empty public constructor

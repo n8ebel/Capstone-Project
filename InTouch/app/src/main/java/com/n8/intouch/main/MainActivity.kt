@@ -9,7 +9,7 @@ import android.widget.Toast
 
 import com.n8.intouch.InTouchApplication
 import com.n8.intouch.R
-import com.n8.intouch.tabbedscreen.TabbedFragment
+import com.n8.intouch.browsescreen.TabbedFragment
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), MainView {

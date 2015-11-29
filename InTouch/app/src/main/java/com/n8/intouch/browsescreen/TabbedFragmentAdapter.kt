@@ -1,4 +1,4 @@
-package com.n8.intouch.tabbedscreen
+package com.n8.intouch.browsescreen
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
