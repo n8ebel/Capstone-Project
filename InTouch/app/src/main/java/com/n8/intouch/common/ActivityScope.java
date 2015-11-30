@@ -1,4 +1,4 @@
-package com.n8.intouch;
+package com.n8.intouch.common;
 
 import javax.inject.Scope;
 

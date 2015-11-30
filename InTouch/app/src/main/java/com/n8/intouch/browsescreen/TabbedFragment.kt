@@ -16,7 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.n8.intouch.R
-import com.n8.intouch.addscreen.AddActivity
+import com.n8.intouch.addeventscreen.AddEventActivity
 
 /**
  * A tabbed fragment to hold multiple other fragments
@@ -50,7 +50,7 @@ class TabbedFragment : Fragment() {
 
         // TODO Fix this
         fab.setOnClickListener {
-            var intent = AddActivity.createAddForDateIntent(context)
+            var intent = AddEventActivity.createAddForDateIntent(context)
             activity.startActivity(intent)
         }
 

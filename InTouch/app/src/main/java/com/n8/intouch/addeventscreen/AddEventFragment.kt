@@ -1,4 +1,4 @@
-package com.n8.intouch.addscreen
+package com.n8.intouch.addeventscreen
 
 
 import android.content.Intent
@@ -16,7 +16,7 @@ import com.n8.intouch.R
 /**
  * A simple [Fragment] subclass.
  */
-class AddForDateFragment : Fragment() {
+class AddEventFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

@@ -33,7 +33,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".addscreen.AddActivity"
+            android:name=".addeventscreen.AddEventActivity"
             android:label="@string/title_activity_add"
             android:theme="@style/AppTheme"></activity>
     </application>
