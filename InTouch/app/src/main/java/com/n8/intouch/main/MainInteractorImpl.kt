@@ -12,7 +12,15 @@ import com.n8.intouch.alarm.CustomAlarmReceiver
 import com.n8.intouch.contentprovider.ProviderContract
 import java.util.*
 
-class MainInteractorImpl(val context: Context, val firebase: Firebase) : MainInteractor {
+class MainInteractorImpl(val context: Context, val firebase: Firebase) : MainInteractor, ValueEventListener {
+    override fun onDataChange(p0: DataSnapshot?) {
+        throw UnsupportedOperationException()
+    }
+
+    override fun onCancelled(p0: FirebaseError?) {
+        throw UnsupportedOperationException()
+    }
+
     override fun handleClick(body: (result:String) -> Unit) {
 
         firebase.child("goo").addValueEventListener(object : ValueEventListener {
@@ -27,6 +35,8 @@ class MainInteractorImpl(val context: Context, val firebase: Firebase) : MainInt
             }
 
         })
+
+        firebase.child("goo").addValueEventListener(this)
     }
 
     override fun getData(arg1: String, arg2: Array<String>) {

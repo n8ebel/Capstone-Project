@@ -1,7 +1,11 @@
 package com.n8.intouch.addscreen
 
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,11 +18,23 @@ import com.n8.intouch.R
  */
 class AddForDateFragment : Fragment() {
 
-
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater!!.inflate(R.layout.fragment_add_for_date, container, false)
+        var view = inflater!!.inflate(R.layout.fragment_add_for_date, container, false)
+
+        var pickContactFab = view.findViewById(R.id.fab) as FloatingActionButton
+        pickContactFab.setOnClickListener {
+            pickContact()
+        }
+
+        return view
     }
 
-}// Required empty public constructor
+    private fun pickContact() {
+        var pickContactIntent = Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"))
+        pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE); // Show user only contacts w/ phone numbers
+        startActivityForResult(pickContactIntent, 1);
+    }
+
+}
