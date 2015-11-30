@@ -84,7 +84,7 @@ class AddActivity : AppCompatActivity() {
 
             Log.d("TAG", "id: $id")
 
-            var eventsProjection = arrayOf(
+            var foo = arrayOf(
                     ContactsContract.Contacts.Entity.RAW_CONTACT_ID,
                     ContactsContract.Contacts.Entity.LOOKUP_KEY,
                     ContactsContract.Contacts.Entity.ACCOUNT_TYPE,
@@ -96,7 +96,7 @@ class AddActivity : AppCompatActivity() {
 
             var sortOrder = ContactsContract.Contacts.Entity.RAW_CONTACT_ID + " ASC"
 
-            var rawContactsCursor = contentResolver.query(contactUri, eventsProjection, null, null, sortOrder)
+            var rawContactsCursor = contentResolver.query(contactUri, foo, null, null, sortOrder)
 
             while(rawContactsCursor.moveToNext()){
                 var contact_id = rawContactsCursor.getString(rawContactsCursor.getColumnIndex(ContactsContract.Contacts.Entity.RAW_CONTACT_ID));
@@ -109,29 +109,37 @@ class AddActivity : AppCompatActivity() {
 
                 Log.d("TAG", "name: $displayName  raw_contact_id: $contact_id  lookupKey: $lookupKey  accountType: $accountType  data1: $data1  mimeType: $mimeType")
 
-                var entityUri = ContentUris.withAppendedId(ContactsContract.RawContactsEntity.CONTENT_URI, contact_id.toLong())
-
-                var emailProjection = arrayOf(
-                        ContactsContract.CommonDataKinds.Email._ID,
-                        ContactsContract.CommonDataKinds.Email.ADDRESS,
-                        ContactsContract.CommonDataKinds.Email.TYPE,
-                        ContactsContract.CommonDataKinds.Email.LABEL
+                var eventProjectiong = arrayOf(
+                        ContactsContract.CommonDataKinds.Event._ID,
+                        ContactsContract.CommonDataKinds.Event.START_DATE,
+                        ContactsContract.CommonDataKinds.Event.TYPE,
+                        ContactsContract.CommonDataKinds.Event.LABEL
                 )
 
-                var emailSelection =
+                var eventSelection =
                         ContactsContract.Data.LOOKUP_KEY + " = ?" +
                                 " AND " +
                                 ContactsContract.Data.MIMETYPE + " = " +
-                                "'" + ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE + "'"
+                                "'" + ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE + "'"
 
-                var emailArgs = arrayOf(lookupKey)
+                var eventArgs = arrayOf(lookupKey)
 
-                var emailCursor = contentResolver.query(ContactsContract.Data.CONTENT_URI, emailProjection, emailSelection, emailArgs, ContactsContract.CommonDataKinds.Email.TYPE + " ASC ")
+                var eventCursor = contentResolver.query(ContactsContract.Data.CONTENT_URI, eventProjectiong, eventSelection, eventArgs, ContactsContract.CommonDataKinds.Event.TYPE + " ASC ")
 
-                while (emailCursor.moveToNext()) {
-                    var emailAddress = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS))
+                while (eventCursor.moveToNext()) {
+                    var eventDate = eventCursor.getString(eventCursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE))
+                    var eventType = eventCursor.getString(eventCursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.TYPE))
 
-                    Log.d("TAG", emailAddress)
+                    when (eventType.toInt()) {
+                        Event.TYPE_ANNIVERSARY -> eventType = "Anniversary"
+                        Event.TYPE_BIRTHDAY -> eventType = "Birthday"
+                        Event.TYPE_CUSTOM -> eventType = "Custom"
+                        Event.TYPE_OTHER -> eventType = "Other"
+                    }
+
+                    var eventLabel = eventCursor.getString(eventCursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.LABEL))
+
+                    Log.d("TAG", "label: $eventLabel  type: $eventType  date: $eventDate")
                 }
 
             }
