@@ -11,7 +11,5 @@ import dagger.Component
 @FragmentScope
 @Component(modules = arrayOf(AddEventModule::class), dependencies = arrayOf(ApplicationComponent::class))
 interface AddEventComponent : BaseComponent {
-    fun inject(activity: AddEventActivity)
-
     fun inject(fragment: AddEventFragment)
 }

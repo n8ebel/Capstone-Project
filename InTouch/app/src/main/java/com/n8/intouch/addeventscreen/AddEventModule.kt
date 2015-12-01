@@ -10,13 +10,18 @@ import dagger.Provides
 @Module
 class AddEventModule(var view:AddEventView) {
 
-    @Provides
-    fun providesInteractor(context:Context) : AddEventInteractor{
-        return AddEventInteractorImpl(context)
-    }
+//    @Provides
+//    fun providesInteractor(context:Context) : AddEventInteractor{
+//        return AddEventInteractorImpl(context)
+//    }
+
+//    @Provides
+//    fun providesPresenter() : AddEventPresenter{
+//        return AddEventPresenterImpl(view)
+//    }
 
     @Provides
-    fun providesPresenter(interactor: AddEventInteractor) : AddEventPresenter{
-        return AddEventPresenterImpl(view, interactor)
+    fun providesString() : String{
+        return "foobar"
     }
 }

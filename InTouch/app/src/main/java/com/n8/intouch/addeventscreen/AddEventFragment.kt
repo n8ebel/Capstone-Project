@@ -30,6 +30,9 @@ class AddEventFragment : Fragment(), AddEventView {
     lateinit var presenter:AddEventPresenter
 
     @Inject
+    lateinit var injectedString:String
+
+    @Inject
     lateinit var contentResolver:ContentResolver
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -91,7 +94,8 @@ class AddEventFragment : Fragment(), AddEventView {
                 var displayName = rawContactsCursor.getString(rawContactsCursor.getColumnIndex(ContactsContract.Contacts.Entity.DISPLAY_NAME));
 
                 var contactInfo = "name: $displayName  raw_contact_id: $contact_id  lookupKey: $lookupKey  accountType: $accountType  data1: $data1  mimeType: $mimeType"
-                Toast.makeText(context, contactInfo, Toast.LENGTH_LONG).show()
+
+                presenter.onContactDataLoaded(contactInfo)
 
                 var eventProjectiong = arrayOf(
                         ContactsContract.CommonDataKinds.Event._ID,
@@ -133,6 +137,10 @@ class AddEventFragment : Fragment(), AddEventView {
         return
 
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    override fun displayContactInfo(contactInfo: String) {
+        Toast.makeText(activity, contactInfo, Toast.LENGTH_LONG).show();
     }
 
     private fun pickContact() {
