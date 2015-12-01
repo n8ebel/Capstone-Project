@@ -10,30 +10,28 @@ import android.widget.Toast
 import com.n8.intouch.InTouchApplication
 import com.n8.intouch.R
 import com.n8.intouch.browsescreen.TabbedFragment
+import com.n8.intouch.common.ComponentActivity
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), MainView {
-
+class MainActivity : ComponentActivity<MainComponent>(), MainView {
     val TAG = "MainActivity"
-
-    companion object {
-        @JvmStatic public lateinit var graph: MainComponent
-    }
 
     @Inject
     lateinit var presenter: MainPresenter
 
     lateinit var progressBar: ContentLoadingProgressBar
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        graph = DaggerMainComponent.builder()
+    override fun createComponent(): MainComponent {
+        return DaggerMainComponent.builder()
                 .applicationComponent(InTouchApplication.graph)
                 .mainModule(MainModule(this, supportFragmentManager))
                 .build()
+    }
 
-        graph.inject(this)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        component.inject(this)
 
         setContentView(R.layout.activity_main)
 

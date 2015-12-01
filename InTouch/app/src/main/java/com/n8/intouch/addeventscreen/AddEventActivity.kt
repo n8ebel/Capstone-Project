@@ -15,13 +15,16 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.n8.intouch.InTouchApplication
 
 import com.n8.intouch.R
+import com.n8.intouch.common.ComponentActivity
+import javax.inject.Inject
 
 /**
  * Activity to host different fragments that allow the user to create/edit events
  */
-class AddEventActivity : AppCompatActivity() {
+class AddEventActivity : ComponentActivity<AddEventComponent>() {
 
     val BACKSTACK_TAG = "add_fragment"
 
@@ -45,9 +48,21 @@ class AddEventActivity : AppCompatActivity() {
         }
     }
 
+    @Inject
+    lateinit var injectedContext:Context
+
+    override fun createComponent(): AddEventComponent {
+        return DaggerAddEventComponent.builder().
+                addEventModule(AddEventModule()).
+                applicationComponent(InTouchApplication.graph).
+                build()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
+
+        component.inject(this)
 
         if (intent?.getStringExtra(ARG_TYPE) == TYPE_ADD_FOR_DATE) {
             showAddForDate(savedInstanceState)
