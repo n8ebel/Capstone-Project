@@ -5,7 +5,7 @@ import com.n8.intouch.common.ActivityScope
 import dagger.Component
 
 @ActivityScope
-@Component(modules = arrayOf(AddModule::class), dependencies = arrayOf(ApplicationComponent::class))
-interface AddComponent {
+@Component(modules = arrayOf(AddEventModule::class), dependencies = arrayOf(ApplicationComponent::class))
+interface AddEventComponent {
     fun inject(fragment:AddEventFragment)
 }

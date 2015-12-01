@@ -8,7 +8,7 @@ import dagger.Provides
  * Created by n8 on 11/30/15.
  */
 @Module
-class AddModule(val view:AddEventView) {
+class AddEventModule(val view:AddEventView) {
 
     @Provides
     fun providInteractor(context:Context) : AddEventInteractor {
