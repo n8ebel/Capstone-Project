@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.firebase.client.Firebase
 import com.n8.intouch.InTouchApplication
-import com.n8.intouch.addeventscreen.AddEventComponent
-import com.n8.intouch.addeventscreen.AddEventModule
 import com.n8.intouch.common.BaseComponent
 import com.n8.intouch.main.MainActivity
 import com.n8.intouch.main.MainComponent

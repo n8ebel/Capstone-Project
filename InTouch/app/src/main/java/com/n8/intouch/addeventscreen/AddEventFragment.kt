@@ -26,11 +26,8 @@ class AddEventFragment : Fragment(), AddEventView {
 
     val component = createComponent()
 
-    //@Inject
-    lateinit var presenter:AddEventPresenter
-
     @Inject
-    lateinit var injectedString:String
+    lateinit var presenter:AddEventPresenter
 
     @Inject
     lateinit var contentResolver:ContentResolver
@@ -149,11 +146,7 @@ class AddEventFragment : Fragment(), AddEventView {
         startActivityForResult(pickContactIntent, 1);
     }
 
-    private fun createComponent(): AddEventComponent {
-        return DaggerAddEventComponent.builder().
-                addEventModule(AddEventModule(this)).
-                applicationComponent(InTouchApplication.graph).
-                build()
+    private fun createComponent() : AddComponent {
+        return DaggerAddComponent.builder().addModule(AddModule(this)).applicationComponent(InTouchApplication.graph).build()
     }
-
 }
