@@ -18,13 +18,13 @@ import android.widget.Toast
 import com.n8.intouch.InTouchApplication
 
 import com.n8.intouch.R
-import com.n8.intouch.common.ComponentActivity
+import com.n8.intouch.main.MainComponent
 import javax.inject.Inject
 
 /**
  * Activity to host different fragments that allow the user to create/edit events
  */
-class AddEventActivity : ComponentActivity<AddEventComponent>() {
+class AddEventActivity : AppCompatActivity() {
 
     val BACKSTACK_TAG = "add_fragment"
 
@@ -48,21 +48,10 @@ class AddEventActivity : ComponentActivity<AddEventComponent>() {
         }
     }
 
-    @Inject
-    lateinit var injectedContext:Context
-
-    override fun createComponent(): AddEventComponent {
-        return DaggerAddEventComponent.builder().
-                addEventModule(AddEventModule()).
-                applicationComponent(InTouchApplication.graph).
-                build()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
-
-        component.inject(this)
 
         if (intent?.getStringExtra(ARG_TYPE) == TYPE_ADD_FOR_DATE) {
             showAddForDate(savedInstanceState)
@@ -75,93 +64,6 @@ class AddEventActivity : ComponentActivity<AddEventComponent>() {
                 finish()
             }
         }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        // Make sure the request was successful
-        if (resultCode == RESULT_OK) {
-
-            // Get the URI that points to the selected contact
-            var contactUri = data?.getData();
-
-            var projection = arrayOf(ContactsContract.Contacts._ID)
-
-            var cursor = getContentResolver().query(contactUri, projection, null, null, null);
-            cursor.moveToFirst();
-
-            // Retrieve the phone number from the NUMBER column
-            var idColumn = cursor.getColumnIndex(ContactsContract.Contacts._ID);
-
-            var id = cursor.getString(idColumn)
-
-
-            Log.d("TAG", "id: $id")
-
-            var foo = arrayOf(
-                    ContactsContract.Contacts.Entity.RAW_CONTACT_ID,
-                    ContactsContract.Contacts.Entity.LOOKUP_KEY,
-                    ContactsContract.Contacts.Entity.ACCOUNT_TYPE,
-                    ContactsContract.Contacts.Entity.DATA1,
-                    ContactsContract.Contacts.Entity.MIMETYPE,
-                    ContactsContract.Contacts.Entity.DISPLAY_NAME
-
-            )
-
-            var sortOrder = ContactsContract.Contacts.Entity.RAW_CONTACT_ID + " ASC"
-
-            var rawContactsCursor = contentResolver.query(contactUri, foo, null, null, sortOrder)
-
-            while(rawContactsCursor.moveToNext()){
-                var contact_id = rawContactsCursor.getString(rawContactsCursor.getColumnIndex(ContactsContract.Contacts.Entity.RAW_CONTACT_ID));
-                var lookupKey = rawContactsCursor.getString(rawContactsCursor.getColumnIndex(ContactsContract.Contacts.Entity.LOOKUP_KEY))
-                var accountType = rawContactsCursor.getString(rawContactsCursor.getColumnIndex(ContactsContract.Contacts.Entity.ACCOUNT_TYPE));
-                var data1 = rawContactsCursor.getString(rawContactsCursor.getColumnIndex(ContactsContract.Contacts.Entity.DATA1));
-                //final String type = eventsCursor.getString(cursor.getColumnIndex(Event.TYPE));
-                var mimeType = rawContactsCursor.getString(rawContactsCursor.getColumnIndex(ContactsContract.Contacts.Entity.MIMETYPE));
-                var displayName = rawContactsCursor.getString(rawContactsCursor.getColumnIndex(ContactsContract.Contacts.Entity.DISPLAY_NAME));
-
-                Log.d("TAG", "name: $displayName  raw_contact_id: $contact_id  lookupKey: $lookupKey  accountType: $accountType  data1: $data1  mimeType: $mimeType")
-
-                var eventProjectiong = arrayOf(
-                        ContactsContract.CommonDataKinds.Event._ID,
-                        ContactsContract.CommonDataKinds.Event.START_DATE,
-                        ContactsContract.CommonDataKinds.Event.TYPE,
-                        ContactsContract.CommonDataKinds.Event.LABEL
-                )
-
-                var eventSelection =
-                        ContactsContract.Data.LOOKUP_KEY + " = ?" +
-                                " AND " +
-                                ContactsContract.Data.MIMETYPE + " = " +
-                                "'" + ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE + "'"
-
-                var eventArgs = arrayOf(lookupKey)
-
-                var eventCursor = contentResolver.query(ContactsContract.Data.CONTENT_URI, eventProjectiong, eventSelection, eventArgs, ContactsContract.CommonDataKinds.Event.TYPE + " ASC ")
-
-                while (eventCursor.moveToNext()) {
-                    var eventDate = eventCursor.getString(eventCursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE))
-                    var eventType = eventCursor.getString(eventCursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.TYPE))
-
-                    when (eventType.toInt()) {
-                        Event.TYPE_ANNIVERSARY -> eventType = "Anniversary"
-                        Event.TYPE_BIRTHDAY -> eventType = "Birthday"
-                        Event.TYPE_CUSTOM -> eventType = "Custom"
-                        Event.TYPE_OTHER -> eventType = "Other"
-                    }
-
-                    var eventLabel = eventCursor.getString(eventCursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.LABEL))
-
-                    Log.d("TAG", "label: $eventLabel  type: $eventType  date: $eventDate")
-                }
-
-            }
-
-            // Do something with the phone number...
-        }
-        return
-
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun showAddForDate(savedInstanceState:Bundle?) {

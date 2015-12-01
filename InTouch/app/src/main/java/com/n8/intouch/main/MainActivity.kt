@@ -10,23 +10,17 @@ import android.widget.Toast
 import com.n8.intouch.InTouchApplication
 import com.n8.intouch.R
 import com.n8.intouch.browsescreen.TabbedFragment
-import com.n8.intouch.common.ComponentActivity
 import javax.inject.Inject
 
-class MainActivity : ComponentActivity<MainComponent>(), MainView {
+class MainActivity : AppCompatActivity(), MainView {
     val TAG = "MainActivity"
 
     @Inject
     lateinit var presenter: MainPresenter
 
-    lateinit var progressBar: ContentLoadingProgressBar
+    val component = createComponent()
 
-    override fun createComponent(): MainComponent {
-        return DaggerMainComponent.builder()
-                .applicationComponent(InTouchApplication.graph)
-                .mainModule(MainModule(this, supportFragmentManager))
-                .build()
-    }
+    lateinit var progressBar: ContentLoadingProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,4 +56,11 @@ class MainActivity : ComponentActivity<MainComponent>(), MainView {
     }
 
     // endregion Implements MainView
+
+    private fun createComponent(): MainComponent {
+        return DaggerMainComponent.builder()
+                .applicationComponent(InTouchApplication.graph)
+                .mainModule(MainModule(this, supportFragmentManager))
+                .build()
+    }
 }

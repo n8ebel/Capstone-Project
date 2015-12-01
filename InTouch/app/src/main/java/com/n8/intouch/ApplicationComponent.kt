@@ -1,5 +1,6 @@
 package com.n8.intouch
 
+import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
 import com.firebase.client.Firebase
@@ -20,4 +21,6 @@ interface ApplicationComponent : BaseComponent {
     fun getSharedPreferences() : SharedPreferences
 
     fun getContext() : Context
+
+    fun getContentResolver() : ContentResolver
 }
