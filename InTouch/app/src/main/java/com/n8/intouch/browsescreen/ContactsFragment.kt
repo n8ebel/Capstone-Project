@@ -16,6 +16,12 @@ import com.n8.intouch.common.TitleProvider
  */
 class ContactsFragment : Fragment(), TitleProvider {
 
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        // Inflate the layout for this fragment
+        return inflater!!.inflate(R.layout.fragment_contacts, container, false)
+    }
+
     // region Implements TitleProvider
 
     override fun getTitle(): String {
@@ -26,11 +32,4 @@ class ContactsFragment : Fragment(), TitleProvider {
     }
 
     // endregion Implements TitleProvider
-
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater!!.inflate(R.layout.fragment_contacts, container, false)
-    }
-
-}// Required empty public constructor
+}

@@ -8,4 +8,6 @@
     <string name="events">Events</string>
     <string name="title_activity_add">AddActivity</string>
 
+    <string name="invalid_contact_uri">Invalid Contact Uri</string>
+
 </resources>

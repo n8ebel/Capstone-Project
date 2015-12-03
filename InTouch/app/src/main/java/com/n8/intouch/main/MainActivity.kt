@@ -9,23 +9,16 @@ import android.widget.Toast
 
 import com.n8.intouch.InTouchApplication
 import com.n8.intouch.R
-import com.n8.intouch.browsescreen.TabbedFragment
+import com.n8.intouch.browsescreen.BrowseFragment
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), MainView {
+class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
 
-    @Inject
-    lateinit var presenter: MainPresenter
-
-    val component = createComponent()
-
-    lateinit var progressBar: ContentLoadingProgressBar
+    val FRAG_BROWSE = "browse"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        component.inject(this)
 
         setContentView(R.layout.activity_main)
 
@@ -33,34 +26,15 @@ class MainActivity : AppCompatActivity(), MainView {
         //
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().
-                    add(R.id.fragmentContainer, TabbedFragment(), null).
-                    addToBackStack("foo").
+                    add(R.id.fragmentContainer, BrowseFragment(), null).
+                    addToBackStack(FRAG_BROWSE).
                     commit()
         }
-    }
 
-    // region Implements MainView
-
-    override fun showProgress() {
-        Log.d(TAG, "showing progress")
-        progressBar.show()
-    }
-
-    override fun hideProgress() {
-        Log.d(TAG, "hide progress")
-        progressBar.hide()
-    }
-
-    override fun showResult(result: String) {
-        Toast.makeText(this, result, Toast.LENGTH_LONG).show()
-    }
-
-    // endregion Implements MainView
-
-    private fun createComponent(): MainComponent {
-        return DaggerMainComponent.builder()
-                .applicationComponent(InTouchApplication.graph)
-                .mainModule(MainModule(this, supportFragmentManager))
-                .build()
+        supportFragmentManager.addOnBackStackChangedListener {
+            if (supportFragmentManager.backStackEntryCount == 0) {
+                finish()
+            }
+        }
     }
 }
