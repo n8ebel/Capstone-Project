@@ -43,8 +43,13 @@ class AddEventActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
 
-        if (intent?.getParcelableExtra<Uri>(ARG_CONTACT_URI) != null) {
-            showFragment(savedInstanceState)
+        if (savedInstanceState != null) {
+            return
+        }
+
+        var contactUri = intent?.getParcelableExtra<Uri>(ARG_CONTACT_URI)
+        if (contactUri != null) {
+            showFragment(contactUri)
         } else {
             throw IllegalStateException("Activity was not launched with valid arguments.  AddActivity.Factory should be used to create intents")
         }
@@ -56,15 +61,17 @@ class AddEventActivity : AppCompatActivity() {
         }
     }
 
-    private fun showFragment(savedInstanceState:Bundle?) {
-        if (savedInstanceState != null) {
-            return
-        }
+    private fun showFragment(contactUri: Uri) {
+        var fragment = AddEventFragment()
+        var component = DaggerAddEventComponent.builder().
+                applicationComponent(InTouchApplication.graph).
+                addEventModule(AddEventModule(contactUri, fragment)).
+                build()
+        fragment.component = component
 
         supportFragmentManager.beginTransaction().
-                add(R.id.fragmentContainer, AddEventFragment()).
+                add(R.id.fragmentContainer, fragment).
                 addToBackStack(BACKSTACK_TAG).
                 commit()
     }
-
 }

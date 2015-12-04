@@ -2,12 +2,14 @@ package com.n8.intouch.addeventscreen
 
 
 import android.content.ContentResolver
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.support.v4.widget.ContentLoadingProgressBar
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,7 +26,10 @@ import javax.inject.Inject
  */
 class AddEventFragment : Fragment(), AddEventView {
 
-    val component = createComponent()
+    var component:AddEventComponent? = null
+
+    @Inject
+    lateinit var contactUri:Uri
 
     @Inject
     lateinit var presenter:AddEventPresenter
@@ -32,37 +37,47 @@ class AddEventFragment : Fragment(), AddEventView {
     @Inject
     lateinit var contentResolver:ContentResolver
 
+    lateinit var progressBar:ContentLoadingProgressBar
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+
+        if (component == null) {
+            throw IllegalStateException("AddEventComponent must be set")
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         var view = inflater!!.inflate(R.layout.fragment_add_for_date, container, false)
 
-        component.inject(this)
+        component?.inject(this)
+
+        progressBar = ContentLoadingProgressBar(activity)
+
+        presenter.onContactUriReceived(contactUri)
 
         return view
     }
 
     // region Implements AddEventView
 
-    override fun displayContactInfo(contactInfo: String) {
-        Toast.makeText(activity, contactInfo, Toast.LENGTH_LONG).show();
+    override fun displayContactInfo(contact: AddEventInteractor.Contact) {
+        Toast.makeText(activity, contact.name, Toast.LENGTH_LONG).show();
     }
 
     override fun showProgress() {
-        throw UnsupportedOperationException()
+        progressBar.show()
     }
 
     override fun hideProgress() {
-        throw UnsupportedOperationException()
+        progressBar.hide()
     }
 
     override fun displayError(error: Throwable) {
-        throw UnsupportedOperationException()
+        Toast.makeText(activity, error.message, Toast.LENGTH_LONG).show()
     }
 
     // endregion Implements AddEventView
-
-    private fun createComponent() : AddEventComponent {
-        return DaggerAddEventComponent.builder().addEventModule(AddEventModule(this)).applicationComponent(InTouchApplication.graph).build()
-    }
 }

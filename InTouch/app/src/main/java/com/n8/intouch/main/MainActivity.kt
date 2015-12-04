@@ -10,6 +10,8 @@ import android.widget.Toast
 import com.n8.intouch.InTouchApplication
 import com.n8.intouch.R
 import com.n8.intouch.browsescreen.BrowseFragment
+import com.n8.intouch.browsescreen.BrowseModule
+import com.n8.intouch.browsescreen.DaggerBrowseComponent
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -25,8 +27,14 @@ class MainActivity : AppCompatActivity() {
         // Only add the tabbed fragment the first time the activity is created
         //
         if (savedInstanceState == null) {
+            var browseFragment = BrowseFragment()
+            browseFragment.component = DaggerBrowseComponent.builder().
+                    applicationComponent(InTouchApplication.graph).
+                    browseModule(BrowseModule(browseFragment, browseFragment)).
+                    build()
+
             supportFragmentManager.beginTransaction().
-                    add(R.id.fragmentContainer, BrowseFragment(), null).
+                    add(R.id.fragmentContainer, browseFragment, null).
                     addToBackStack(FRAG_BROWSE).
                     commit()
         }

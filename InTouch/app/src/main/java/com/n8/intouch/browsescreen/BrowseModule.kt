@@ -9,7 +9,7 @@ import dagger.Provides
  * Created by n8 on 12/2/15.
  */
 @Module
-class TabbedFragmentModule(val view: TabbedFragmentView, val fragment: Fragment) {
+class BrowseModule(val view: TabbedFragmentView, val fragment: Fragment) {
 
     @Provides
     fun provideFragment() : Fragment {

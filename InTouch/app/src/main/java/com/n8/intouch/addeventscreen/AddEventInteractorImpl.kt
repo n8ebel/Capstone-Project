@@ -1,11 +1,28 @@
 package com.n8.intouch.addeventscreen
 
 import android.content.Context
+import android.net.Uri
+import android.provider.ContactsContract
 
 /**
  * Created by n8 on 11/30/15.
  */
-class AddEventInteractorImpl(var context: Context) : AddEventInteractor {
+class AddEventInteractorImpl(val context: Context, val contactUri: Uri) : AddEventInteractor {
+
+    // TODO This should be done on background thread
+    override fun loadContact(contactUri: Uri, listener: (AddEventInteractor.Contact) -> Unit) {
+        var projection = arrayOf(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)
+        var cursor = context.contentResolver.query(contactUri, projection, null, null, null);
+
+        if (!cursor.moveToFirst()) {
+            listener.invoke(AddEventInteractor.Contact("Error"))
+            return
+        }
+
+        var displayName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
+
+        listener.invoke(AddEventInteractor.Contact(displayName))
+    }
     //    var projection = arrayOf(ContactsContract.Contacts._ID)
     //
     //    var cursor = fragment.context.contentResolver.query(contactUri, projection, null, null, null);

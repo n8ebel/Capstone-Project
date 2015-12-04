@@ -6,7 +6,7 @@ import com.n8.intouch.common.BaseComponent
 import dagger.Component
 
 @ActivityScope
-@Component(modules = arrayOf(TabbedFragmentModule::class), dependencies = arrayOf(ApplicationComponent::class))
-interface TabbedFragmentComponent : BaseComponent {
+@Component(modules = arrayOf(BrowseModule::class), dependencies = arrayOf(ApplicationComponent::class))
+interface BrowseComponent : BaseComponent {
     fun inject(fragment: BrowseFragment)
 }

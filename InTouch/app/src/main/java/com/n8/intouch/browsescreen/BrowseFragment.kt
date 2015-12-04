@@ -1,6 +1,7 @@
 package com.n8.intouch.browsescreen
 
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -17,15 +18,23 @@ import javax.inject.Inject
 
 class BrowseFragment : TabbedFragment(), TabbedFragmentView {
 
-    val component = createComponent()
+    var component:BrowseComponent? = null
 
     @Inject
     lateinit var presenter:TabbedFragmentPresenter
 
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+
+        if (component == null) {
+            throw IllegalStateException("BrowseComponent must be set")
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        component.inject(this)
+        component?.inject(this)
 
         var view = inflater!!.inflate(R.layout.fragment_browse, container, false) as ViewGroup
 
@@ -64,12 +73,4 @@ class BrowseFragment : TabbedFragment(), TabbedFragmentView {
     override fun createFragmentList(): List<Fragment>{
         return listOf<Fragment>(EventsListFragment(), ContactsFragment())
     }
-
-    fun createComponent() : TabbedFragmentComponent {
-        return DaggerTabbedFragmentComponent.builder().
-                applicationComponent(InTouchApplication.graph).
-                tabbedFragmentModule(TabbedFragmentModule(this, this)).
-                build()
-    }
-
 }

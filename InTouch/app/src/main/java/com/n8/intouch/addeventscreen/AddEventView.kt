@@ -10,5 +10,5 @@ interface AddEventView {
 
     fun displayError(error:Throwable)
 
-    fun displayContactInfo(contactInfo:String)
+    fun displayContactInfo(contact: AddEventInteractor.Contact)
 }
