@@ -1,25 +1,14 @@
 package com.n8.intouch.addeventscreen
 
-import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
-import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
-import android.provider.ContactsContract
-import android.provider.ContactsContract.CommonDataKinds.Event
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
-import android.util.Log
-import android.view.View
-import android.widget.Toast
 import com.n8.intouch.InTouchApplication
 
 import com.n8.intouch.R
-import javax.inject.Inject
+import com.n8.intouch.addeventscreen.di.AddEventModule
 
 /**
  * Activity to host different fragments that allow the user to create/edit events

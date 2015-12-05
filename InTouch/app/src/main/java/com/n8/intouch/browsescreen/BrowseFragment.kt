@@ -13,12 +13,13 @@ import android.widget.Toast
 import com.n8.intouch.InTouchApplication
 
 import com.n8.intouch.R
+import com.n8.intouch.browsescreen.di.BrowseComponent
 import com.n8.intouch.common.TabbedFragment
 import javax.inject.Inject
 
 class BrowseFragment : TabbedFragment(), TabbedFragmentView {
 
-    var component:BrowseComponent? = null
+    var component: BrowseComponent? = null
 
     @Inject
     lateinit var presenter:TabbedFragmentPresenter

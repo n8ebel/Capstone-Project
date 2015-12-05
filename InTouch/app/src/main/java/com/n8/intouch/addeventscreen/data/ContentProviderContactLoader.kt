@@ -1,4 +1,4 @@
-package com.n8.intouch.addeventscreen
+package com.n8.intouch.addeventscreen.data
 
 import android.content.Context
 import android.net.Uri
@@ -7,21 +7,21 @@ import android.provider.ContactsContract
 /**
  * Created by n8 on 11/30/15.
  */
-class AddEventInteractorImpl(val context: Context, val contactUri: Uri) : AddEventInteractor {
+class ContentProviderContactLoader(val context: Context, val contactUri: Uri) : ContactLoader {
 
     // TODO This should be done on background thread
-    override fun loadContact(contactUri: Uri, listener: (AddEventInteractor.Contact) -> Unit) {
+    override fun loadContact(contactUri: Uri, listener: (ContactLoader.Contact) -> Unit) {
         var projection = arrayOf(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)
         var cursor = context.contentResolver.query(contactUri, projection, null, null, null);
 
         if (!cursor.moveToFirst()) {
-            listener.invoke(AddEventInteractor.Contact("Error"))
+            listener.invoke(ContactLoader.Contact("Error"))
             return
         }
 
         var displayName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
 
-        listener.invoke(AddEventInteractor.Contact(displayName))
+        listener.invoke(ContactLoader.Contact(displayName))
     }
     //    var projection = arrayOf(ContactsContract.Contacts._ID)
     //

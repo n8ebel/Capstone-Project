@@ -10,7 +10,7 @@ import android.widget.Toast
 import com.n8.intouch.InTouchApplication
 import com.n8.intouch.R
 import com.n8.intouch.browsescreen.BrowseFragment
-import com.n8.intouch.browsescreen.BrowseModule
+import com.n8.intouch.browsescreen.di.BrowseModule
 import com.n8.intouch.browsescreen.DaggerBrowseComponent
 import javax.inject.Inject
 

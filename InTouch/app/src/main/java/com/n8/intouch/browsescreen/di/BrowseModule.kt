@@ -1,7 +1,8 @@
-package com.n8.intouch.browsescreen
+package com.n8.intouch.browsescreen.di
 
 import android.content.Context
 import android.support.v4.app.Fragment
+import com.n8.intouch.browsescreen.TabbedFragmentPresenter
 import dagger.Module
 import dagger.Provides
 
@@ -17,7 +18,7 @@ class BrowseModule(val view: TabbedFragmentView, val fragment: Fragment) {
     }
 
     @Provides
-    fun provideTabbedFragmentPresenter(fragment: Fragment) : TabbedFragmentPresenter{
-        return TabbedFragmentPresenterImpl(fragment, view)
+    fun provideTabbedFragmentPresenter(fragment: Fragment) : TabbedFragmentPresenter {
+        return TabbedFragmentPresenter(fragment, view)
     }
 }

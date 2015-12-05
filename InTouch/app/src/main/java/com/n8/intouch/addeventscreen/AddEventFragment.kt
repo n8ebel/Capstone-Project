@@ -19,20 +19,22 @@ import android.widget.Toast
 import com.n8.intouch.InTouchApplication
 
 import com.n8.intouch.R
+import com.n8.intouch.addeventscreen.data.ContactLoader
+import com.n8.intouch.addeventscreen.di.AddEventComponent
 import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass.
  */
-class AddEventFragment : Fragment(), AddEventView {
+class AddEventFragment : Fragment(), AddEventContract.View {
 
-    var component:AddEventComponent? = null
+    var component: AddEventComponent? = null
 
     @Inject
     lateinit var contactUri:Uri
 
     @Inject
-    lateinit var presenter:AddEventPresenter
+    lateinit var presenter:AddEventContract.UserInteractionListener
 
     @Inject
     lateinit var contentResolver:ContentResolver
@@ -63,7 +65,7 @@ class AddEventFragment : Fragment(), AddEventView {
 
     // region Implements AddEventView
 
-    override fun displayContactInfo(contact: AddEventInteractor.Contact) {
+    override fun displayContactInfo(contact: ContactLoader.Contact) {
         Toast.makeText(activity, contact.name, Toast.LENGTH_LONG).show();
     }
 
