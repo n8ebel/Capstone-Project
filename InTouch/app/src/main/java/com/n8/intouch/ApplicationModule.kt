@@ -1,6 +1,7 @@
 package com.n8.intouch
 
 import android.app.Application
+import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
 import com.firebase.client.Firebase
@@ -26,5 +27,10 @@ class ApplicationModule(private val application: Application) {
     @Provides
     fun provideSharedPreferences(): SharedPreferences {
         return application.getSharedPreferences(application.javaClass.simpleName, Context.MODE_PRIVATE)
+    }
+
+    @Provides
+    fun provideContentResolver(): ContentResolver {
+        return application.contentResolver
     }
 }

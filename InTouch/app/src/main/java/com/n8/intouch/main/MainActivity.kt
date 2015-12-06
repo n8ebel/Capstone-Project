@@ -9,67 +9,40 @@ import android.widget.Toast
 
 import com.n8.intouch.InTouchApplication
 import com.n8.intouch.R
+import com.n8.intouch.browsescreen.BrowseFragment
+import com.n8.intouch.browsescreen.di.BrowseModule
+import com.n8.intouch.browsescreen.DaggerBrowseComponent
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), MainView {
-
+class MainActivity : AppCompatActivity() {
     val TAG = "MainActivity"
 
-    companion object {
-        @JvmStatic public lateinit var graph: MainComponent
-    }
-
-    @Inject
-    lateinit var presenter: MainPresenter
-
-    lateinit var progressBar: ContentLoadingProgressBar
+    val FRAG_BROWSE = "browse"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        graph = DaggerMainComponent.builder()
-                .applicationComponent(InTouchApplication.graph)
-                .mainModule(MainModule(this))
-                .build()
-
-        graph.inject(this)
-
         setContentView(R.layout.activity_main)
 
-        progressBar = ContentLoadingProgressBar(this)
+        // Only add the tabbed fragment the first time the activity is created
+        //
+        if (savedInstanceState == null) {
+            var browseFragment = BrowseFragment()
+            browseFragment.component = DaggerBrowseComponent.builder().
+                    applicationComponent(InTouchApplication.graph).
+                    browseModule(BrowseModule(browseFragment, browseFragment)).
+                    build()
 
-        var button = findViewById(R.id.theButton)
-        button.setOnClickListener {
-            presenter.showFirebaseToast()
+            supportFragmentManager.beginTransaction().
+                    add(R.id.fragmentContainer, browseFragment, null).
+                    addToBackStack(FRAG_BROWSE).
+                    commit()
         }
 
-        var contentProviderButton = findViewById(R.id.contentProviderButton)
-        contentProviderButton.setOnClickListener {
-            presenter.showData("selection args go here", arrayOf("foo", "goo"))
-        }
-
-        var phoneNumberInputLayout = findViewById(R.id.phoneNumber_textInputLayout) as TextInputLayout
-        var scheduleTextButton = findViewById(R.id.scheduleText_button)
-        scheduleTextButton.setOnClickListener {
-            presenter.scheduleText(phoneNumberInputLayout.editText.text.toString())
+        supportFragmentManager.addOnBackStackChangedListener {
+            if (supportFragmentManager.backStackEntryCount == 0) {
+                finish()
+            }
         }
     }
-
-    // region Implements MainView
-
-    override fun showProgress() {
-        Log.d(TAG, "showing progress")
-        progressBar.show()
-    }
-
-    override fun hideProgress() {
-        Log.d(TAG, "hide progress")
-        progressBar.hide()
-    }
-
-    override fun showResult(result: String) {
-        Toast.makeText(this, result, Toast.LENGTH_LONG).show()
-    }
-
-    // endregion Implements MainView
 }
