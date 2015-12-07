@@ -1,8 +1,14 @@
 package com.n8.intouch.addeventscreen.data
 
 import android.content.Context
+import android.content.res.AssetFileDescriptor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.provider.ContactsContract
+import java.io.FileNotFoundException
+import java.io.IOException
 
 /**
  * Created by n8 on 11/30/15.
@@ -12,6 +18,7 @@ class ContentProviderContactLoader(val context: Context, val contactUri: Uri) : 
     // TODO This should be done on background thread
     override fun loadContact(contactUri: Uri, listener: (ContactLoader.Contact) -> Unit) {
         var projection = arrayOf(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY)
+
         var cursor = context.contentResolver.query(contactUri, projection, null, null, null);
 
         if (!cursor.moveToFirst()) {
@@ -21,7 +28,9 @@ class ContentProviderContactLoader(val context: Context, val contactUri: Uri) : 
 
         var displayName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME_PRIMARY));
 
-        listener.invoke(ContactLoader.Contact(displayName))
+        var thumbnail = BitmapFactory.decodeStream(ContactsContract.Contacts.openContactPhotoInputStream(context.contentResolver, contactUri, true))
+
+        listener.invoke(ContactLoader.Contact(displayName, thumbnail))
     }
     //    var projection = arrayOf(ContactsContract.Contacts._ID)
     //
@@ -99,4 +108,56 @@ class ContentProviderContactLoader(val context: Context, val contactUri: Uri) : 
     //    }
     //
     //    // Do something with the phone number...
+
+    /**
+     * Load a contact photo thumbnail and return it as a Bitmap,
+     * resizing the image to the provided image dimensions as needed.
+     * @param photoData photo ID Prior to Honeycomb, the contact's _ID value.
+     * For Honeycomb and later, the value of PHOTO_THUMBNAIL_URI.
+     * @return A thumbnail Bitmap, sized to the provided width and height.
+     * Returns null if the thumbnail is not found.
+     */
+    fun loadContactPhotoThumbnail(photoData:String) : Bitmap? {
+        // Creates an asset file descriptor for the thumbnail file.
+        var afd:AssetFileDescriptor? = null;
+
+        // try-catch block for file not found
+        try {
+            // Creates a holder for the URI.
+            var thumbUri = Uri.parse(photoData);
+
+            /*
+             * Retrieves an AssetFileDescriptor object for the thumbnail
+             * URI
+             * using ContentResolver.openAssetFileDescriptor
+             */
+            afd = context.contentResolver.openAssetFileDescriptor(thumbUri, "r");
+
+            /*
+             * Gets a file descriptor from the asset file descriptor.
+             * This object can be used across processes.
+             */
+            var fileDescriptor = afd.getFileDescriptor();
+
+            // Decode the photo file and return the result as a Bitmap
+            // If the file descriptor is valid
+            if (fileDescriptor != null) {
+                // Decodes the bitmap
+                return BitmapFactory.decodeFileDescriptor(fileDescriptor, null, null);
+            }
+            // If the file isn't found
+        } catch (e: FileNotFoundException) {
+            /*
+             * Handle file not found errors
+             */
+            // In all cases, close the asset file descriptor
+        } finally {
+            if (afd != null) {
+                try {
+                    afd.close();
+                } catch (e: IOException) {}
+            }
+        }
+        return null;
+    }
 }

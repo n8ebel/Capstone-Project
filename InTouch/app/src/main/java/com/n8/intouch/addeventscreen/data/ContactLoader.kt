@@ -1,5 +1,6 @@
 package com.n8.intouch.addeventscreen.data
 
+import android.graphics.Bitmap
 import android.net.Uri
 
 /**
@@ -10,7 +11,7 @@ interface ContactLoader {
         fun onContactLoaded(contact: Contact)
     }
 
-    data class Contact(val name:String)
+    data class Contact(val name:String, val thumbnail: Bitmap? = null)
 
     fun loadContact(contactUri: Uri, listener: (Contact) -> Unit)
 }

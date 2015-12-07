@@ -11,7 +11,7 @@ import com.n8.intouch.InTouchApplication
 import com.n8.intouch.R
 import com.n8.intouch.browsescreen.BrowseFragment
 import com.n8.intouch.browsescreen.di.BrowseModule
-import com.n8.intouch.browsescreen.DaggerBrowseComponent
+import com.n8.intouch.browsescreen.di.DaggerBrowseComponent
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {

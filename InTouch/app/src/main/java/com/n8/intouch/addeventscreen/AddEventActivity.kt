@@ -9,6 +9,7 @@ import com.n8.intouch.InTouchApplication
 
 import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.di.AddEventModule
+import com.n8.intouch.addeventscreen.di.DaggerAddEventComponent
 
 /**
  * Activity to host different fragments that allow the user to create/edit events
