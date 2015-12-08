@@ -13,18 +13,24 @@ import android.support.v4.app.Fragment
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v4.widget.ContentLoadingProgressBar
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.ThemedSpinnerAdapter
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.Spinner
 import android.widget.Toast
 
 import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.data.ContactLoader
 import com.n8.intouch.addeventscreen.di.AddEventComponent
+import com.n8.intouch.model.Contact
+import com.n8.intouch.model.Event
 import com.n8.intouch.setupBackNavigation
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -49,6 +55,8 @@ class AddEventFragment : Fragment(), AddEventContract.View {
 
     lateinit var contactThumbnailImageView:ImageView
 
+    lateinit var spinner:Spinner
+
     override fun onAttach(context: Context?) {
         super.onAttach(context)
 
@@ -70,6 +78,8 @@ class AddEventFragment : Fragment(), AddEventContract.View {
 
         contactThumbnailImageView = view.findViewById(R.id.contactThumbnail) as ImageView
 
+        spinner = view.findViewById(R.id.spinner) as Spinner
+
         component?.inject(this)
 
         progressBar = ContentLoadingProgressBar(activity)
@@ -81,13 +91,25 @@ class AddEventFragment : Fragment(), AddEventContract.View {
 
     // region Implements AddEventView
 
-    override fun displayContactInfo(contact: ContactLoader.Contact) {
+    override fun displayContactInfo(contact: Contact) {
         Toast.makeText(activity, contact.name, Toast.LENGTH_LONG).show();
 
         collapsingToolbar.title = contact.name
 
         var roundedThumbnail = RoundedBitmapDrawableFactory.create(activity.resources, contact.thumbnail)
         contactThumbnailImageView.setImageDrawable(roundedThumbnail)
+
+        // Bind the event values
+        //
+        var spinnerDisplayValues = ArrayList<String>()
+        var events = contact.events
+        for (event in events) {
+            spinnerDisplayValues.add(event.date)
+        }
+
+        var adapter = ArrayAdapter<String>(activity, android.R.layout.simple_spinner_item, spinnerDisplayValues)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
     }
 
     override fun showProgress() {

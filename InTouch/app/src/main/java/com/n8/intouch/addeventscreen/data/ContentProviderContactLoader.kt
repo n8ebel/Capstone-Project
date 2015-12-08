@@ -8,9 +8,12 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.provider.ContactsContract
+import com.n8.intouch.model.Contact
+import com.n8.intouch.model.Event
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.io.InputStream
+import java.util.*
 
 /**
  * Created by n8 on 11/30/15.
@@ -18,7 +21,7 @@ import java.io.InputStream
 class ContentProviderContactLoader(val context: Context, val contactUri: Uri) : ContactLoader {
 
     // TODO This should be done on background thread
-    override fun loadContact(contactUri: Uri, listener: (ContactLoader.Contact) -> Unit) {
+    override fun loadContact(contactUri: Uri, listener: (Contact) -> Unit) {
         var projection = arrayOf(
                 ContactsContract.Contacts._ID,
                 ContactsContract.Contacts.LOOKUP_KEY,
@@ -30,7 +33,7 @@ class ContentProviderContactLoader(val context: Context, val contactUri: Uri) : 
         var cursor = context.contentResolver.query(contactUri, projection, null, null, null);
 
         if (!cursor.moveToFirst()) {
-            listener.invoke(ContactLoader.Contact("Error"))
+            listener.invoke(Contact("Error"))
             return
         }
 
@@ -46,7 +49,43 @@ class ContentProviderContactLoader(val context: Context, val contactUri: Uri) : 
 
         var bitmap = if (goo != null) BitmapFactory.decodeStream(goo) else null
 
-        listener.invoke(ContactLoader.Contact(displayName, bitmap))
+        var eventsList = ArrayList<Event>()
+
+        // Load events
+        var eventProjectiong = arrayOf(
+                ContactsContract.CommonDataKinds.Event._ID,
+                ContactsContract.CommonDataKinds.Event.START_DATE,
+                ContactsContract.CommonDataKinds.Event.TYPE,
+                ContactsContract.CommonDataKinds.Event.LABEL
+        )
+
+        var eventSelection =
+                ContactsContract.Data.LOOKUP_KEY + " = ?" +
+                        " AND " +
+                        ContactsContract.Data.MIMETYPE + " = " +
+                        "'" + ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE + "'"
+
+        var eventArgs = arrayOf(lookupKey)
+
+        var eventCursor = context.contentResolver.query(ContactsContract.Data.CONTENT_URI, eventProjectiong, eventSelection, eventArgs, ContactsContract.CommonDataKinds.Event.TYPE + " ASC ")
+
+        while (eventCursor.moveToNext()) {
+            var eventDate = eventCursor.getString(eventCursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.START_DATE))
+            var eventType = eventCursor.getString(eventCursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.TYPE))
+
+            when (eventType.toInt()) {
+                ContactsContract.CommonDataKinds.Event.TYPE_ANNIVERSARY -> eventType = "Anniversary"
+                ContactsContract.CommonDataKinds.Event.TYPE_BIRTHDAY -> eventType = "Birthday"
+                ContactsContract.CommonDataKinds.Event.TYPE_CUSTOM -> eventType = "Custom"
+                ContactsContract.CommonDataKinds.Event.TYPE_OTHER -> eventType = "Other"
+            }
+
+            var eventLabel = eventCursor.getString(eventCursor.getColumnIndex(ContactsContract.CommonDataKinds.Event.LABEL))
+
+            eventsList.add(Event(eventType, eventLabel, eventDate))
+        }
+
+        listener.invoke(Contact(displayName, bitmap, eventsList))
     }
     //    var projection = arrayOf(ContactsContract.Contacts._ID)
     //
