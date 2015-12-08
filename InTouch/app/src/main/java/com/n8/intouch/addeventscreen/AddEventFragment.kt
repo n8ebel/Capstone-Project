@@ -20,15 +20,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
-import com.n8.intouch.InTouchApplication
 
 import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.data.ContactLoader
 import com.n8.intouch.addeventscreen.di.AddEventComponent
+import com.n8.intouch.setupBackNavigation
 import javax.inject.Inject
 
 /**
- * A simple [Fragment] subclass.
+ * Fragment that allows a user to create a new scheduled event for a contact.
  */
 class AddEventFragment : Fragment(), AddEventContract.View {
 
@@ -65,6 +65,9 @@ class AddEventFragment : Fragment(), AddEventContract.View {
         collapsingToolbar = view.findViewById(R.id.collapsingToolbar) as CollapsingToolbarLayout
         collapsingToolbar.isTitleEnabled = true
 
+        var toolbar = view.findViewById(R.id.toolbar) as Toolbar
+        toolbar.setupBackNavigation { presenter.onNavIconPressed() }
+
         contactThumbnailImageView = view.findViewById(R.id.contactThumbnail) as ImageView
 
         component?.inject(this)
@@ -97,6 +100,10 @@ class AddEventFragment : Fragment(), AddEventContract.View {
 
     override fun displayError(error: Throwable) {
         Toast.makeText(activity, error.message, Toast.LENGTH_LONG).show()
+    }
+
+    override fun finish() {
+        activity.finish()
     }
 
     // endregion Implements AddEventView

@@ -4,14 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.n8.intouch.addeventscreen.AddEventFragment"
-    android:fitsSystemWindows="true"
     >
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_bar_height_large"
         style="@style/AppBarLayout"
-        android:fitsSystemWindows="true"
         >
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -19,7 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             >
 
@@ -29,7 +26,6 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
                 android:layout_gravity="center"
-                android:fitsSystemWindows="true"
                 />
 
             <include layout="@layout/toolbar" />

@@ -16,4 +16,8 @@ class AddEventPresenter(val view: AddEventContract.View, val interactor: Contact
             view.displayContactInfo(contact)
         })
     }
+
+    override fun onNavIconPressed() {
+        view.finish()
+    }
 }

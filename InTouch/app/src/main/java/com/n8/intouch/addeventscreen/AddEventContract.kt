@@ -8,6 +8,8 @@ import com.n8.intouch.addeventscreen.data.ContactLoader
  */
 class AddEventContract {
     interface View {
+        fun finish()
+
         fun showProgress()
 
         fun hideProgress()
@@ -19,5 +21,7 @@ class AddEventContract {
 
     interface UserInteractionListener {
         fun onContactUriReceived(contactUri: Uri)
+
+        fun onNavIconPressed()
     }
 }

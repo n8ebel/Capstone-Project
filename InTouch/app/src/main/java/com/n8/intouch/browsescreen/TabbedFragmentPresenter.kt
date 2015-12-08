@@ -1,5 +1,6 @@
 package com.n8.intouch.browsescreen
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract

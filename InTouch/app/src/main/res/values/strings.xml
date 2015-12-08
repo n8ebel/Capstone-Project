@@ -5,6 +5,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="contacts">Contacts</string>
+    <string name="content_description_back_navigation">Navigate back</string>
     <string name="events">Events</string>
     <string name="title_activity_add">AddActivity</string>
 
