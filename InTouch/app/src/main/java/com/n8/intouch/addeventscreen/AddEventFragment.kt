@@ -25,6 +25,7 @@ import android.widget.Spinner
 import android.widget.Toast
 
 import com.n8.intouch.R
+import com.n8.intouch.addeventscreen.cards.DatePickerCard
 import com.n8.intouch.addeventscreen.data.ContactLoader
 import com.n8.intouch.addeventscreen.di.AddEventComponent
 import com.n8.intouch.model.Contact
@@ -79,6 +80,9 @@ class AddEventFragment : Fragment(), AddEventContract.View {
         contactThumbnailImageView = view.findViewById(R.id.contactThumbnail) as ImageView
 
         spinner = view.findViewById(R.id.spinner) as Spinner
+
+        var contentContainer = view.findViewById(R.id.contentContainer) as ViewGroup
+        contentContainer.addView(DatePickerCard(context))
 
         component?.inject(this)
 
