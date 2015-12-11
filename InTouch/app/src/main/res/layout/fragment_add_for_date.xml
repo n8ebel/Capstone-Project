@@ -24,8 +24,9 @@
                 android:id="@+id/contactThumbnail"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
+                android:scaleType="center"
                 android:layout_gravity="center"
+                android:background="@drawable/ic_person_outline_24dp"
                 />
 
             <include layout="@layout/toolbar" />
@@ -38,19 +39,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="#FF8A65"
         >
 
         <LinearLayout
             android:id="@+id/contentContainer"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/keyline_1"
+            android:paddingEnd="@dimen/keyline_1"
             >
 
             <Spinner
                 android:id="@+id/spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="#FFFFFF"
                 />
 
         </LinearLayout>

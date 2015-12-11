@@ -23,4 +23,7 @@
         <item name="popupTheme">@style/AppTheme.PopupOverlay</item>
     </style>
 
+    <style name="TitleText">
+</style>
+
 </resources>

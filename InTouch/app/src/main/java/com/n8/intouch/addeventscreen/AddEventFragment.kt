@@ -19,10 +19,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.Spinner
-import android.widget.Toast
+import android.widget.*
 
 import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.cards.DatePickerCard
@@ -82,7 +79,16 @@ class AddEventFragment : Fragment(), AddEventContract.View {
         spinner = view.findViewById(R.id.spinner) as Spinner
 
         var contentContainer = view.findViewById(R.id.contentContainer) as ViewGroup
-        contentContainer.addView(DatePickerCard(context))
+        var startHeader = inflater.inflate(R.layout.add_event_header_start, contentContainer, false)
+        var spacer = inflater.inflate(R.layout.content_spacer, contentContainer, false)
+        var datePickerCard = DatePickerCard(context)
+        datePickerCard.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                200)
+
+        contentContainer.addView(startHeader, 0)
+        //contentContainer.addView(spacer)
+        contentContainer.addView(datePickerCard)
 
         component?.inject(this)
 

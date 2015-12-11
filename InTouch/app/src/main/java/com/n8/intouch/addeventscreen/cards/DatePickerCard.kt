@@ -24,7 +24,6 @@ class DatePickerCard : CardView {
     }
 
     private fun init(){
-        layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         LayoutInflater.from(context).inflate(R.layout.date_picker_card, this, true)
     }
 }
