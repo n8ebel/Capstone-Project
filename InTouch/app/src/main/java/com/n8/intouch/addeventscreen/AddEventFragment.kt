@@ -13,12 +13,15 @@ import android.support.v4.app.Fragment
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v4.widget.ContentLoadingProgressBar
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.CardView
 import android.support.v7.widget.ThemedSpinnerAdapter
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 
 import com.n8.intouch.R
@@ -55,6 +58,14 @@ class AddEventFragment : Fragment(), AddEventContract.View {
 
     lateinit var spinner:Spinner
 
+    lateinit var contentContainer:ViewGroup
+
+    lateinit var startHeader:View
+
+    lateinit var datePickerCard: CardView
+
+    lateinit var spacer:View
+
     override fun onAttach(context: Context?) {
         super.onAttach(context)
 
@@ -76,19 +87,16 @@ class AddEventFragment : Fragment(), AddEventContract.View {
 
         contactThumbnailImageView = view.findViewById(R.id.contactThumbnail) as ImageView
 
-        spinner = view.findViewById(R.id.spinner) as Spinner
+        contentContainer = view.findViewById(R.id.contentContainer) as ViewGroup
+        startHeader = inflater.inflate(R.layout.add_event_header_start, contentContainer, false)
 
-        var contentContainer = view.findViewById(R.id.contentContainer) as ViewGroup
-        var startHeader = inflater.inflate(R.layout.add_event_header_start, contentContainer, false)
-        var spacer = inflater.inflate(R.layout.content_spacer, contentContainer, false)
-        var datePickerCard = DatePickerCard(context)
+        spacer = inflater.inflate(R.layout.content_spacer, contentContainer, false)
+
+        datePickerCard = DatePickerCard(context)
+        spinner = datePickerCard.findViewById(R.id.spinner) as Spinner
         datePickerCard.layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                200)
-
-        contentContainer.addView(startHeader, 0)
-        //contentContainer.addView(spacer)
-        contentContainer.addView(datePickerCard)
+                LinearLayout.LayoutParams.MATCH_PARENT)
 
         component?.inject(this)
 
@@ -97,6 +105,14 @@ class AddEventFragment : Fragment(), AddEventContract.View {
         presenter.onContactUriReceived(contactUri)
 
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        contentContainer.addView(startHeader)
+        contentContainer.addView(spacer)
+        contentContainer.addView(datePickerCard)
     }
 
     // region Implements AddEventView

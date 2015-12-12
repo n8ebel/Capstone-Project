@@ -25,5 +25,8 @@ class DatePickerCard : CardView {
 
     private fun init(){
         LayoutInflater.from(context).inflate(R.layout.date_picker_card, this, true)
+
+        radius = context.resources.getDimension(R.dimen.card_corner_radius)
+        cardElevation = context.resources.getDimension(R.dimen.card_elevation_resting)
     }
 }
