@@ -31,13 +31,15 @@ import com.n8.intouch.addeventscreen.di.AddEventComponent
 import com.n8.intouch.model.Contact
 import com.n8.intouch.model.Event
 import com.n8.intouch.setupBackNavigation
+import java.text.ParseException
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 /**
  * Fragment that allows a user to create a new scheduled event for a contact.
  */
-class AddEventFragment : Fragment(), AddEventContract.View {
+class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemClickListener {
 
     var component: AddEventComponent? = null
 
@@ -63,6 +65,10 @@ class AddEventFragment : Fragment(), AddEventContract.View {
     lateinit var startHeader:View
 
     lateinit var datePickerCard: CardView
+
+    lateinit var datesList: ListView
+
+    lateinit var adapter:ArrayAdapter<Event>
 
     lateinit var spacer:View
 
@@ -93,10 +99,10 @@ class AddEventFragment : Fragment(), AddEventContract.View {
         spacer = inflater.inflate(R.layout.content_spacer, contentContainer, false)
 
         datePickerCard = DatePickerCard(context)
-        spinner = datePickerCard.findViewById(R.id.spinner) as Spinner
         datePickerCard.layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT)
+        datesList = datePickerCard.findViewById(R.id.listView) as ListView
 
         component?.inject(this)
 
@@ -115,6 +121,25 @@ class AddEventFragment : Fragment(), AddEventContract.View {
         contentContainer.addView(datePickerCard)
     }
 
+    // region Implements OnItemClickListener
+
+    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        if (position == datesList.adapter.count - 1) {
+            Toast.makeText(context, "Need to show dialog", Toast.LENGTH_LONG).show()
+        } else {
+            var format = SimpleDateFormat("yyyy-MM-dd");
+            try {
+                var date = format.parse(adapter.getItem(position).date);
+                presenter.onDateSelected(date.time)
+            } catch (e:ParseException) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // endregion Implements OnItemClickListener
+
     // region Implements AddEventView
 
     override fun displayContactInfo(contact: Contact) {
@@ -127,15 +152,14 @@ class AddEventFragment : Fragment(), AddEventContract.View {
 
         // Bind the event values
         //
-        var spinnerDisplayValues = ArrayList<String>()
-        var events = contact.events
-        for (event in events) {
-            spinnerDisplayValues.add(event.date)
-        }
+        var spinnerEvents = ArrayList<Event>(contact.events)
+        spinnerEvents.add(CustomDateEvent(context.getString(R.string.custom_date)))
 
-        var adapter = ArrayAdapter<String>(activity, android.R.layout.simple_spinner_item, spinnerDisplayValues)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
+        adapter = ArrayAdapter<Event>(activity, android.R.layout.simple_list_item_1, spinnerEvents)
+
+
+        datesList.adapter = adapter
+        datesList.onItemClickListener = this
     }
 
     override fun showProgress() {
@@ -155,4 +179,11 @@ class AddEventFragment : Fragment(), AddEventContract.View {
     }
 
     // endregion Implements AddEventView
+
+    private class CustomDateEvent(val msg:String) : Event("Custom", "Custom", "") {
+
+        override fun toString(): String {
+            return msg
+        }
+    }
 }

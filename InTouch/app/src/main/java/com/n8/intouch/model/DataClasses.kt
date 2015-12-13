@@ -8,4 +8,8 @@ import android.graphics.Bitmap
 
 data class Contact(val name:String, val thumbnail: Bitmap? = null, val events:List<Event> = listOf())
 
-data class Event(val type:String, val label:String?, val date:String)
+open class Event(val type:String, val label:String?, val date:String){
+    override fun toString(): String {
+        return "$type  --  $date"
+    }
+}

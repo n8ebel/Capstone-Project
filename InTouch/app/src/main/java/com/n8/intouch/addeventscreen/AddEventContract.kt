@@ -24,5 +24,7 @@ class AddEventContract {
         fun onContactUriReceived(contactUri: Uri)
 
         fun onNavIconPressed()
+
+        fun onDateSelected(timestamp:Long)
     }
 }

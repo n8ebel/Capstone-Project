@@ -11,6 +11,8 @@
 
     <string name="invalid_contact_uri">Invalid Contact Uri</string>
 
+    <string name="custom_date">Custom Date</string>
+    <string name="pick_date">Pick Date</string>
     <string name="start_by_selecting_a_date">Start By Selecting A Date</string>
 
 </resources>
