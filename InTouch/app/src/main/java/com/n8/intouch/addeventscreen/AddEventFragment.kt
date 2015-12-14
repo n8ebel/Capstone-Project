@@ -25,7 +25,6 @@ import android.view.animation.AnimationUtils
 import android.widget.*
 
 import com.n8.intouch.R
-import com.n8.intouch.addeventscreen.cards.DatePickerCard
 import com.n8.intouch.addeventscreen.data.ContactLoader
 import com.n8.intouch.addeventscreen.di.AddEventComponent
 import com.n8.intouch.model.Contact
@@ -64,7 +63,7 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
     lateinit var startHeader:View
 
-    lateinit var datePickerCard: CardView
+    lateinit var datePickerView: View
 
     lateinit var datesList: ListView
 
@@ -82,6 +81,9 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
+        component?.inject(this)
+
         // Inflate the layout for this fragment
         var view = inflater!!.inflate(R.layout.fragment_add_for_date, container, false)
 
@@ -98,13 +100,9 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
         spacer = inflater.inflate(R.layout.content_spacer, contentContainer, false)
 
-        datePickerCard = DatePickerCard(context)
-        datePickerCard.layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT)
-        datesList = datePickerCard.findViewById(R.id.listView) as ListView
-
-        component?.inject(this)
+        datePickerView = inflater.inflate(R.layout.date_picker_card, contentContainer, false)
+        datesList = datePickerView.findViewById(R.id.listView) as ListView
+        datesList.onItemClickListener = this
 
         progressBar = ContentLoadingProgressBar(activity)
 
@@ -118,7 +116,7 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
         contentContainer.addView(startHeader)
         contentContainer.addView(spacer)
-        contentContainer.addView(datePickerCard)
+        contentContainer.addView(datePickerView)
     }
 
     // region Implements OnItemClickListener
@@ -154,12 +152,8 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
         //
         var spinnerEvents = ArrayList<Event>(contact.events)
         spinnerEvents.add(CustomDateEvent(context.getString(R.string.custom_date)))
-
         adapter = ArrayAdapter<Event>(activity, android.R.layout.simple_list_item_1, spinnerEvents)
-
-
         datesList.adapter = adapter
-        datesList.onItemClickListener = this
     }
 
     override fun showProgress() {
