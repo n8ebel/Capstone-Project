@@ -22,6 +22,7 @@ class AddEventPresenter(val view: AddEventContract.View, val interactor: Contact
     }
 
     override fun onDateSelected(timestamp: Long) {
-        throw UnsupportedOperationException()
+        view.displaySelectedDate(timestamp)
+        view.updateContinueButton(true)
     }
 }

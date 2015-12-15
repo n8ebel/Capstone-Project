@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<com.n8.intouch.addeventscreen.DatePickerCard
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -17,4 +17,14 @@
         android:background="#999999"
         />
 
-</android.support.v7.widget.CardView>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/continueFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/keyline_1"
+        android:src="@drawable/ic_continue"
+        android:visibility="gone"
+        />
+
+</com.n8.intouch.addeventscreen.DatePickerCard>

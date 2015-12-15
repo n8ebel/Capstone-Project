@@ -1,6 +1,7 @@
 package com.n8.intouch.addeventscreen
 
 
+import android.app.DatePickerDialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -40,6 +41,8 @@ import javax.inject.Inject
  */
 class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemClickListener {
 
+    val format = SimpleDateFormat("yyyy-MM-dd")
+
     var component: AddEventComponent? = null
 
     @Inject
@@ -61,9 +64,9 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
     lateinit var contentContainer:ViewGroup
 
-    lateinit var startHeader:View
+    lateinit var startHeader: StartHeader
 
-    lateinit var datePickerView: View
+    lateinit var datePickerCard: DatePickerCard
 
     lateinit var datesList: ListView
 
@@ -96,12 +99,12 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
         contactThumbnailImageView = view.findViewById(R.id.contactThumbnail) as ImageView
 
         contentContainer = view.findViewById(R.id.contentContainer) as ViewGroup
-        startHeader = inflater.inflate(R.layout.add_event_header_start, contentContainer, false)
+        startHeader = inflater.inflate(R.layout.add_event_header_start, contentContainer, false) as StartHeader
 
         spacer = inflater.inflate(R.layout.content_spacer, contentContainer, false)
 
-        datePickerView = inflater.inflate(R.layout.date_picker_card, contentContainer, false)
-        datesList = datePickerView.findViewById(R.id.listView) as ListView
+        datePickerCard = inflater.inflate(R.layout.date_picker_card, contentContainer, false) as DatePickerCard
+        datesList = datePickerCard.findViewById(R.id.listView) as ListView
         datesList.onItemClickListener = this
 
         progressBar = ContentLoadingProgressBar(activity)
@@ -116,16 +119,25 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
         contentContainer.addView(startHeader)
         contentContainer.addView(spacer)
-        contentContainer.addView(datePickerView)
+        contentContainer.addView(datePickerCard)
     }
 
     // region Implements OnItemClickListener
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+
         if (position == datesList.adapter.count - 1) {
-            Toast.makeText(context, "Need to show dialog", Toast.LENGTH_LONG).show()
+            var cal = Calendar.getInstance()
+            DatePickerDialog(context,
+                    DatePickerDialog.OnDateSetListener { view, year, month, day ->
+                        var selectedDate = GregorianCalendar(year, month, day)
+                        presenter.onDateSelected(selectedDate.timeInMillis)
+                    },
+                    cal.get(Calendar.YEAR),
+                    cal.get(Calendar.MONTH),
+                    cal.get(Calendar.DATE)).
+                    show()
         } else {
-            var format = SimpleDateFormat("yyyy-MM-dd");
             try {
                 var date = format.parse(adapter.getItem(position).date);
                 presenter.onDateSelected(date.time)
@@ -154,6 +166,14 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
         spinnerEvents.add(CustomDateEvent(context.getString(R.string.custom_date)))
         adapter = ArrayAdapter<Event>(activity, android.R.layout.simple_list_item_1, spinnerEvents)
         datesList.adapter = adapter
+    }
+
+    override fun displaySelectedDate(timestamp: Long) {
+        startHeader.setTitle(format.format(Date(timestamp)))
+    }
+
+    override fun updateContinueButton(shown: Boolean) {
+        datePickerCard.setContinueButtonEnabled(shown)
     }
 
     override fun showProgress() {

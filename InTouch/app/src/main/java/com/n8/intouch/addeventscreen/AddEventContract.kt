@@ -18,6 +18,10 @@ class AddEventContract {
         fun displayError(error:Throwable)
 
         fun displayContactInfo(contact: Contact)
+
+        fun displaySelectedDate(timestamp: Long)
+
+        fun updateContinueButton(shown:Boolean)
     }
 
     interface UserInteractionListener {
