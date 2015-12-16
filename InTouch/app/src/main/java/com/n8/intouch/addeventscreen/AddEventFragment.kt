@@ -1,6 +1,7 @@
 package com.n8.intouch.addeventscreen
 
 
+import android.animation.LayoutTransition
 import android.app.DatePickerDialog
 import android.content.ContentResolver
 import android.content.Context
@@ -54,6 +55,8 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
     @Inject
     lateinit var contentResolver:ContentResolver
 
+    lateinit var rootView:View
+
     lateinit var progressBar:ContentLoadingProgressBar
 
     lateinit var collapsingToolbar:CollapsingToolbarLayout
@@ -61,6 +64,8 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
     lateinit var contactThumbnailImageView:ImageView
 
     lateinit var spinner:Spinner
+
+    lateinit var headerContainer:ViewGroup
 
     lateinit var contentContainer:ViewGroup
 
@@ -71,8 +76,6 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
     lateinit var datesList: ListView
 
     lateinit var adapter:ArrayAdapter<Event>
-
-    lateinit var spacer:View
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -88,22 +91,25 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
         component?.inject(this)
 
         // Inflate the layout for this fragment
-        var view = inflater!!.inflate(R.layout.fragment_add_for_date, container, false)
+        rootView = inflater!!.inflate(R.layout.fragment_add_for_date, container, false)
 
-        collapsingToolbar = view.findViewById(R.id.collapsingToolbar) as CollapsingToolbarLayout
+        collapsingToolbar = rootView.findViewById(R.id.collapsingToolbar) as CollapsingToolbarLayout
         collapsingToolbar.isTitleEnabled = true
 
-        var toolbar = view.findViewById(R.id.toolbar) as Toolbar
+        var toolbar = rootView.findViewById(R.id.toolbar) as Toolbar
         toolbar.setupBackNavigation { presenter.onNavIconPressed() }
 
-        contactThumbnailImageView = view.findViewById(R.id.contactThumbnail) as ImageView
+        contactThumbnailImageView = rootView.findViewById(R.id.contactThumbnail) as ImageView
 
-        contentContainer = view.findViewById(R.id.contentContainer) as ViewGroup
+        headerContainer = rootView.findViewById(R.id.headerContainer) as ViewGroup
+        contentContainer = rootView.findViewById(R.id.contentContainer) as ViewGroup
+
+
         startHeader = inflater.inflate(R.layout.add_event_header_start, contentContainer, false) as StartHeader
 
-        spacer = inflater.inflate(R.layout.content_spacer, contentContainer, false)
-
         datePickerCard = inflater.inflate(R.layout.date_picker_card, contentContainer, false) as DatePickerCard
+        var datePickerFAB = datePickerCard.findViewById(R.id.continueFAB) as FloatingActionButton
+        datePickerFAB.setOnClickListener { presenter.onContinueWithDateSelected() }
         datesList = datePickerCard.findViewById(R.id.listView) as ListView
         datesList.onItemClickListener = this
 
@@ -111,14 +117,13 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
         presenter.onContactUriReceived(contactUri)
 
-        return view
+        return rootView
     }
 
     override fun onResume() {
         super.onResume()
 
-        contentContainer.addView(startHeader)
-        contentContainer.addView(spacer)
+        headerContainer.addView(startHeader)
         contentContainer.addView(datePickerCard)
     }
 
@@ -190,6 +195,18 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
     override fun finish() {
         activity.finish()
+    }
+
+    override fun displayRepeatPicker() {
+        var repeatPicker = activity.layoutInflater.inflate(R.layout.repeat_picker_card, contentContainer, false) as RepeatPickerCard
+        var repeatHeader = activity.layoutInflater.inflate(R.layout.add_event_header_repeat, headerContainer, false) as RepeatHeader
+
+        var layoutTransition = LayoutTransition()
+        layoutTransition.enableTransitionType(LayoutTransition.APPEARING)
+
+        contentContainer.layoutTransition = layoutTransition
+        headerContainer.addView(repeatHeader)
+        contentContainer.addView(repeatPicker)
     }
 
     // endregion Implements AddEventView

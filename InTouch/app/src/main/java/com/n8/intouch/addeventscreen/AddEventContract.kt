@@ -22,6 +22,8 @@ class AddEventContract {
         fun displaySelectedDate(timestamp: Long)
 
         fun updateContinueButton(shown:Boolean)
+
+        fun displayRepeatPicker()
     }
 
     interface UserInteractionListener {
@@ -30,5 +32,7 @@ class AddEventContract {
         fun onNavIconPressed()
 
         fun onDateSelected(timestamp:Long)
+
+        fun onContinueWithDateSelected()
     }
 }

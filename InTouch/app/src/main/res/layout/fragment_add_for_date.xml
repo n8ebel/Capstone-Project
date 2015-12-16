@@ -41,7 +41,6 @@
     </android.support.design.widget.AppBarLayout>
 
     <LinearLayout
-        android:id="@+id/contentContainer"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -49,8 +48,20 @@
         android:padding="@dimen/keyline_1"
         android:clipToPadding="false"
         android:animateLayoutChanges="true"
-        android:layoutAnimation="@anim/layout_animation_slide_up"
         >
+
+        <FrameLayout
+            android:id="@+id/headerContainer"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_item_height"
+            android:layout_marginBottom="@dimen/keyline_0"
+            />
+
+        <FrameLayout
+            android:id="@+id/contentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
 
     </LinearLayout>
 
