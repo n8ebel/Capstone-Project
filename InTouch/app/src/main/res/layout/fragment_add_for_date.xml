@@ -26,12 +26,21 @@
             >
 
             <ImageView
+                android:id="@+id/contactThumbnailPlaceholder"
+                android:layout_width="128dp"
+                android:layout_height="128dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_person_outline_24dp"
+                />
+
+            <ImageView
                 android:id="@+id/contactThumbnail"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:layout_gravity="center"
                 android:background="@drawable/ic_person_outline_24dp"
+                android:visibility="gone"
                 />
 
             <include layout="@layout/toolbar" />
@@ -45,8 +54,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"
-        android:padding="@dimen/keyline_1"
-        android:clipToPadding="false"
+        android:paddingStart="@dimen/keyline_1"
+        android:paddingEnd="@dimen/keyline_1"
+        android:paddingTop="@dimen/keyline_1"
         android:animateLayoutChanges="true"
         >
 
@@ -61,6 +71,8 @@
             android:id="@+id/contentContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/keyline_1"
             />
 
     </LinearLayout>

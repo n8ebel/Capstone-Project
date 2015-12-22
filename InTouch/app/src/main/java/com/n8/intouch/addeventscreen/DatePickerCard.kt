@@ -5,11 +5,13 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.CardView
 import android.util.AttributeSet
 import com.n8.intouch.R
+import com.n8.intouch.common.FractionCardView
 
 /**
  * Created by n8 on 12/14/15.
  */
-class DatePickerCard : CardView {
+class DatePickerCard : FractionCardView {
+
     lateinit var continueButton:FloatingActionButton
 
     constructor(context: Context?) : super(context)

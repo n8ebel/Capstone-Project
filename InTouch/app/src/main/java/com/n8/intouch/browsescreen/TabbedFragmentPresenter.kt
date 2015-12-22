@@ -22,7 +22,9 @@ class TabbedFragmentPresenter(val fragment: Fragment, val view:BrowseContract.Vi
         // Show user only contacts w/ phone numbers
         pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
 
-        fragment.startActivityForResult(pickContactIntent, 1);
+        // TODO revert this when done testing on emulator
+        //fragment.startActivityForResult(pickContactIntent, 1);
+        onActivityResult(1, AppCompatActivity.RESULT_OK, Intent("foo", Uri.parse("foo")))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

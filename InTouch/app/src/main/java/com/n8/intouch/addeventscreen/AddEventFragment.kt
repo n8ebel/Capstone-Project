@@ -1,13 +1,17 @@
 package com.n8.intouch.addeventscreen
 
 
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
 import android.animation.LayoutTransition
+import android.animation.ObjectAnimator
 import android.app.DatePickerDialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.provider.ContactsContract
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.FloatingActionButton
@@ -22,6 +26,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewPropertyAnimator
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
@@ -61,6 +66,8 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
     lateinit var collapsingToolbar:CollapsingToolbarLayout
 
+    lateinit var contactThumbnailPlaceholder:ImageView
+
     lateinit var contactThumbnailImageView:ImageView
 
     lateinit var spinner:Spinner
@@ -99,11 +106,13 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
         var toolbar = rootView.findViewById(R.id.toolbar) as Toolbar
         toolbar.setupBackNavigation { presenter.onNavIconPressed() }
 
+        contactThumbnailPlaceholder = rootView.findViewById(R.id.contactThumbnailPlaceholder) as ImageView
         contactThumbnailImageView = rootView.findViewById(R.id.contactThumbnail) as ImageView
 
         headerContainer = rootView.findViewById(R.id.headerContainer) as ViewGroup
         contentContainer = rootView.findViewById(R.id.contentContainer) as ViewGroup
 
+        contentContainer.layoutTransition = createContentConatinerLayoutTransition()
 
         startHeader = inflater.inflate(R.layout.add_event_header_start, contentContainer, false) as StartHeader
 
@@ -115,16 +124,28 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
         progressBar = ContentLoadingProgressBar(activity)
 
-        presenter.onContactUriReceived(contactUri)
-
         return rootView
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        presenter.onContactUriReceived(contactUri)
     }
 
     override fun onResume() {
         super.onResume()
 
-        headerContainer.addView(startHeader)
-        contentContainer.addView(datePickerCard)
+        // Add in onResume to ensure user sees the animation
+        if (!startHeader.isAttachedToWindow) {
+            var handler = Handler()
+            handler.postDelayed(
+                    {
+                        headerContainer.addView(startHeader)
+                        contentContainer.addView(datePickerCard)
+                    }
+                    , 100)
+        }
     }
 
     // region Implements OnItemClickListener
@@ -158,12 +179,15 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
     // region Implements AddEventView
 
     override fun displayContactInfo(contact: Contact) {
-        Toast.makeText(activity, contact.name, Toast.LENGTH_LONG).show();
 
         collapsingToolbar.title = contact.name
 
-        var roundedThumbnail = RoundedBitmapDrawableFactory.create(activity.resources, contact.thumbnail)
-        contactThumbnailImageView.setImageDrawable(roundedThumbnail)
+        if (contact.thumbnail != null) {
+            var roundedThumbnail = RoundedBitmapDrawableFactory.create(activity.resources, contact.thumbnail)
+            contactThumbnailImageView.setImageDrawable(roundedThumbnail)
+            contactThumbnailPlaceholder.visibility = View.GONE
+            contactThumbnailImageView.visibility = View.VISIBLE
+        }
 
         // Bind the event values
         //
@@ -201,16 +225,37 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
         var repeatPicker = activity.layoutInflater.inflate(R.layout.repeat_picker_card, contentContainer, false) as RepeatPickerCard
         var repeatHeader = activity.layoutInflater.inflate(R.layout.add_event_header_repeat, headerContainer, false) as RepeatHeader
 
-        var layoutTransition = LayoutTransition()
-        layoutTransition.enableTransitionType(LayoutTransition.APPEARING)
+        var coveredTransitionAnimator = AnimatorInflater.loadAnimator(context, R.animator.covered_transition)
+        coveredTransitionAnimator.setTarget(datePickerCard)
+        coveredTransitionAnimator.start()
 
-        contentContainer.layoutTransition = layoutTransition
+        datePickerCard.cardElevation = datePickerCard.cardElevation * .8f
+
         headerContainer.addView(repeatHeader)
         contentContainer.addView(repeatPicker)
     }
 
     // endregion Implements AddEventView
 
+    private fun createContentConatinerLayoutTransition() : LayoutTransition {
+        var layoutTransition = LayoutTransition()
+        layoutTransition.enableTransitionType(LayoutTransition.APPEARING)
+        layoutTransition.enableTransitionType(LayoutTransition.DISAPPEARING)
+        layoutTransition.enableTransitionType(LayoutTransition.CHANGE_APPEARING)
+        layoutTransition.enableTransitionType(LayoutTransition.CHANGE_DISAPPEARING)
+
+        var duration = resources.getInteger(android.R.integer.config_longAnimTime)
+        layoutTransition.setDuration(LayoutTransition.APPEARING, duration.toLong())
+        layoutTransition.setStartDelay(LayoutTransition.APPEARING, 0)
+
+        var addTransitionAnimator = AnimatorInflater.loadAnimator(context, R.animator.add_transition)
+        layoutTransition.setAnimator(LayoutTransition.APPEARING, addTransitionAnimator)
+
+        var coveredTransitionAnimator = AnimatorInflater.loadAnimator(context, R.animator.covered_transition)
+        layoutTransition.setAnimator(LayoutTransition.CHANGE_APPEARING, coveredTransitionAnimator)
+
+        return layoutTransition
+    }
     private class CustomDateEvent(val msg:String) : Event("Custom", "Custom", "") {
 
         override fun toString(): String {
