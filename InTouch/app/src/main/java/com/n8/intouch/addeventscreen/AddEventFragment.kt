@@ -9,6 +9,7 @@ import android.app.DatePickerDialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.graphics.Point
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -17,16 +18,15 @@ import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
+import android.support.v4.view.GestureDetectorCompat
 import android.support.v4.widget.ContentLoadingProgressBar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.CardView
 import android.support.v7.widget.ThemedSpinnerAdapter
 import android.support.v7.widget.Toolbar
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewPropertyAnimator
+import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
@@ -231,6 +231,33 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
         datePickerCard.cardElevation = datePickerCard.cardElevation * .8f
 
+        val startPoint = Point()
+        repeatPicker.setOnTouchListener({ view, event ->
+            try {
+                if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+                    startPoint.x = event.rawX.toInt()
+                    startPoint.y = event.rawY.toInt()
+                    Log.d("foo", "actionDown")
+                }else if (event.actionMasked == MotionEvent.ACTION_MOVE) {
+                    Log.d("foo", "actionMove  x: ${event.rawX} y:${event.rawY} ")
+                    repeatPicker.translationX = event.rawX - startPoint.x
+                    repeatPicker.translationY = event.rawY - startPoint.y
+                }else if (event.actionMasked == MotionEvent.ACTION_UP || event.actionMasked == MotionEvent.ACTION_CANCEL) {
+                    Log.d("foo", "actionEnd")
+                    repeatPicker.animate().translationX(0f).translationY(0f).setDuration(300).start()
+                }
+            } catch(e: Exception){
+
+            }
+
+            true
+        })
+
+        repeatPicker.setOnDragListener({view, event ->
+            Log.d("foo", "goo")
+            true
+        })
+
         headerContainer.addView(repeatHeader)
         contentContainer.addView(repeatPicker)
     }
@@ -256,6 +283,7 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
         return layoutTransition
     }
+
     private class CustomDateEvent(val msg:String) : Event("Custom", "Custom", "") {
 
         override fun toString(): String {

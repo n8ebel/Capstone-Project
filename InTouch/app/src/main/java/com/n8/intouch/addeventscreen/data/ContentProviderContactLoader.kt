@@ -22,9 +22,6 @@ class ContentProviderContactLoader(val context: Context, val contactUri: Uri) : 
 
     // TODO This should be done on background thread
     override fun loadContact(contactUri: Uri, listener: (Contact) -> Unit) {
-        listener.invoke(Contact("Nate"))
-        return
-
         var projection = arrayOf(
                 ContactsContract.Contacts._ID,
                 ContactsContract.Contacts.LOOKUP_KEY,

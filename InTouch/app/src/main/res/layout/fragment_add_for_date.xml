@@ -58,6 +58,7 @@
         android:paddingEnd="@dimen/keyline_1"
         android:paddingTop="@dimen/keyline_1"
         android:animateLayoutChanges="true"
+        android:clipToPadding="false"
         >
 
         <FrameLayout

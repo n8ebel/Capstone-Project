@@ -30,10 +30,8 @@ open class FractionCardView : CardView {
 
         if (height == 0) {
             translationY = 0f
-            Log.d("foo", "setYFraction: $fraction translationY = $translationY")
         } else {
             translationY = fraction * height
-            Log.d("foo", "setYFraction: $fraction translationY = $translationY")
         }
     }
 }
