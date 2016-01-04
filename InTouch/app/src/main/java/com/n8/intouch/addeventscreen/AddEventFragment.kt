@@ -240,8 +240,16 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
                     Log.d("foo", "actionDown")
                 }else if (event.actionMasked == MotionEvent.ACTION_MOVE) {
                     Log.d("foo", "actionMove  x: ${event.rawX} y:${event.rawY} ")
+                    var windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+                    var windowSize = Point()
+                    windowManager.defaultDisplay.getSize(windowSize)
+
+                    var screenWidth = windowSize.x
+
+
                     repeatPicker.translationX = event.rawX - startPoint.x
                     repeatPicker.translationY = event.rawY - startPoint.y
+                    repeatPicker.rotation++
                 }else if (event.actionMasked == MotionEvent.ACTION_UP || event.actionMasked == MotionEvent.ACTION_CANCEL) {
                     Log.d("foo", "actionEnd")
                     repeatPicker.animate().translationX(0f).translationY(0f).setDuration(300).start()
