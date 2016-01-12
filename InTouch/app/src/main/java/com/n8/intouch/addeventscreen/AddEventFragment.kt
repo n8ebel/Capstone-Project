@@ -114,13 +114,8 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
         contentContainer.layoutTransition = createContentConatinerLayoutTransition()
 
-        startHeader = inflater.inflate(R.layout.add_event_header_start, contentContainer, false) as StartHeader
-
-        datePickerCard = inflater.inflate(R.layout.date_picker_card, contentContainer, false) as DatePickerCard
-        var datePickerFAB = datePickerCard.findViewById(R.id.continueFAB) as FloatingActionButton
-        datePickerFAB.setOnClickListener { presenter.onContinueWithDateSelected() }
-        datesList = datePickerCard.findViewById(R.id.listView) as ListView
-        datesList.onItemClickListener = this
+        startHeader = createStartHeader()
+        datePickerCard = createDatePickerCard()
 
         progressBar = ContentLoadingProgressBar(activity)
 
@@ -141,8 +136,7 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
             var handler = Handler()
             handler.postDelayed(
                     {
-                        headerContainer.addView(startHeader)
-                        contentContainer.addView(datePickerCard)
+                        showDatePicker()
                     }
                     , 100)
         }
@@ -256,10 +250,11 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
                 }else if (event.actionMasked == MotionEvent.ACTION_UP || event.actionMasked == MotionEvent.ACTION_CANCEL) {
                     Log.d("foo", "actionEnd")
-                    if (repeatPicker.rotation < (90 * .8)) {
+                    if (repeatPicker.rotation < (90 * .5)) {
                         repeatPicker.animate().translationX(0f).translationY(0f).rotation(0f).setDuration(300).start()
                     } else {
-
+                        contentContainer.removeView(repeatPicker)
+                        animateViewWhenUncovered(datePickerCard)
                     }
                 }
             } catch(e: Exception){
@@ -279,6 +274,42 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
     }
 
     // endregion Implements AddEventView
+
+    // region Private Methods
+
+    /**
+     * Inflates the start header
+     */
+    private fun createStartHeader() : StartHeader {
+        return LayoutInflater.from(context).inflate(R.layout.add_event_header_start, contentContainer, false) as StartHeader
+    }
+
+    /**
+     * Inflates, and sets up the date picker card and associated header
+     */
+    private fun createDatePickerCard() : DatePickerCard {
+        var datePickerView = LayoutInflater.from(context).inflate(R.layout.date_picker_card, contentContainer, false) as DatePickerCard
+        var datePickerFAB = datePickerView.findViewById(R.id.continueFAB) as FloatingActionButton
+        datePickerFAB.setOnClickListener { presenter.onContinueWithDateSelected() }
+        datesList = datePickerView.findViewById(R.id.listView) as ListView
+        datesList.onItemClickListener = this
+
+        return datePickerView
+    }
+
+    /**
+     * Adds the date picker card and associated header
+     */
+    private fun showDatePicker() {
+        headerContainer.addView(startHeader)
+        contentContainer.addView(datePickerCard)
+    }
+
+    private fun animateViewWhenUncovered(view: View) {
+        var uncoveredTransitionAnimator = AnimatorInflater.loadAnimator(context, R.animator.uncovered_transition)
+        uncoveredTransitionAnimator.setTarget(view)
+        uncoveredTransitionAnimator.start()
+    }
 
     private fun createContentConatinerLayoutTransition() : LayoutTransition {
         var layoutTransition = LayoutTransition()
@@ -306,4 +337,6 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
             return msg
         }
     }
+
+    // endregion Private Methods
 }
