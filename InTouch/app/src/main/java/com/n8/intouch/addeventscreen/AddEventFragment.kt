@@ -249,10 +249,18 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
                     repeatPicker.translationX = event.rawX - startPoint.x
                     repeatPicker.translationY = event.rawY - startPoint.y
-                    repeatPicker.rotation++
+
+                    var deltaX = repeatPicker.translationX / screenWidth.toFloat()
+
+                    repeatPicker.rotation = 90 * deltaX
+
                 }else if (event.actionMasked == MotionEvent.ACTION_UP || event.actionMasked == MotionEvent.ACTION_CANCEL) {
                     Log.d("foo", "actionEnd")
-                    repeatPicker.animate().translationX(0f).translationY(0f).setDuration(300).start()
+                    if (repeatPicker.rotation < (90 * .8)) {
+                        repeatPicker.animate().translationX(0f).translationY(0f).rotation(0f).setDuration(300).start()
+                    } else {
+
+                    }
                 }
             } catch(e: Exception){
 
