@@ -250,7 +250,7 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
                 }else if (event.actionMasked == MotionEvent.ACTION_UP || event.actionMasked == MotionEvent.ACTION_CANCEL) {
                     Log.d("foo", "actionEnd")
-                    if (repeatPicker.rotation < (90 * .5)) {
+                    if (Math.abs(repeatPicker.rotation) < (90 * .5)) {
                         repeatPicker.animate().translationX(0f).translationY(0f).rotation(0f).setDuration(300).start()
                     } else {
                         contentContainer.removeView(repeatPicker)
@@ -261,11 +261,6 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
             }
 
-            true
-        })
-
-        repeatPicker.setOnDragListener({view, event ->
-            Log.d("foo", "goo")
             true
         })
 
