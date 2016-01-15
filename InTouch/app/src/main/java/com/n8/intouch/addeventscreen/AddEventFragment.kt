@@ -72,6 +72,8 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
     lateinit var spinner:Spinner
 
+    lateinit var cardContainer:FrameLayout
+
     lateinit var headerContainer:ViewGroup
 
     lateinit var contentContainer:ViewGroup
@@ -109,6 +111,7 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
         contactThumbnailPlaceholder = rootView.findViewById(R.id.contactThumbnailPlaceholder) as ImageView
         contactThumbnailImageView = rootView.findViewById(R.id.contactThumbnail) as ImageView
 
+        cardContainer = rootView.findViewById(R.id.card_container) as FrameLayout
         headerContainer = rootView.findViewById(R.id.headerContainer) as ViewGroup
         contentContainer = rootView.findViewById(R.id.contentContainer) as ViewGroup
 
@@ -226,6 +229,20 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
         datePickerCard.cardElevation = datePickerCard.cardElevation * .8f
 
         val startPoint = Point()
+
+        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val windowSize = Point()
+        windowManager.defaultDisplay.getSize(windowSize)
+
+        val screenWidth = windowSize.x
+        val screenHeight = windowSize.y
+
+        val leftClamp: Double = screenWidth * .2
+        val rightClamp: Double = screenWidth * .8
+
+        val topClamp: Double = cardContainer.y + (cardContainer.height * .20)
+        val bottomClamp: Double = screenHeight * .8
+
         repeatPicker.setOnTouchListener({ view, event ->
             try {
                 if (event.actionMasked == MotionEvent.ACTION_DOWN) {
@@ -234,11 +251,6 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
                     Log.d("foo", "actionDown")
                 }else if (event.actionMasked == MotionEvent.ACTION_MOVE) {
                     Log.d("foo", "actionMove  x: ${event.rawX} y:${event.rawY} ")
-                    var windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-                    var windowSize = Point()
-                    windowManager.defaultDisplay.getSize(windowSize)
-
-                    var screenWidth = windowSize.x
 
 
                     repeatPicker.translationX = event.rawX - startPoint.x
@@ -250,7 +262,12 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
                 }else if (event.actionMasked == MotionEvent.ACTION_UP || event.actionMasked == MotionEvent.ACTION_CANCEL) {
                     Log.d("foo", "actionEnd")
-                    if (Math.abs(repeatPicker.rotation) < (90 * .5)) {
+
+                    val upX = event.rawX
+                    val upY = event.rawY
+
+                    if ((event.rawX > leftClamp && event.rawX < rightClamp) &&
+                            (event.rawY > topClamp && event.rawY < bottomClamp)) {
                         repeatPicker.animate().translationX(0f).translationY(0f).rotation(0f).setDuration(300).start()
                     } else {
                         contentContainer.removeView(repeatPicker)
