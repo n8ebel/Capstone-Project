@@ -30,7 +30,6 @@ import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
-
 import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.data.ContactLoader
 import com.n8.intouch.addeventscreen.di.AddEventComponent
@@ -60,7 +59,7 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
     @Inject
     lateinit var contentResolver:ContentResolver
 
-    lateinit var rootView:View
+    lateinit var rootView:ViewGroup
 
     lateinit var progressBar:ContentLoadingProgressBar
 
@@ -72,12 +71,6 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
 
     lateinit var spinner:Spinner
 
-    lateinit var cardContainer:FrameLayout
-
-    lateinit var headerContainer:ViewGroup
-
-    lateinit var contentContainer:ViewGroup
-
     lateinit var startHeader: StartHeader
 
     lateinit var datePickerCard: DatePickerCard
@@ -85,6 +78,8 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
     lateinit var datesList: ListView
 
     lateinit var adapter:ArrayAdapter<Event>
+
+    lateinit var cardStack:CardStack
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -100,7 +95,7 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
         component?.inject(this)
 
         // Inflate the layout for this fragment
-        rootView = inflater!!.inflate(R.layout.fragment_add_for_date, container, false)
+        rootView = inflater!!.inflate(R.layout.fragment_add_for_date, container, false) as ViewGroup
 
         collapsingToolbar = rootView.findViewById(R.id.collapsingToolbar) as CollapsingToolbarLayout
         collapsingToolbar.isTitleEnabled = true
@@ -111,11 +106,9 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
         contactThumbnailPlaceholder = rootView.findViewById(R.id.contactThumbnailPlaceholder) as ImageView
         contactThumbnailImageView = rootView.findViewById(R.id.contactThumbnail) as ImageView
 
-        cardContainer = rootView.findViewById(R.id.card_container) as FrameLayout
-        headerContainer = rootView.findViewById(R.id.headerContainer) as ViewGroup
-        contentContainer = rootView.findViewById(R.id.contentContainer) as ViewGroup
+        cardStack = CardStack(rootView, R.id.card_container, R.id.headerContainer, R.id.contentContainer)
 
-        contentContainer.layoutTransition = createContentConatinerLayoutTransition()
+
 
         startHeader = createStartHeader()
         datePickerCard = createDatePickerCard()
@@ -219,128 +212,38 @@ class AddEventFragment : Fragment(), AddEventContract.View, AdapterView.OnItemCl
     }
 
     override fun displayRepeatPicker() {
-        var repeatPicker = activity.layoutInflater.inflate(R.layout.repeat_picker_card, contentContainer, false) as RepeatPickerCard
-        var repeatHeader = activity.layoutInflater.inflate(R.layout.add_event_header_repeat, headerContainer, false) as RepeatHeader
+        var repeatPicker = activity.layoutInflater.inflate(R.layout.repeat_picker_card, rootView, false) as RepeatPickerCard
+        var repeatHeader = activity.layoutInflater.inflate(R.layout.add_event_header_repeat, rootView, false) as RepeatHeader
 
-        var coveredTransitionAnimator = AnimatorInflater.loadAnimator(context, R.animator.covered_transition)
-        coveredTransitionAnimator.setTarget(datePickerCard)
-        coveredTransitionAnimator.start()
-
-        datePickerCard.cardElevation = datePickerCard.cardElevation * .8f
-
-        val startPoint = Point()
-
-        val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val windowSize = Point()
-        windowManager.defaultDisplay.getSize(windowSize)
-
-        val screenWidth = windowSize.x
-        val screenHeight = windowSize.y
-
-        val leftClamp: Double = screenWidth * .2
-        val rightClamp: Double = screenWidth * .8
-
-        val topClamp: Double = cardContainer.y + (cardContainer.height * .20)
-        val bottomClamp: Double = screenHeight * .8
-
-        repeatPicker.setOnTouchListener({ view, event ->
-            try {
-                if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-                    startPoint.x = event.rawX.toInt()
-                    startPoint.y = event.rawY.toInt()
-                    Log.d("foo", "actionDown")
-                }else if (event.actionMasked == MotionEvent.ACTION_MOVE) {
-                    Log.d("foo", "actionMove  x: ${event.rawX} y:${event.rawY} ")
-
-
-                    repeatPicker.translationX = event.rawX - startPoint.x
-                    repeatPicker.translationY = event.rawY - startPoint.y
-
-                    var deltaX = repeatPicker.translationX / screenWidth.toFloat()
-
-                    repeatPicker.rotation = 90 * deltaX
-
-                }else if (event.actionMasked == MotionEvent.ACTION_UP || event.actionMasked == MotionEvent.ACTION_CANCEL) {
-                    Log.d("foo", "actionEnd")
-
-                    val upX = event.rawX
-                    val upY = event.rawY
-
-                    if ((event.rawX > leftClamp && event.rawX < rightClamp) &&
-                            (event.rawY > topClamp && event.rawY < bottomClamp)) {
-                        repeatPicker.animate().translationX(0f).translationY(0f).rotation(0f).setDuration(300).start()
-                    } else {
-                        contentContainer.removeView(repeatPicker)
-                        animateViewWhenUncovered(datePickerCard)
-                    }
-                }
-            } catch(e: Exception){
-
-            }
-
-            true
-        })
-
-        headerContainer.addView(repeatHeader)
-        contentContainer.addView(repeatPicker)
+        cardStack.addView(repeatHeader, repeatPicker)
     }
 
     // endregion Implements AddEventView
 
     // region Private Methods
 
+    private fun showDatePicker(){
+        cardStack.addView(startHeader, datePickerCard)
+    }
+
     /**
      * Inflates the start header
      */
     private fun createStartHeader() : StartHeader {
-        return LayoutInflater.from(context).inflate(R.layout.add_event_header_start, contentContainer, false) as StartHeader
+        return LayoutInflater.from(context).inflate(R.layout.add_event_header_start, rootView, false) as StartHeader
     }
 
     /**
      * Inflates, and sets up the date picker card and associated header
      */
     private fun createDatePickerCard() : DatePickerCard {
-        var datePickerView = LayoutInflater.from(context).inflate(R.layout.date_picker_card, contentContainer, false) as DatePickerCard
+        var datePickerView = LayoutInflater.from(context).inflate(R.layout.date_picker_card, rootView, false) as DatePickerCard
         var datePickerFAB = datePickerView.findViewById(R.id.continueFAB) as FloatingActionButton
         datePickerFAB.setOnClickListener { presenter.onContinueWithDateSelected() }
         datesList = datePickerView.findViewById(R.id.listView) as ListView
         datesList.onItemClickListener = this
 
         return datePickerView
-    }
-
-    /**
-     * Adds the date picker card and associated header
-     */
-    private fun showDatePicker() {
-        headerContainer.addView(startHeader)
-        contentContainer.addView(datePickerCard)
-    }
-
-    private fun animateViewWhenUncovered(view: View) {
-        var uncoveredTransitionAnimator = AnimatorInflater.loadAnimator(context, R.animator.uncovered_transition)
-        uncoveredTransitionAnimator.setTarget(view)
-        uncoveredTransitionAnimator.start()
-    }
-
-    private fun createContentConatinerLayoutTransition() : LayoutTransition {
-        var layoutTransition = LayoutTransition()
-        layoutTransition.enableTransitionType(LayoutTransition.APPEARING)
-        layoutTransition.enableTransitionType(LayoutTransition.DISAPPEARING)
-        layoutTransition.enableTransitionType(LayoutTransition.CHANGE_APPEARING)
-        layoutTransition.enableTransitionType(LayoutTransition.CHANGE_DISAPPEARING)
-
-        var duration = resources.getInteger(android.R.integer.config_longAnimTime)
-        layoutTransition.setDuration(LayoutTransition.APPEARING, duration.toLong())
-        layoutTransition.setStartDelay(LayoutTransition.APPEARING, 0)
-
-        var addTransitionAnimator = AnimatorInflater.loadAnimator(context, R.animator.add_transition)
-        layoutTransition.setAnimator(LayoutTransition.APPEARING, addTransitionAnimator)
-
-        var coveredTransitionAnimator = AnimatorInflater.loadAnimator(context, R.animator.covered_transition)
-        layoutTransition.setAnimator(LayoutTransition.CHANGE_APPEARING, coveredTransitionAnimator)
-
-        return layoutTransition
     }
 
     private class CustomDateEvent(val msg:String) : Event("Custom", "Custom", "") {
