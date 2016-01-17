@@ -29,7 +29,7 @@ class DatePickerFragment : Fragment(), Contract.View, AdapterView.OnItemClickLis
 
     var component: DatePickerComponent? = null
 
-   // @Inject
+    //@Inject
     lateinit var contact:Contact
 
     //@Inject

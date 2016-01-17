@@ -168,18 +168,18 @@ class AddEventFragment : Fragment(), AddEventContract.View {
 
         //cardStack.addView(startHeader, datePickerCard)
 
-//        var fragment = DatePickerFragment()
-//        var datePickerComponent = DaggerDatePickerComponent.builder().
-//                applicationComponent(InTouchApplication.graph).
-//                datePickerModule(DatePickerModule(contact, fragment)).
-//                build()
-//
-//        fragment.component = datePickerComponent
-//
-//        childFragmentManager.
-//                beginTransaction().
-//                add(R.id.contentContainer, fragment, "DatePicker").
-//                commit()
+        var fragment = DatePickerFragment()
+        var datePickerComponent = DaggerDatePickerComponent.builder().
+                applicationComponent(InTouchApplication.graph).
+                datePickerModule(DatePickerModule(contact, fragment)).
+                build()
+
+        fragment.component = datePickerComponent
+
+        childFragmentManager.
+                beginTransaction().
+                add(R.id.contentContainer, fragment, "DatePicker").
+                commit()
     }
 
     // endregion Private Methods
