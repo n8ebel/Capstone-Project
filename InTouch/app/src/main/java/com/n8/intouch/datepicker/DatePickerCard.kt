@@ -1,4 +1,4 @@
-package com.n8.intouch.addeventscreen
+package com.n8.intouch.datepicker
 
 import android.content.Context
 import android.support.design.widget.FloatingActionButton
@@ -12,7 +12,7 @@ import com.n8.intouch.common.FractionCardView
  */
 class DatePickerCard : FractionCardView {
 
-    lateinit var continueButton:FloatingActionButton
+    lateinit var continueButton: FloatingActionButton
 
     constructor(context: Context?) : super(context)
 
