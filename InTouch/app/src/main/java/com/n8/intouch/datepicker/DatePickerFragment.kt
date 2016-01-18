@@ -3,7 +3,9 @@ package com.n8.intouch.datepicker
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.support.v7.widget.CardView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +27,13 @@ import javax.inject.Inject
  * Displays a DatePickerView and allows the user to choose either a
  * saved date for a contact or a custom date from a picker.
  */
-class DatePickerFragment : SwipeableFragment(), Contract.View, DatePickerCard.DateClickedListener {
+class DatePickerFragment : SwipeableFragment(), Contract.View {
+
+    interface Listener {
+        fun onDateSelected(date:Long)
+
+        fun onContinueClicked()
+    }
 
     var component: DatePickerComponent? = null
 
@@ -35,7 +43,9 @@ class DatePickerFragment : SwipeableFragment(), Contract.View, DatePickerCard.Da
     @Inject
     lateinit var presenter: Contract.UserInteractionListener
 
-    lateinit var datePickerView:DatePickerCard
+    lateinit var continueButton: FloatingActionButton
+
+    lateinit var datesList: ListView
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -49,25 +59,44 @@ class DatePickerFragment : SwipeableFragment(), Contract.View, DatePickerCard.Da
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        datePickerView = inflater?.inflate(R.layout.fragment_date_picker, container, false) as DatePickerCard
+        var rootView = inflater!!.inflate(R.layout.fragment_date_picker, container, false)
+
+        datesList = rootView!!.findViewById(R.id.listView) as ListView
+        datesList.setOnItemClickListener { adapterView, view, position, l ->
+            if (position == datesList.adapter.count - 1) {
+                onCustomClicked()
+            } else {
+                onDateClicked(datesList.adapter.getItem(position) as Event)
+            }
+        }
+
+        continueButton = rootView.findViewById(R.id.continue_button) as FloatingActionButton
+        continueButton.setOnClickListener(View.OnClickListener { view ->
+            presenter.onContinueClicked()
+        })
 
         presenter.onContactReceived(contact)
 
-        return datePickerView
+        return rootView
     }
 
     // region Implements Contract.View
 
     override fun bindEvents(events: List<Event>) {
-        datePickerView.dateClickListener = this
-        datePickerView.setEvents(contact.events)
+        var spinnerEvents = ArrayList<Event>(events)
+        spinnerEvents.add(CustomDateEvent(context.getString(R.string.custom_date)))
+        datesList.adapter = ArrayAdapter<Event>(context, android.R.layout.simple_list_item_1, spinnerEvents)
+    }
+
+    override fun setContinueButtonVisible(visible: Boolean) {
+        if (visible) continueButton.show() else continueButton.hide()
     }
 
     // endregion Implements Contract.View
 
     // region Implements DatePickerCard.DateClickedListener
 
-    override fun onDateClicked(event: Event) {
+    fun onDateClicked(event: Event) {
         try {
             presenter.onDateSelected(event.date)
         } catch (e: ParseException) {
@@ -76,7 +105,7 @@ class DatePickerFragment : SwipeableFragment(), Contract.View, DatePickerCard.Da
         }
     }
 
-    override fun onCustomClicked() {
+    fun onCustomClicked() {
         var cal = Calendar.getInstance()
         DatePickerDialog(context,
                 DatePickerDialog.OnDateSetListener { view, year, month, day ->
@@ -90,4 +119,11 @@ class DatePickerFragment : SwipeableFragment(), Contract.View, DatePickerCard.Da
     }
 
     // endregion Implements DatePickerCard.DateClickedListener
+
+    private class CustomDateEvent(val msg:String) : Event("Custom", "Custom", "1900/01/01") {
+
+        override fun toString(): String {
+            return msg
+        }
+    }
 }

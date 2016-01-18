@@ -12,29 +12,17 @@ import android.content.Intent
 import android.graphics.Point
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.provider.ContactsContract
 import android.support.design.widget.CollapsingToolbarLayout
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
-import android.support.v4.view.GestureDetectorCompat
 import android.support.v4.widget.ContentLoadingProgressBar
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.CardView
-import android.support.v7.widget.ThemedSpinnerAdapter
 import android.support.v7.widget.Toolbar
-import android.support.v7.widget.helper.ItemTouchHelper
-import android.util.Log
 import android.view.*
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.*
 import com.n8.intouch.InTouchApplication
 import com.n8.intouch.R
 import com.n8.intouch.datepicker.DatePickerFragment
 import com.n8.intouch.addeventscreen.di.AddEventComponent
-import com.n8.intouch.datepicker.DateSelectionListener
 import com.n8.intouch.datepicker.di.DaggerDatePickerComponent
 import com.n8.intouch.datepicker.di.DatePickerModule
 import com.n8.intouch.model.Contact
@@ -47,7 +35,7 @@ import javax.inject.Inject
 /**
  * Fragment that allows a user to create a new scheduled event for a contact.
  */
-class AddEventFragment : Fragment(), AddEventContract.View, DateSelectionListener {
+class AddEventFragment : Fragment(), AddEventContract.View, DatePickerFragment.Listener {
 
     // TODO make this locale safe
     val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
@@ -153,13 +141,17 @@ class AddEventFragment : Fragment(), AddEventContract.View, DateSelectionListene
 
     // endregion Implements AddEventView
 
-    // region Implements DateSelectionListener
+    // region Implements DatePickerFragment.Listener
 
     override fun onDateSelected(time: Long) {
         headerTextView.text = DATE_FORMAT.format(Date(time))
     }
 
-    // endregion Implements DateSelectionListener
+    override fun onContinueClicked() {
+        showRepeatPicker()
+    }
+
+    // endregion Implements DatePickerFragment.Listener
 
     // region Private Methods
 
@@ -175,6 +167,12 @@ class AddEventFragment : Fragment(), AddEventContract.View, DateSelectionListene
         fragment.component = datePickerComponent
 
         cardStack.addView(fragment, "DatePicker", false)
+    }
+
+    private fun showRepeatPicker() {
+        var fragment = RepeatPickerFragment()
+
+        cardStack.addView(fragment, "RepeatPicker", true)
     }
 
     // endregion Private Methods
