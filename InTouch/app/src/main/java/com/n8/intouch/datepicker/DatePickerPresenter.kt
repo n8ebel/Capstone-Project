@@ -1,13 +1,14 @@
 package com.n8.intouch.datepicker
 
-class DatePickerPresenter(view:Contract.View) : Contract.UserInteractionListener {
+import com.n8.intouch.model.Contact
 
-    override fun onContinueClicked() {
-        throw UnsupportedOperationException()
+class DatePickerPresenter(val view:Contract.View, val listener:DateSelectionListener) : Contract.UserInteractionListener {
+    override fun onContactReceived(contact: Contact) {
+        view.bindEvents(contact.events)
     }
 
     override fun onDateSelected(timestamp: Long) {
-        throw UnsupportedOperationException()
+        listener.onDateSelected(timestamp)
     }
 
 }

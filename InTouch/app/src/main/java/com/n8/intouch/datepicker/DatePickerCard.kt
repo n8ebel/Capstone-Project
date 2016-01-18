@@ -74,7 +74,7 @@ class DatePickerCard : FractionCardView {
 
     // endregion Private Methods
 
-    private class CustomDateEvent(val msg:String) : Event("Custom", "Custom", "") {
+    private class CustomDateEvent(val msg:String) : Event("Custom", "Custom", "1900/01/01") {
 
         override fun toString(): String {
             return msg

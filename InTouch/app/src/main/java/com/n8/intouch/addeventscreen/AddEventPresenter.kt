@@ -20,13 +20,4 @@ class AddEventPresenter(val view: AddEventContract.View, val interactor: Contact
     override fun onNavIconPressed() {
         view.finish()
     }
-
-    override fun onDateSelected(timestamp: Long) {
-        view.displaySelectedDate(timestamp)
-        view.updateContinueButton(true)
-    }
-
-    override fun onContinueWithDateSelected() {
-        view.displayRepeatPicker()
-    }
 }

@@ -27,8 +27,6 @@ import javax.inject.Inject
  */
 class DatePickerFragment : SwipeableFragment(), Contract.View, DatePickerCard.DateClickedListener {
 
-    val format = SimpleDateFormat("yyyy-MM-dd")
-
     var component: DatePickerComponent? = null
 
     @Inject
@@ -37,7 +35,7 @@ class DatePickerFragment : SwipeableFragment(), Contract.View, DatePickerCard.Da
     @Inject
     lateinit var presenter: Contract.UserInteractionListener
 
-    lateinit var adapter: ArrayAdapter<Event>
+    lateinit var datePickerView:DatePickerCard
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -51,19 +49,27 @@ class DatePickerFragment : SwipeableFragment(), Contract.View, DatePickerCard.Da
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        var rootView = inflater?.inflate(R.layout.fragment_date_picker, container, false) as DatePickerCard
-        rootView.dateClickListener = this
-        rootView.setEvents(contact.events)
+        datePickerView = inflater?.inflate(R.layout.fragment_date_picker, container, false) as DatePickerCard
 
-        return rootView
+        presenter.onContactReceived(contact)
+
+        return datePickerView
     }
+
+    // region Implements Contract.View
+
+    override fun bindEvents(events: List<Event>) {
+        datePickerView.dateClickListener = this
+        datePickerView.setEvents(contact.events)
+    }
+
+    // endregion Implements Contract.View
 
     // region Implements DatePickerCard.DateClickedListener
 
     override fun onDateClicked(event: Event) {
         try {
-            var date = format.parse(event.date);
-            presenter.onDateSelected(date.time)
+            presenter.onDateSelected(event.date)
         } catch (e: ParseException) {
             // TODO Auto-generated catch block
             e.printStackTrace();

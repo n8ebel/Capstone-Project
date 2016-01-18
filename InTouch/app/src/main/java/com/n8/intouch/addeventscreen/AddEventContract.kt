@@ -18,21 +18,11 @@ class AddEventContract {
         fun displayError(error:Throwable)
 
         fun displayContactInfo(contact: Contact)
-
-        fun displaySelectedDate(timestamp: Long)
-
-        fun updateContinueButton(shown:Boolean)
-
-        fun displayRepeatPicker()
     }
 
     interface UserInteractionListener {
         fun onContactUriReceived(contactUri: Uri)
 
         fun onNavIconPressed()
-
-        fun onDateSelected(timestamp:Long)
-
-        fun onContinueWithDateSelected()
     }
 }

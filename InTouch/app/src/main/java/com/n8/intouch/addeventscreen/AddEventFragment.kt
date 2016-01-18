@@ -34,16 +34,23 @@ import com.n8.intouch.InTouchApplication
 import com.n8.intouch.R
 import com.n8.intouch.datepicker.DatePickerFragment
 import com.n8.intouch.addeventscreen.di.AddEventComponent
+import com.n8.intouch.datepicker.DateSelectionListener
 import com.n8.intouch.datepicker.di.DaggerDatePickerComponent
 import com.n8.intouch.datepicker.di.DatePickerModule
 import com.n8.intouch.model.Contact
+import com.n8.intouch.repeatpicker.RepeatPickerFragment
 import com.n8.intouch.setupBackNavigation
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 /**
  * Fragment that allows a user to create a new scheduled event for a contact.
  */
-class AddEventFragment : Fragment(), AddEventContract.View {
+class AddEventFragment : Fragment(), AddEventContract.View, DateSelectionListener {
+
+    // TODO make this locale safe
+    val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
 
     var component: AddEventComponent? = null
 
@@ -128,14 +135,6 @@ class AddEventFragment : Fragment(), AddEventContract.View {
         showDatePicker(contact)
     }
 
-    override fun displaySelectedDate(timestamp: Long) {
-        //startHeader.setTitle(format.format(Date(timestamp)))
-    }
-
-    override fun updateContinueButton(shown: Boolean) {
-        //datePickerCard.setContinueButtonEnabled(shown)
-    }
-
     override fun showProgress() {
         progressBar.show()
     }
@@ -152,15 +151,15 @@ class AddEventFragment : Fragment(), AddEventContract.View {
         activity.finish()
     }
 
-    override fun displayRepeatPicker() {
-        throw NotImplementedError()
-//        var repeatPicker = activity.layoutInflater.inflate(R.layout.repeat_picker_card, rootView, false) as RepeatPickerCard
-//        var repeatHeader = activity.layoutInflater.inflate(R.layout.add_event_header_repeat, rootView, false) as RepeatHeader
-//
-//        cardStack.addView(repeatHeader, repeatPicker)
+    // endregion Implements AddEventView
+
+    // region Implements DateSelectionListener
+
+    override fun onDateSelected(time: Long) {
+        headerTextView.text = DATE_FORMAT.format(Date(time))
     }
 
-    // endregion Implements AddEventView
+    // endregion Implements DateSelectionListener
 
     // region Private Methods
 
@@ -170,7 +169,7 @@ class AddEventFragment : Fragment(), AddEventContract.View {
         var fragment = DatePickerFragment()
         var datePickerComponent = DaggerDatePickerComponent.builder().
                 applicationComponent(InTouchApplication.graph).
-                datePickerModule(DatePickerModule(contact, fragment)).
+                datePickerModule(DatePickerModule(contact, fragment, this)).
                 build()
 
         fragment.component = datePickerComponent
