@@ -10,12 +10,17 @@ import dagger.Provides
 class DatePickerModule(val contact: Contact, val view: Contract.View) {
 
     @Provides
-    fun provideContact() : Contact {
+    fun providesContact() : Contact {
         return contact
     }
 
     @Provides
-    fun providePresenter() : Contract.UserInteractionListener {
+    fun providesUserInteractionListener() : Contract.UserInteractionListener {
         return DatePickerPresenter(view)
+    }
+
+    @Provides
+    fun providesGoo(): Int {
+        return 5
     }
 }

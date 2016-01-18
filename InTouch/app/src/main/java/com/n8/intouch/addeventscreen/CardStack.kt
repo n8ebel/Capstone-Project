@@ -5,6 +5,8 @@ import android.animation.LayoutTransition
 import android.content.Context
 import android.graphics.Point
 import android.support.annotation.NonNull
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -12,8 +14,9 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
 import com.n8.intouch.R
+import com.n8.intouch.common.SwipeableFragment
 
-class CardStack(view: View, val rootId:Int, val headerId:Int, val contentId:Int) {
+class CardStack(val fragmentManager:FragmentManager ,view: View, val rootId:Int, val contentId:Int) {
 
     val ANIMATION_DURATION = view.context.resources.getInteger(android.R.integer.config_longAnimTime)
     val addTransitionAnimator = AnimatorInflater.loadAnimator(view.context, R.animator.add_transition)
@@ -21,8 +24,6 @@ class CardStack(view: View, val rootId:Int, val headerId:Int, val contentId:Int)
     var uncoveredTransitionAnimator = AnimatorInflater.loadAnimator(view.context, R.animator.uncovered_transition)
 
     val container: FrameLayout = view.findViewById(rootId) as FrameLayout
-
-    val headerContainer: ViewGroup = view.findViewById(headerId) as ViewGroup
 
     val contentContainer: ViewGroup = view.findViewById(contentId) as ViewGroup
 
@@ -57,14 +58,19 @@ class CardStack(view: View, val rootId:Int, val headerId:Int, val contentId:Int)
 
     // region Public Functions
 
-    public fun addView(@NonNull header:View, @NonNull content:View) {
-        headerContainer.addView(header)
-        contentContainer.addView(content)
+    public fun addView(@NonNull fragment: SwipeableFragment, tag:String, swipeable:Boolean) {
+        fragmentManager.
+                beginTransaction().
+                add(contentId, fragment).
+                addToBackStack(tag).
+                commit()
 
-        addTouchListener(content)
+        if (swipeable) {
+            addTouchListener(fragment)
+        }
 
         var index = 0
-        while (index < headerContainer.childCount - 1) {
+        while (index < fragmentManager.backStackEntryCount) {
             val viewBeingCovered = contentContainer.getChildAt(index)
             viewBeingCovered.elevation = viewBeingCovered.elevation * .8f
             coveredTransitionAnimator.setTarget(viewBeingCovered)
@@ -74,9 +80,8 @@ class CardStack(view: View, val rootId:Int, val headerId:Int, val contentId:Int)
     }
 
     public fun removeView() {
-        headerContainer.removeView(headerContainer.getChildAt(headerContainer.childCount - 1))
-        contentContainer.removeView(contentContainer.getChildAt(contentContainer.childCount - 1))
-        animateViewWhenUncovered(contentContainer.getChildAt(contentContainer.childCount - 1))
+        fragmentManager.popBackStack()
+        //animateViewWhenUncovered(contentContainer.getChildAt(contentContainer.childCount - 1))
     }
 
     // endregion Public Functions
@@ -104,45 +109,40 @@ class CardStack(view: View, val rootId:Int, val headerId:Int, val contentId:Int)
         uncoveredTransitionAnimator.start()
     }
 
-    fun addTouchListener(targetView:View) {
+    fun addTouchListener(fragment: SwipeableFragment) {
 
         val startPoint = Point()
 
-        targetView.setOnTouchListener({ view, event ->
+        fragment.touchListener = View.OnTouchListener { view, event ->
             try {
                 if (event.actionMasked == MotionEvent.ACTION_DOWN) {
 
                     startPoint.x = event.rawX.toInt()
                     startPoint.y = event.rawY.toInt()
 
-                }else if (event.actionMasked == MotionEvent.ACTION_MOVE) {
+                } else if (event.actionMasked == MotionEvent.ACTION_MOVE) {
 
-                    targetView.translationX = event.rawX - startPoint.x
-                    targetView.translationY = event.rawY - startPoint.y
+                    view.translationX = event.rawX - startPoint.x
+                    view.translationY = event.rawY - startPoint.y
 
-                    var deltaX = targetView.translationX / screenWidth.toFloat()
+                    var deltaX = view.translationX / screenWidth.toFloat()
 
-                    targetView.rotation = 90 * deltaX
+                    view.rotation = 90 * deltaX
 
-                }else if (event.actionMasked == MotionEvent.ACTION_UP) {
-                    if (!targetView.isAttachedToWindow) {
-                        Unit
-                    }
-
-                    Log.d("foo", "foo")
+                } else if (event.actionMasked == MotionEvent.ACTION_UP) {
                     if ((event.rawX > leftClamp && event.rawX < rightClamp) &&
                             (event.rawY > topClamp && event.rawY < bottomClamp)) {
-                        targetView.animate().translationX(0f).translationY(0f).rotation(0f).setDuration(300).start()
+                        view.animate().translationX(0f).translationY(0f).rotation(0f).setDuration(300).start()
                     } else {
                         removeView()
                     }
                 }
-            } catch(e: Exception){
+            } catch(e: Exception) {
 
             }
 
             true
-        })
+        }
     }
 
     // endregion Private Functions

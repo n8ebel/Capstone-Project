@@ -66,7 +66,7 @@ class AddEventFragment : Fragment(), AddEventContract.View {
 
     lateinit var contactThumbnailImageView:ImageView
 
-    lateinit var spinner:Spinner
+    lateinit var headerTextView:TextView
 
     //lateinit var datePickerCard: DatePickerCard
 
@@ -97,9 +97,11 @@ class AddEventFragment : Fragment(), AddEventContract.View {
         contactThumbnailPlaceholder = rootView.findViewById(R.id.contactThumbnailPlaceholder) as ImageView
         contactThumbnailImageView = rootView.findViewById(R.id.contactThumbnail) as ImageView
 
-        cardStack = CardStack(rootView, R.id.card_container, R.id.headerContainer, R.id.contentContainer)
+        cardStack = CardStack(childFragmentManager, rootView, R.id.content_container, R.id.fragment_container)
 
         progressBar = ContentLoadingProgressBar(activity)
+
+        headerTextView = rootView.findViewById(R.id.header_textView) as TextView
 
         return rootView
     }
@@ -163,10 +165,7 @@ class AddEventFragment : Fragment(), AddEventContract.View {
     // region Private Methods
 
     private fun showDatePicker(contact: Contact){
-        //startHeader = createStartHeader()
-        //atePickerCard = createDatePickerCard()
-
-        //cardStack.addView(startHeader, datePickerCard)
+        headerTextView.text = getString(R.string.pick_date)
 
         var fragment = DatePickerFragment()
         var datePickerComponent = DaggerDatePickerComponent.builder().
@@ -176,10 +175,7 @@ class AddEventFragment : Fragment(), AddEventContract.View {
 
         fragment.component = datePickerComponent
 
-        childFragmentManager.
-                beginTransaction().
-                add(R.id.contentContainer, fragment, "DatePicker").
-                commit()
+        cardStack.addView(fragment, "DatePicker", false)
     }
 
     // endregion Private Methods

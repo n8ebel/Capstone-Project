@@ -50,24 +50,29 @@
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout
-        android:id="@+id/card_container"
+        android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"
         >
 
-        <FrameLayout
-            android:id="@+id/headerContainer"
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="@dimen/list_item_height"
             android:layout_marginTop="@dimen/keyline_1"
             android:layout_marginBottom="@dimen/keyline_0"
-            android:paddingStart="@dimen/keyline_1"
-            android:paddingEnd="@dimen/keyline_1"
-            />
+            android:layout_marginStart="@dimen/keyline_1"
+            android:layout_marginEnd="@dimen/keyline_1"
+            >
+            <TextView
+                android:id="@+id/header_textView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+        </android.support.v7.widget.CardView>
 
         <FrameLayout
-            android:id="@+id/contentContainer"
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingTop="96dp"
