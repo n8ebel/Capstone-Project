@@ -23,6 +23,7 @@ import com.n8.intouch.InTouchApplication
 import com.n8.intouch.R
 import com.n8.intouch.datepicker.DatePickerFragment
 import com.n8.intouch.addeventscreen.di.AddEventComponent
+import com.n8.intouch.common.BackPressedListener
 import com.n8.intouch.datepicker.di.DaggerDatePickerComponent
 import com.n8.intouch.datepicker.di.DatePickerModule
 import com.n8.intouch.model.Contact
@@ -35,7 +36,7 @@ import javax.inject.Inject
 /**
  * Fragment that allows a user to create a new scheduled event for a contact.
  */
-class AddEventFragment : Fragment(), AddEventContract.View, DatePickerFragment.Listener {
+class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View, DatePickerFragment.Listener {
 
     // TODO make this locale safe
     val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
@@ -106,6 +107,19 @@ class AddEventFragment : Fragment(), AddEventContract.View, DatePickerFragment.L
 
         presenter.onContactUriReceived(contactUri)
     }
+
+    // region Implements BackPressedListener
+
+    override fun onBackPressed(): Boolean {
+        if (childFragmentManager.backStackEntryCount > 1) {
+            childFragmentManager.popBackStack()
+            return true
+        }
+
+        return false
+    }
+
+    // endregion Implements BackPressedListener
 
     // region Implements AddEventView
 

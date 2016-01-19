@@ -61,7 +61,7 @@ class CardStack(val fragmentManager:FragmentManager ,view: View, val rootId:Int,
     public fun addView(@NonNull fragment: SwipeableFragment, tag:String, swipeable:Boolean) {
         fragmentManager.
                 beginTransaction().
-                add(contentId, fragment).
+                add(contentId, fragment, tag).
                 addToBackStack(tag).
                 commit()
 
