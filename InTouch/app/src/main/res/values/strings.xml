@@ -14,5 +14,14 @@
     <string name="custom_date">Custom Date</string>
     <string name="pick_date">Pick Date</string>
     <string name="start_by_selecting_a_date">Start By Selecting A Date</string>
+    <string name="choose_repeat_schedule">Choose Repeat Schedule</string>
+    <string name="every">Every</string>
+
+    <string-array name="repeat_frequency_spinner_display_values">
+        <item>Days</item>
+        <item>Weeks</item>
+        <item>Months</item>
+        <item>Years</item>
+    </string-array>
 
 </resources>
