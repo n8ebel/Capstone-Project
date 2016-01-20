@@ -11,12 +11,12 @@ import dagger.Provides
 class DatePickerModule(val contact: Contact, val view: Contract.View, val listener:DatePickerFragment.Listener) {
 
     @Provides
-    fun providesContact() : Contact {
+    fun providessContact() : Contact {
         return contact
     }
 
     @Provides
-    fun providesUserInteractionListener() : Contract.UserInteractionListener {
+    fun providessUserInteractionListener() : Contract.UserInteractionListener {
         return DatePickerPresenter(view, listener)
     }
 

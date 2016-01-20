@@ -1,6 +1,5 @@
 package com.n8.intouch.datepicker
 
-import android.app.usage.UsageEvents
 import com.n8.intouch.model.Contact
 import com.n8.intouch.model.Event
 

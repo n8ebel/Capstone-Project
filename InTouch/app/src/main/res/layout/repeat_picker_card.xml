@@ -27,6 +27,7 @@
 
         <!-- Time Picker Layout -->
         <LinearLayout
+            android:id="@+id/time_picker_container"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,8 +38,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="6:00 PM"
-                tools:ignore="HardcodedText"
+                android:text="@string/choose_a_time"
                 />
 
             <ImageView
@@ -83,7 +83,7 @@
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/continueFAB"
+        android:id="@+id/continue_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"

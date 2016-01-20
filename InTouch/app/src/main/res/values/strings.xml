@@ -16,6 +16,7 @@
     <string name="start_by_selecting_a_date">Start By Selecting A Date</string>
     <string name="choose_repeat_schedule">Choose Repeat Schedule</string>
     <string name="every">Every</string>
+    <string name="choose_a_time">Choose a time</string>
 
     <string-array name="repeat_frequency_spinner_display_values">
         <item>Days</item>

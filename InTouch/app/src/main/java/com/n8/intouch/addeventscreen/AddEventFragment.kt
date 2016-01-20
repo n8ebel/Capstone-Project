@@ -28,6 +28,8 @@ import com.n8.intouch.datepicker.di.DaggerDatePickerComponent
 import com.n8.intouch.datepicker.di.DatePickerModule
 import com.n8.intouch.model.Contact
 import com.n8.intouch.repeatpicker.RepeatPickerFragment
+import com.n8.intouch.repeatpicker.di.DaggerRepeatPickerComponent
+import com.n8.intouch.repeatpicker.di.RepeatPickerModule
 import com.n8.intouch.setupBackNavigation
 import java.text.SimpleDateFormat
 import java.util.*
@@ -36,7 +38,7 @@ import javax.inject.Inject
 /**
  * Fragment that allows a user to create a new scheduled event for a contact.
  */
-class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View, DatePickerFragment.Listener {
+class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View, DatePickerFragment.Listener, RepeatPickerFragment.Listener {
 
     // TODO make this locale safe
     val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
@@ -167,6 +169,14 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
 
     // endregion Implements DatePickerFragment.Listener
 
+    // region Implements RepeatPickerFragment.Listener
+
+    override fun onRepeatScheduleSelected(hour: Int, min: Int, interval: Int, duration: Long) {
+        Toast.makeText(context, "Repeat Schedule Selected", Toast.LENGTH_LONG).show()
+    }
+
+    // endregion Implements RepeatPickerFragment.Listener
+
     // region Private Methods
 
     private fun showDatePicker(contact: Contact){
@@ -185,6 +195,11 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
 
     private fun showRepeatPicker() {
         var fragment = RepeatPickerFragment()
+
+        var component = DaggerRepeatPickerComponent.builder().
+                repeatPickerModule(RepeatPickerModule(context, fragment, this)).
+                build()
+        fragment.component = component
 
         cardStack.addView(fragment, "RepeatPicker", true)
     }
