@@ -26,7 +26,10 @@ import com.n8.intouch.addeventscreen.di.AddEventComponent
 import com.n8.intouch.common.BackPressedListener
 import com.n8.intouch.datepicker.di.DaggerDatePickerComponent
 import com.n8.intouch.datepicker.di.DatePickerModule
+import com.n8.intouch.messageentryscreen.di.DaggerMessageEntryComponent
+import com.n8.intouch.messageentryscreen.di.MessageEntryModule
 import com.n8.intouch.model.Contact
+import com.n8.intouch.repeatpicker.MessageEntryFragment
 import com.n8.intouch.repeatpicker.RepeatPickerFragment
 import com.n8.intouch.repeatpicker.di.DaggerRepeatPickerComponent
 import com.n8.intouch.repeatpicker.di.RepeatPickerModule
@@ -161,9 +164,6 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
 
     override fun onDateSelected(time: Long) {
         headerTextView.text = DATE_FORMAT.format(Date(time))
-    }
-
-    override fun onContinueClicked() {
         showRepeatPicker()
     }
 
@@ -172,7 +172,7 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
     // region Implements RepeatPickerFragment.Listener
 
     override fun onRepeatScheduleSelected(hour: Int, min: Int, interval: Int, duration: Long) {
-        Toast.makeText(context, "Repeat Schedule Selected", Toast.LENGTH_LONG).show()
+        showMessageEntry()
     }
 
     // endregion Implements RepeatPickerFragment.Listener
@@ -202,6 +202,17 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
         fragment.component = component
 
         cardStack.addView(fragment, "RepeatPicker", true)
+    }
+
+    private fun showMessageEntry() {
+        var fragment = MessageEntryFragment()
+
+        var component = DaggerMessageEntryComponent.builder().
+                messageEntryModule(MessageEntryModule()).
+                build()
+        fragment.component = component
+
+        cardStack.addView(fragment, "MessageEntry", true)
     }
 
     // endregion Private Methods

@@ -17,6 +17,8 @@
     <string name="choose_repeat_schedule">Choose Repeat Schedule</string>
     <string name="every">Every</string>
     <string name="choose_a_time">Choose a time</string>
+    <string name="enter_message">Enter Message</string>
+    <string name="message_entry_hint">ex. Hello, how are you?</string>
 
     <string-array name="repeat_frequency_spinner_display_values">
         <item>Days</item>

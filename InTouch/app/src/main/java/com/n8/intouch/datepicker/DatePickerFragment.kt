@@ -31,8 +31,6 @@ class DatePickerFragment : SwipeableFragment(), Contract.View {
 
     interface Listener {
         fun onDateSelected(date:Long)
-
-        fun onContinueClicked()
     }
 
     var component: DatePickerComponent? = null

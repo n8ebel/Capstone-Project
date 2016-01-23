@@ -18,11 +18,6 @@ import com.n8.intouch.common.SwipeableFragment
 
 class CardStack(val fragmentManager:FragmentManager ,view: View, val rootId:Int, val contentId:Int) {
 
-    val ANIMATION_DURATION = view.context.resources.getInteger(android.R.integer.config_longAnimTime)
-    val addTransitionAnimator = AnimatorInflater.loadAnimator(view.context, R.animator.add_transition)
-    val coveredTransitionAnimator = AnimatorInflater.loadAnimator(view.context, R.animator.covered_transition)
-    var uncoveredTransitionAnimator = AnimatorInflater.loadAnimator(view.context, R.animator.uncovered_transition)
-
     val container: FrameLayout = view.findViewById(rootId) as FrameLayout
 
     val contentContainer: ViewGroup = view.findViewById(contentId) as ViewGroup
@@ -40,7 +35,6 @@ class CardStack(val fragmentManager:FragmentManager ,view: View, val rootId:Int,
     val bottomClamp: Double
 
     init {
-        contentContainer.layoutTransition = createContentConatinerLayoutTransition()
 
         val windowManager = view.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val screenSize = Point()
@@ -61,53 +55,23 @@ class CardStack(val fragmentManager:FragmentManager ,view: View, val rootId:Int,
     public fun addView(@NonNull fragment: SwipeableFragment, tag:String, swipeable:Boolean) {
         fragmentManager.
                 beginTransaction().
+                setCustomAnimations(R.anim.slide_up_from_bottom, R.anim.slide_down_from_top, -1, R.anim.slide_down_from_top).
                 add(contentId, fragment, tag).
                 addToBackStack(tag).
                 commit()
 
-        if (swipeable) {
-            addTouchListener(fragment)
-        }
-
-        var index = 0
-        while (index < fragmentManager.backStackEntryCount) {
-            val viewBeingCovered = contentContainer.getChildAt(index)
-            viewBeingCovered.elevation = viewBeingCovered.elevation * .8f
-            coveredTransitionAnimator.setTarget(viewBeingCovered)
-            coveredTransitionAnimator.start()
-            index++
-        }
+//        if (swipeable) {
+//            addTouchListener(fragment)
+//        }
     }
 
     public fun removeView() {
         fragmentManager.popBackStack()
-        //animateViewWhenUncovered(contentContainer.getChildAt(contentContainer.childCount - 1))
     }
 
     // endregion Public Functions
 
     // region Private Functions
-
-    private fun createContentConatinerLayoutTransition() : LayoutTransition {
-        var layoutTransition = LayoutTransition()
-        layoutTransition.enableTransitionType(LayoutTransition.APPEARING)
-        layoutTransition.enableTransitionType(LayoutTransition.DISAPPEARING)
-        layoutTransition.enableTransitionType(LayoutTransition.CHANGE_APPEARING)
-        layoutTransition.enableTransitionType(LayoutTransition.CHANGE_DISAPPEARING)
-
-        layoutTransition.setDuration(LayoutTransition.APPEARING, ANIMATION_DURATION.toLong())
-        layoutTransition.setStartDelay(LayoutTransition.APPEARING, 0)
-
-        layoutTransition.setAnimator(LayoutTransition.APPEARING, addTransitionAnimator)
-        layoutTransition.setAnimator(LayoutTransition.CHANGE_APPEARING, coveredTransitionAnimator)
-
-        return layoutTransition
-    }
-
-    private fun animateViewWhenUncovered(view: View) {
-        uncoveredTransitionAnimator.setTarget(view)
-        uncoveredTransitionAnimator.start()
-    }
 
     fun addTouchListener(fragment: SwipeableFragment) {
 
