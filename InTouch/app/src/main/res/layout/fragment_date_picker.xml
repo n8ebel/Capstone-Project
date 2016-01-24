@@ -9,13 +9,44 @@
     app:cardCornerRadius="@dimen/card_corner_radius"
     >
 
-    <ListView
-        android:id="@+id/listView"
+    <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        />
+        android:layout_height="match_parent"
+        >
+
+        <TextView
+            android:id="@+id/custom_date_view"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:text="@string/custom_date"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:gravity="center_vertical"
+            android:background="@drawable/list_item_selector"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/cardview_dark_background"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/saved_dates"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:layout_marginStart="@dimen/keyline_1"
+            android:layout_marginEnd="@dimen/keyline_1"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/dates_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/continue_button"

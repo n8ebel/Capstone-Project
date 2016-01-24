@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v7.widget.CardView
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.TextView
 import com.n8.intouch.R
 import com.n8.intouch.common.SwipeableFragment
 import com.n8.intouch.datepicker.di.DatePickerComponent
@@ -33,6 +36,8 @@ class DatePickerFragment : SwipeableFragment(), Contract.View {
         fun onDateSelected(date:Long)
     }
 
+    val CUSTOM_DATE_SELECTION_INDEX = -1
+
     var component: DatePickerComponent? = null
 
     @Inject
@@ -43,7 +48,11 @@ class DatePickerFragment : SwipeableFragment(), Contract.View {
 
     lateinit var continueButton: FloatingActionButton
 
-    lateinit var datesList: ListView
+    lateinit var customDateView:View
+
+    lateinit var eventsRecyclerView: RecyclerView
+
+    var currentlySelectedPosition = -2
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -59,14 +68,15 @@ class DatePickerFragment : SwipeableFragment(), Contract.View {
 
         var rootView = inflater!!.inflate(R.layout.fragment_date_picker, container, false)
 
-        datesList = rootView!!.findViewById(R.id.listView) as ListView
-        datesList.setOnItemClickListener { adapterView, view, position, l ->
-            if (position == datesList.adapter.count - 1) {
-                onCustomClicked()
-            } else {
-                onDateClicked(datesList.adapter.getItem(position) as Event)
-            }
-        }
+        customDateView = rootView!!.findViewById(R.id.custom_date_view)
+        customDateView.setOnClickListener(View.OnClickListener {
+            customDateView.isSelected = true
+            (eventsRecyclerView.adapter as DatesRecyclerAdapter).clearSelected()
+            onCustomClicked()
+        })
+
+        eventsRecyclerView = rootView!!.findViewById(R.id.dates_recyclerView) as RecyclerView
+        eventsRecyclerView.layoutManager = LinearLayoutManager(context)
 
         continueButton = rootView.findViewById(R.id.continue_button) as FloatingActionButton
         continueButton.setOnClickListener(View.OnClickListener { view ->
@@ -81,9 +91,12 @@ class DatePickerFragment : SwipeableFragment(), Contract.View {
     // region Implements Contract.View
 
     override fun bindEvents(events: List<Event>) {
-        var spinnerEvents = ArrayList<Event>(events)
-        spinnerEvents.add(CustomDateEvent(context.getString(R.string.custom_date)))
-        datesList.adapter = ArrayAdapter<Event>(context, android.R.layout.simple_list_item_1, spinnerEvents)
+        eventsRecyclerView.adapter = DatesRecyclerAdapter(events, object : DatesRecyclerAdapter.ClickListener {
+            override fun onDateClicked(date: Event) {
+                customDateView.isSelected = false
+                onDateSelected(date)
+            }
+        })
     }
 
     override fun setContinueButtonVisible(visible: Boolean) {
@@ -94,7 +107,7 @@ class DatePickerFragment : SwipeableFragment(), Contract.View {
 
     // region Implements DatePickerCard.DateClickedListener
 
-    fun onDateClicked(event: Event) {
+    fun onDateSelected(event: Event) {
         try {
             presenter.onDateSelected(event.date)
         } catch (e: ParseException) {
@@ -120,8 +133,79 @@ class DatePickerFragment : SwipeableFragment(), Contract.View {
 
     private class CustomDateEvent(val msg:String) : Event("Custom", "Custom", "1900/01/01") {
 
-        override fun toString(): String {
+        public override fun toString(): String {
             return msg
         }
+    }
+
+    private class DateRecyclerViewHolder(view:View, clickLIstener:DateRecyclerViewHolder.ClickListener) : RecyclerView.ViewHolder(view) {
+
+        public interface ClickListener {
+            fun onClicked(position:Int)
+        }
+
+        val textView:TextView
+
+        val onClickListener:View.OnClickListener = View.OnClickListener {
+            clickLIstener.onClicked(adapterPosition)
+        }
+
+        init {
+            textView = view.findViewById(R.id.text1) as TextView
+            view.setOnClickListener(onClickListener)
+        }
+    }
+
+    private class DatesRecyclerAdapter(val events: List<Event>, val clickListener:DatesRecyclerAdapter.ClickListener) : RecyclerView.Adapter<DateRecyclerViewHolder>(), DateRecyclerViewHolder.ClickListener {
+
+        interface ClickListener {
+            fun onDateClicked(date:Event)
+        }
+
+        var currentlySelectedItem = -1
+
+        fun clearSelected(){
+            currentlySelectedItem = -1
+            notifyItemRangeChanged(0, itemCount)
+        }
+
+        fun setSelected(position: Int) {
+            var oldSelected = currentlySelectedItem
+            currentlySelectedItem = position
+            notifyItemChanged(oldSelected)
+            notifyItemChanged(position)
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): DateRecyclerViewHolder? {
+            var view = LayoutInflater.from(parent!!.context).inflate(R.layout.list_item, parent, false)
+
+            return DateRecyclerViewHolder(view, this)
+        }
+
+        override fun onBindViewHolder(holder: DateRecyclerViewHolder?, position: Int) {
+            holder?.textView?.text = events[position].toString()
+            if (position == currentlySelectedItem) {
+                holder?.itemView?.isSelected = true
+            } else {
+                holder?.itemView?.isSelected = false
+            }
+        }
+
+        override fun getItemCount(): Int {
+            return events.size
+        }
+
+        // region Implements DateRecyclerViewHolder.ClickListener
+
+        override fun onClicked(position: Int) {
+            var oldSelected = currentlySelectedItem
+            currentlySelectedItem = position
+            clickListener.onDateClicked(events[position])
+            notifyItemChanged(oldSelected)
+            notifyItemChanged(position)
+        }
+
+        // endregion Implements DateRecyclerViewHolder.ClickListener
+
     }
 }
