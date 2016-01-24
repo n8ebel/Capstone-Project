@@ -29,7 +29,7 @@ import com.n8.intouch.datepicker.di.DatePickerModule
 import com.n8.intouch.messageentryscreen.di.DaggerMessageEntryComponent
 import com.n8.intouch.messageentryscreen.di.MessageEntryModule
 import com.n8.intouch.model.Contact
-import com.n8.intouch.repeatpicker.MessageEntryFragment
+import com.n8.intouch.messageentryscreen.MessageEntryFragment
 import com.n8.intouch.repeatpicker.RepeatPickerFragment
 import com.n8.intouch.repeatpicker.di.DaggerRepeatPickerComponent
 import com.n8.intouch.repeatpicker.di.RepeatPickerModule
@@ -41,7 +41,8 @@ import javax.inject.Inject
 /**
  * Fragment that allows a user to create a new scheduled event for a contact.
  */
-class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View, DatePickerFragment.Listener, RepeatPickerFragment.Listener {
+class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
+        DatePickerFragment.Listener, RepeatPickerFragment.Listener, MessageEntryFragment.Listener {
 
     // TODO make this locale safe
     val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
@@ -177,6 +178,14 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
 
     // endregion Implements RepeatPickerFragment.Listener
 
+    // region Implements MessageEntryFragment.Listener
+
+    override fun onMessageEntered(message: String) {
+        Toast.makeText(context, "Message entered time for FIREBASE!!!!!!", Toast.LENGTH_LONG).show()
+    }
+
+    // endregion Implements MessageEntryFragment.Listener
+
     // region Private Methods
 
     private fun showDatePicker(contact: Contact){
@@ -208,7 +217,7 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
         var fragment = MessageEntryFragment()
 
         var component = DaggerMessageEntryComponent.builder().
-                messageEntryModule(MessageEntryModule()).
+                messageEntryModule(MessageEntryModule(fragment, this)).
                 build()
         fragment.component = component
 

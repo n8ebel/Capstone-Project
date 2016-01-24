@@ -1,7 +1,7 @@
 package com.n8.intouch.messageentryscreen.di
 
 import com.n8.intouch.common.FragmentScope
-import com.n8.intouch.repeatpicker.MessageEntryFragment
+import com.n8.intouch.messageentryscreen.MessageEntryFragment
 import dagger.Component
 
 @FragmentScope
