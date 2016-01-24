@@ -52,6 +52,8 @@ class DatePickerFragment : SwipeableFragment(), Contract.View {
 
     lateinit var eventsRecyclerView: RecyclerView
 
+    lateinit var eventsNoContentView:View
+
     var currentlySelectedPosition = -2
 
     override fun onAttach(context: Context?) {
@@ -75,6 +77,8 @@ class DatePickerFragment : SwipeableFragment(), Contract.View {
             onCustomClicked()
         })
 
+        eventsNoContentView = rootView!!.findViewById(R.id.dates_recyclerView_no_content_view)
+
         eventsRecyclerView = rootView!!.findViewById(R.id.dates_recyclerView) as RecyclerView
         eventsRecyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -91,12 +95,21 @@ class DatePickerFragment : SwipeableFragment(), Contract.View {
     // region Implements Contract.View
 
     override fun bindEvents(events: List<Event>) {
+        if (events.size == 0) {
+            eventsNoContentView.visibility = View.VISIBLE
+            eventsRecyclerView.visibility = View.GONE
+            return
+        }
+
         eventsRecyclerView.adapter = DatesRecyclerAdapter(events, object : DatesRecyclerAdapter.ClickListener {
             override fun onDateClicked(date: Event) {
                 customDateView.isSelected = false
                 onDateSelected(date)
             }
         })
+
+        eventsNoContentView.visibility = View.GONE
+        eventsRecyclerView.visibility = View.VISIBLE
     }
 
     override fun setContinueButtonVisible(visible: Boolean) {

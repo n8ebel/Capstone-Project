@@ -11,7 +11,7 @@
 
     <string name="invalid_contact_uri">Invalid Contact Uri</string>
 
-    <string name="custom_date">Custom Date</string>
+    <string name="select_custom_date">Select custom date</string>
     <string name="pick_date">Pick a Start Date</string>
     <string name="start_by_selecting_a_date">Start By Selecting A Date</string>
     <string name="choose_repeat_schedule">Choose Repeat Schedule</string>
@@ -20,6 +20,7 @@
     <string name="enter_message">Enter Message</string>
     <string name="message_entry_hint">ex. Hello, how are you?</string>
     <string name="saved_dates">Saved Dates</string>
+    <string name="no_events_saved_for_contact">No events saved for contact</string>
 
     <string-array name="repeat_frequency_spinner_display_values">
         <item>Days</item>

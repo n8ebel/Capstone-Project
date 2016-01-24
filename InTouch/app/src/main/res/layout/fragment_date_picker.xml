@@ -18,11 +18,13 @@
         <TextView
             android:id="@+id/custom_date_view"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:text="@string/custom_date"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/keyline_1"
+            android:text="@string/select_custom_date"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:gravity="center_vertical"
             android:background="@drawable/list_item_selector"
+            android:drawableEnd="@drawable/ic_add_date_light"
             />
 
         <View
@@ -35,16 +37,35 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/saved_dates"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:layout_marginStart="@dimen/keyline_1"
             android:layout_marginEnd="@dimen/keyline_1"
+            android:layout_marginTop="@dimen/keyline_0"
             />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/dates_recyclerView"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            />
+            >
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/dates_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:id="@+id/dates_recyclerView_no_content_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:gravity="center"
+                android:text="@string/no_events_saved_for_contact"
+                android:visibility="gone"
+                />
+
+        </FrameLayout>
 
     </LinearLayout>
 
