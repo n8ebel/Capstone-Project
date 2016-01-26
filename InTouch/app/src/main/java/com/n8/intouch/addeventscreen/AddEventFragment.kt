@@ -8,6 +8,7 @@ import android.animation.ObjectAnimator
 import android.app.DatePickerDialog
 import android.content.ContentResolver
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Point
 import android.net.Uri
@@ -16,6 +17,7 @@ import android.support.design.widget.CollapsingToolbarLayout
 import android.support.v4.app.Fragment
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v4.widget.ContentLoadingProgressBar
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import android.view.*
 import android.widget.*
@@ -70,9 +72,19 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
 
     lateinit var headerTextView:TextView
 
-    //lateinit var datePickerCard: DatePickerCard
-
     lateinit var cardStack:CardStack
+
+    var startDateTimestamp = -1L
+
+    var startDateHour = -1
+
+    var startDateMin = -1
+
+    var repeatInterval = -1  // value such as '1' or '3'
+
+    var repeatDuration = -1L  // value such as week.inMillis()
+
+    var scheduledMessage = ""
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -164,6 +176,7 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
     // region Implements DatePickerFragment.Listener
 
     override fun onDateSelected(time: Long) {
+        startDateTimestamp = time
         headerTextView.text = DATE_FORMAT.format(Date(time))
         showRepeatPicker()
     }
@@ -173,6 +186,10 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
     // region Implements RepeatPickerFragment.Listener
 
     override fun onRepeatScheduleSelected(hour: Int, min: Int, interval: Int, duration: Long) {
+        startDateHour = hour
+        startDateMin = min
+        repeatInterval = interval
+        repeatDuration = duration
         showMessageEntry()
     }
 
@@ -181,7 +198,20 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
     // region Implements MessageEntryFragment.Listener
 
     override fun onMessageEntered(message: String) {
-        Toast.makeText(context, "Message entered time for FIREBASE!!!!!!", Toast.LENGTH_LONG).show()
+        scheduledMessage = message
+
+        var builder = AlertDialog.Builder(context)
+        builder.setTitle("Schedule repeated message")
+        builder.setMessage("Starting:  ${DATE_FORMAT.format(Date(startDateTimestamp))} \n" +
+                "Repating every $repeatInterval ${displayUnitsForRepeatDuration(repeatDuration)} \n" +
+                "at $startDateHour:$startDateMin with message: \n" + scheduledMessage)
+        builder.setPositiveButton("Schedule", DialogInterface.OnClickListener { dialogInterface, i ->
+
+        })
+        builder.setNeutralButton("Cancel", DialogInterface.OnClickListener { dialogInterface, i ->
+
+        })
+        builder.create().show()
     }
 
     // endregion Implements MessageEntryFragment.Listener
@@ -222,6 +252,10 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
         fragment.component = component
 
         cardStack.addView(fragment, "MessageEntry", true)
+    }
+
+    private fun displayUnitsForRepeatDuration(duration:Long) : String {
+        return "weeks"
     }
 
     // endregion Private Methods
