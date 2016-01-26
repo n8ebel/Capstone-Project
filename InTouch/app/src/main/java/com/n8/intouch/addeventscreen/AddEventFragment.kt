@@ -26,6 +26,7 @@ import com.n8.intouch.R
 import com.n8.intouch.datepicker.DatePickerFragment
 import com.n8.intouch.addeventscreen.di.AddEventComponent
 import com.n8.intouch.common.BackPressedListener
+import com.n8.intouch.contentprovider.ProviderContract
 import com.n8.intouch.datepicker.di.DaggerDatePickerComponent
 import com.n8.intouch.datepicker.di.DatePickerModule
 import com.n8.intouch.messageentryscreen.di.DaggerMessageEntryComponent
@@ -206,7 +207,10 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
                 "Repating every $repeatInterval ${displayUnitsForRepeatDuration(repeatDuration)} \n" +
                 "at $startDateHour:$startDateMin with message: \n" + scheduledMessage)
         builder.setPositiveButton("Schedule", DialogInterface.OnClickListener { dialogInterface, i ->
-
+            //contentResolver.insert(ProviderContract.buildTestUri("hello"), null)
+            contentResolver.insert(
+                    ProviderContract.buildAddScheduledMessageUri(startDateTimestamp, startDateHour, startDateMin, repeatInterval, repeatDuration, scheduledMessage),
+                    null)
         })
         builder.setNeutralButton("Cancel", DialogInterface.OnClickListener { dialogInterface, i ->
 

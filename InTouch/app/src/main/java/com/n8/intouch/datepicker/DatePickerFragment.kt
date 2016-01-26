@@ -73,7 +73,12 @@ class DatePickerFragment : SwipeableFragment(), Contract.View {
         customDateView = rootView!!.findViewById(R.id.custom_date_view)
         customDateView.setOnClickListener(View.OnClickListener {
             customDateView.isSelected = true
-            (eventsRecyclerView.adapter as DatesRecyclerAdapter).clearSelected()
+
+            var adapter = eventsRecyclerView.adapter
+            if (adapter != null && adapter is DatesRecyclerAdapter) {
+                adapter.clearSelected()
+            }
+
             onCustomClicked()
         })
 
