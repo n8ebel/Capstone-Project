@@ -1,8 +1,17 @@
 <resources>
     <dimen name="keyline_0">8dp</dimen>
     <dimen name="keyline_1">16dp</dimen>
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="app_bar_height_large">256dp</dimen>
+    <dimen name="app_bar_elevation">4dp</dimen>
+
+    <dimen name="card_elevation_resting">2dp</dimen>
+    <dimen name="card_elevation_raised">8dp</dimen>
+    <dimen name="card_corner_radius">3dp</dimen>
+
+    <dimen name="fab_elevation_resting">6dp</dimen>
+    <dimen name="fab_elevation_raised">12dp</dimen>
+
+    <dimen name="subtitle_height">48dp</dimen>
+    <dimen name="list_item_height">72dp</dimen>
 </resources>

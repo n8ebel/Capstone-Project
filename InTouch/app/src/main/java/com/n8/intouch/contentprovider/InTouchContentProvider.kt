@@ -4,6 +4,8 @@ import android.content.ContentProvider
 import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
+import com.n8.intouch.InTouchApplication
+import java.util.*
 
 class InTouchContentProvider : ContentProvider() {
 
@@ -19,8 +21,27 @@ class InTouchContentProvider : ContentProvider() {
     }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
-        // TODO: Implement this to handle requests to insert a new row.
-        throw UnsupportedOperationException("Not yet implemented")
+
+        val start_timestamp = uri.getQueryParameter(ProviderContract.START_TIME)
+        val start_hour = uri.getQueryParameter(ProviderContract.START_HOUR)
+        val start_min = uri.getQueryParameter(ProviderContract.START_MIN)
+        val interval = uri.getQueryParameter(ProviderContract.INTERVAL)
+        val duration = uri.getQueryParameter(ProviderContract.DURATION)
+        val message = uri.getQueryParameter(ProviderContract.MESSAGE)
+
+        val newEventRef = InTouchApplication.graph.getFirebase().child("events").push()
+
+        val newEvent = hashMapOf(
+                Pair(ProviderContract.START_TIME, start_timestamp),
+                Pair(ProviderContract.START_HOUR, start_hour),
+                Pair(ProviderContract.START_MIN, start_min),
+                Pair(ProviderContract.INTERVAL, interval),
+                Pair(ProviderContract.DURATION, duration),
+                Pair(ProviderContract.MESSAGE, message)
+        )
+        newEventRef.setValue(newEvent)
+
+        return null
     }
 
     override fun onCreate(): Boolean {

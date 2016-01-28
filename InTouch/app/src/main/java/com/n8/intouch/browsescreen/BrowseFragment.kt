@@ -17,7 +17,7 @@ import com.n8.intouch.browsescreen.di.BrowseComponent
 import com.n8.intouch.common.TabbedFragment
 import javax.inject.Inject
 
-class BrowseFragment : TabbedFragment(), TabbedFragmentView {
+class BrowseFragment : TabbedFragment(), BrowseContract.View {
 
     var component: BrowseComponent? = null
 

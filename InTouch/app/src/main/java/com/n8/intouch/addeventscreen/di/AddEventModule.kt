@@ -9,9 +9,6 @@ import com.n8.intouch.addeventscreen.data.ContentProviderContactLoader
 import dagger.Module
 import dagger.Provides
 
-/**
- * Created by n8 on 11/30/15.
- */
 @Module
 class AddEventModule(val contactUri: Uri, val view: AddEventContract.View) {
 

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!-- Shrink Y -->
+  <objectAnimator
+      android:interpolator="@android:anim/accelerate_interpolator"
+      android:propertyName="scaleY"
+      android:valueType="floatType"
+      android:valueFrom="1f"
+      android:valueTo=".8f"
+      android:duration="@android:integer/config_longAnimTime"
+      />
+
+  <!-- Shrink X -->
+  <objectAnimator
+      android:interpolator="@android:anim/accelerate_interpolator"
+      android:propertyName="scaleX"
+      android:valueType="floatType"
+      android:valueFrom="1f"
+      android:valueTo=".8f"
+      android:duration="@android:integer/config_longAnimTime"
+      />
+
+</set>
