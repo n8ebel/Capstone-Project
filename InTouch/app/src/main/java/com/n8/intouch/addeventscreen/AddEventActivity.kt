@@ -4,23 +4,19 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
-import android.transition.Explode
-import android.transition.Slide
 import com.n8.intouch.InTouchApplication
 
 import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.di.AddEventModule
 import com.n8.intouch.addeventscreen.di.DaggerAddEventComponent
-import com.n8.intouch.common.BackPressedListener
+import com.n8.intouch.common.BaseActivity
 
 /**
  * Activity to host different fragments that allow the user to create/edit events
  */
-class AddEventActivity : AppCompatActivity() {
+class AddEventActivity : BaseActivity() {
 
-    val BACKSTACK_TAG = "add_fragment"
+    val TAG_ADD_EVENT_FRAGMENT = "add_event_fragment"
 
     companion object Factory {
 
@@ -43,7 +39,7 @@ class AddEventActivity : AppCompatActivity() {
 
         var contactUri = intent?.getParcelableExtra<Uri>(ARG_CONTACT_URI)
         if (contactUri != null) {
-            showFragment(contactUri)
+            showAddEventFragment(contactUri)
         } else {
             throw IllegalStateException("Activity was not launched with valid arguments.  AddActivity.Factory should be used to create intents")
         }
@@ -55,18 +51,9 @@ class AddEventActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount < 1) {
-            super.onBackPressed()
-        }
+    // region Private Methods
 
-        var fragment = supportFragmentManager.findFragmentByTag(BACKSTACK_TAG)
-        if (fragment!= null && fragment is BackPressedListener && !fragment.onBackPressed()) {
-            super.onBackPressed()
-        }
-    }
-
-    private fun showFragment(contactUri: Uri) {
+    private fun showAddEventFragment(contactUri: Uri) {
         var fragment = AddEventFragment()
         var component = DaggerAddEventComponent.builder().
                 applicationComponent(InTouchApplication.graph).
@@ -75,8 +62,10 @@ class AddEventActivity : AppCompatActivity() {
         fragment.component = component
 
         supportFragmentManager.beginTransaction().
-                add(R.id.fragmentContainer, fragment, BACKSTACK_TAG).
-                addToBackStack(BACKSTACK_TAG).
+                add(R.id.fragmentContainer, fragment, TAG_ADD_EVENT_FRAGMENT).
+                addToBackStack(TAG_ADD_EVENT_FRAGMENT).
                 commit()
     }
+
+    // endregion Private Methods
 }

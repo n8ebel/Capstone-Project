@@ -12,9 +12,12 @@ import com.n8.intouch.R
 import com.n8.intouch.browsescreen.BrowseFragment
 import com.n8.intouch.browsescreen.di.BrowseModule
 import com.n8.intouch.browsescreen.di.DaggerBrowseComponent
+import com.n8.intouch.common.BackPressedListener
+import com.n8.intouch.common.BaseActivity
+import com.n8.intouch.signin.SignInFragment
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
     val TAG = "MainActivity"
 
     val FRAG_BROWSE = "browse"
@@ -27,11 +30,13 @@ class MainActivity : AppCompatActivity() {
         // Only add the tabbed fragment the first time the activity is created
         //
         if (savedInstanceState == null) {
-            var browseFragment = BrowseFragment()
-            browseFragment.component = DaggerBrowseComponent.builder().
-                    applicationComponent(InTouchApplication.graph).
-                    browseModule(BrowseModule(browseFragment, browseFragment)).
-                    build()
+//            var browseFragment = BrowseFragment()
+//            browseFragment.component = DaggerBrowseComponent.builder().
+//                    applicationComponent(InTouchApplication.graph).
+//                    browseModule(BrowseModule(browseFragment, browseFragment)).
+//                    build()
+
+            val browseFragment = SignInFragment()
 
             supportFragmentManager.beginTransaction().
                     add(R.id.fragmentContainer, browseFragment, null).
