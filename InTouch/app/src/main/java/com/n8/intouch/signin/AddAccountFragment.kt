@@ -37,22 +37,7 @@ class AddAccountFragment : Fragment(), View.OnLayoutChangeListener, BackPressedL
     override fun onLayoutChange(v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
         view.removeOnLayoutChangeListener(this)
 
-        // get the center for the clipping circle
-        var cx = rootView.getWidth() / 2;
-        var cy = rootView.getHeight() / 2;
-
-        // get the final radius for the clipping circle
-        var finalRadius = Math.hypot(cx.toDouble(), cy.toDouble());
-
-        // create the animator for this view (the start radius is zero)
-        var anim =ViewAnimationUtils.createCircularReveal(rootView, cx, cy, 0f, finalRadius.toFloat());
-
-        anim.setDuration(1500)
-
-        // make the view visible and start the animation
-        rootView.setVisibility(View.VISIBLE);
-        rootView.setBackgroundColor(context.resources.getColor(R.color.colorAccent))
-        anim.start();
+        revealIn()
 
     }
 
@@ -61,6 +46,11 @@ class AddAccountFragment : Fragment(), View.OnLayoutChangeListener, BackPressedL
     // region Implements BackPressedListener
 
     override fun onBackPressed(): Boolean {
+        revealOut()
+        return false
+    }
+
+    private fun revealOut() {
         var cx = rootView.getWidth() / 2;
         var cy = rootView.getHeight() / 2;
 
@@ -68,14 +58,34 @@ class AddAccountFragment : Fragment(), View.OnLayoutChangeListener, BackPressedL
         var finalRadius = Math.hypot(cx.toDouble(), cy.toDouble());
 
         // create the animator for this view (the start radius is zero)
-        var anim =ViewAnimationUtils.createCircularReveal(rootView, cx, cy, finalRadius.toFloat(), 0f);
+        var anim = ViewAnimationUtils.createCircularReveal(rootView, cx, cy, finalRadius.toFloat(), 0f);
 
         anim.setDuration(1500)
-
-        exitTransition = anim
-
-        return false
+        anim.start()
     }
 
     // endregion Implements BackPressedListener
+
+    // region Private Functions
+
+    private fun revealIn() {
+        // get the center for the clipping circle
+        var cx = rootView.getWidth() / 2;
+        var cy = rootView.getHeight() / 2;
+
+        // get the final radius for the clipping circle
+        var finalRadius = Math.hypot(cx.toDouble(), cy.toDouble());
+
+        // create the animator for this view (the start radius is zero)
+        var anim = ViewAnimationUtils.createCircularReveal(rootView, cx, cy, 0f, finalRadius.toFloat());
+
+        anim.setDuration(1500)
+
+        // make the view visible and start the animation
+        rootView.setVisibility(View.VISIBLE);
+        rootView.setBackgroundColor(context.resources.getColor(R.color.colorAccent))
+        anim.start();
+    }
+
+    // endregion Private Functions
 }

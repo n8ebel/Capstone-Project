@@ -39,7 +39,7 @@ class MainActivity : BaseActivity() {
             val browseFragment = SignInFragment()
 
             supportFragmentManager.beginTransaction().
-                    add(R.id.fragmentContainer, browseFragment, null).
+                    add(R.id.fragmentContainer, browseFragment, FRAG_BROWSE).
                     addToBackStack(FRAG_BROWSE).
                     commit()
         }

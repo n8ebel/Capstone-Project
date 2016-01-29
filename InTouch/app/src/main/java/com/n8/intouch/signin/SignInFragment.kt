@@ -47,13 +47,13 @@ class SignInFragment : Fragment(), CredentialEntryFragment.Listener, BackPressed
 
     override fun onBackPressed(): Boolean {
         val addFragment = childFragmentManager.findFragmentByTag(TAG_ADD_ACCOUNT_FRAGMENT)
-        if (addFragment is BackPressedListener && addFragment.onBackPressed()) {
+        if (addFragment is BackPressedListener && !addFragment.onBackPressed()) {
             childFragmentManager.popBackStack()
             return true
         }
 
         val credFragment = childFragmentManager.findFragmentByTag(TAG_CREDENTIAL_FRAGMENT)
-        if (credFragment is BackPressedListener && credFragment.onBackPressed()) {
+        if (credFragment is BackPressedListener && !credFragment.onBackPressed()) {
             childFragmentManager.popBackStack()
             return true
         }
