@@ -14,7 +14,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
 
-        <activity android:name=".main.MainActivity" >
+        <activity android:name=".main.MainActivity" />
+
+        <activity
+            android:name=".addeventscreen.AddEventActivity"
+            android:label="@string/title_activity_add"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".signin.SignInActivity"
+            android:theme="@style/AppTheme"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,10 +43,6 @@
             android:enabled="true"
             android:exported="false" />
 
-        <activity
-            android:name=".addeventscreen.AddEventActivity"
-            android:label="@string/title_activity_add"
-            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

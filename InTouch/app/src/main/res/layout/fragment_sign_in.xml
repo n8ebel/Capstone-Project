@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary"
+    tools:context=".signin.SignInActivity"
     >
 
     <FrameLayout
-        android:id="@+id/fragmentContainer"
+        android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/sign_in_fragment_container_margin"
