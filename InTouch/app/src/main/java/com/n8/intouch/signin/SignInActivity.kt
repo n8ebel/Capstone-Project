@@ -1,15 +1,14 @@
 package com.n8.intouch.signin
 
+import android.animation.*
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
-import android.transition.Transition
-import android.transition.TransitionInflater
-import android.transition.TransitionManager
-import android.view.Gravity
+import android.support.v4.content.ContextCompat
+import android.support.v4.view.animation.FastOutLinearInInterpolator
+import android.support.v4.view.animation.LinearOutSlowInInterpolator
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import com.n8.intouch.R
 import com.n8.intouch.common.BaseActivity
 
@@ -26,7 +25,7 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.fragment_sign_in)
+        setContentView(R.layout.activity_sign_in)
         rootContentView = findViewById(R.id.content_container) as ViewGroup
 
         addAccountView = layoutInflater!!.inflate(R.layout.fragment_add_account, rootContentView, false)
@@ -42,8 +41,17 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
 
         fab = credentialEntryView.findViewById(R.id.floating_action_button) as FloatingActionButton
         fab.setOnClickListener(View.OnClickListener {
-            goo()
+            showAddAccountView()
         })
+    }
+
+    override fun onBackPressed() {
+        if (addAccountView.visibility == View.VISIBLE) {
+            hideAddAccountView()
+            return
+        }
+
+        super.onBackPressed()
     }
 
     // region Implements OnLayoutChangeListener
@@ -81,41 +89,66 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
         return Math.hypot(cx.toDouble(), cy.toDouble());
     }
 
-    private fun goo() {
-        val transition = TransitionInflater.from(this).inflateTransition(R.transition.changebounds_with_arcmotion)
-        transition.addListener(object : Transition.TransitionListener {
-            override fun onTransitionCancel(transition: Transition?) {
+    private fun showAddAccountView() {
+        var translationX = rootContentView.width / 2 - fab.width
+        var translationY = rootContentView.height / 2 - fab.height
 
-            }
+        val xAnim = ObjectAnimator.ofFloat(fab, "translationX", -1*translationX.toFloat())
+        xAnim.interpolator = FastOutLinearInInterpolator()
+        xAnim.setDuration(500)
 
-            override fun onTransitionEnd(transition: Transition?) {
-                val addAccountView = layoutInflater.inflate(R.layout.fragment_add_account, rootContentView, true)
+        val yAnim = ObjectAnimator.ofFloat(fab, "translationY", translationY.toFloat())
+        yAnim.interpolator = LinearOutSlowInInterpolator()
+        yAnim.setDuration(500)
 
+        val animSet = AnimatorSet()
+        animSet.playTogether(xAnim, yAnim)
+        animSet.addListener((object: AnimatorListenerAdapter(){
+            override fun onAnimationEnd(animation: Animator?) {
+                super.onAnimationEnd(animation)
                 ViewAnimationUtils.createCircularReveal(
                         addAccountView,
                         (addAccountView.width / 2).toInt(),
                         (addAccountView.height / 2).toInt(),
                         0f,
                         getFinalRevealRadius(addAccountView).toFloat()
-                ).setDuration(1500).start()
+                ).setDuration(1000).start()
+                addAccountView.visibility = View.VISIBLE
             }
+        }))
 
-            override fun onTransitionPause(transition: Transition?) {
+        animSet.start()
+    }
 
-            }
+    private fun hideAddAccountView(){
+        val reveal = ViewAnimationUtils.createCircularReveal(
+                addAccountView,
+                (addAccountView.width / 2).toInt(),
+                (addAccountView.height / 2).toInt(),
+                getFinalRevealRadius(addAccountView).toFloat(),
+                0f
+        ).setDuration(1000)
 
-            override fun onTransitionResume(transition: Transition?) {
+        reveal.addListener(object: AnimatorListenerAdapter(){
+            override fun onAnimationEnd(animation: Animator?) {
+                super.onAnimationEnd(animation)
+                addAccountView.visibility = View.INVISIBLE
 
-            }
+                val xAnim = ObjectAnimator.ofFloat(fab, "translationX", 0f)
+                xAnim.interpolator = FastOutLinearInInterpolator()
+                xAnim.setDuration(500)
 
-            override fun onTransitionStart(transition: Transition?) {
+                val yAnim = ObjectAnimator.ofFloat(fab, "translationY", 0f)
+                yAnim.interpolator = LinearOutSlowInInterpolator()
+                yAnim.setDuration(500)
 
+                val animSet = AnimatorSet()
+                animSet.playTogether(xAnim, yAnim)
+
+                animSet.start()
             }
         })
 
-        TransitionManager.beginDelayedTransition(credentialEntryView as ViewGroup, transition);
-        val layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.gravity = Gravity.CENTER
-        fab.layoutParams = layoutParams
+        reveal.start()
     }
 }
