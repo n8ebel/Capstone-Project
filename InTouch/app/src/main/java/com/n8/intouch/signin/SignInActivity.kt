@@ -3,6 +3,7 @@ package com.n8.intouch.signin
 import android.animation.*
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.TextInputLayout
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.animation.FastOutLinearInInterpolator
 import android.support.v4.view.animation.LinearOutSlowInInterpolator
@@ -21,6 +22,14 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
     lateinit var addAccountView:View
 
     lateinit var fab:FloatingActionButton
+
+    lateinit var credentialEntryUsernameInputView: TextInputLayout
+
+    lateinit var credentialEntryPasswordInputView: TextInputLayout
+
+    lateinit var addAccountUsernameInputView: TextInputLayout
+
+    lateinit var addAccountPasswordInputView: TextInputLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +52,19 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
         fab.setOnClickListener(View.OnClickListener {
             showAddAccountView()
         })
+
+        // Credential Entry View
+        //
+        credentialEntryUsernameInputView = rootContentView.findViewById(R.id.credential_entry_username_textInputLayout) as TextInputLayout
+        credentialEntryPasswordInputView = rootContentView.findViewById(R.id.credential_entry_password_textInputLayout) as TextInputLayout
+        credentialEntryUsernameInputView.hint = "Username"
+        credentialEntryPasswordInputView.hint = "Password"
+
+        // Add Account View
+        addAccountUsernameInputView = rootContentView.findViewById(R.id.add_account_username_textInputLayout) as TextInputLayout
+        addAccountPasswordInputView = rootContentView.findViewById(R.id.add_account_password_textInputLayout) as TextInputLayout
+        addAccountUsernameInputView.hint = "Username"
+        addAccountPasswordInputView.hint = "Password"
     }
 
     override fun onBackPressed() {

@@ -1,27 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
     >
 
-    <FrameLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/sign_in_fragment_container_margin"
+        android:padding="@dimen/keyline_1"
         android:background="@color/colorAccent"
+        android:elevation="@dimen/card_elevation_resting"
         >
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse"
             android:text="Create Account"
-            android:id="@+id/textView"
             android:layout_gravity="center_horizontal|top"
             android:layout_marginTop="@dimen/keyline_1"
             />
-    </FrameLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:theme="@style/BaseAppTheme.AddAccount.TextInputLayout"
+            >
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/add_account_username_textInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/add_account_password_textInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:theme="@style/BaseAppTheme.AddAccount.Button"
+                >
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_gravity="bottom"
+                    android:text="Sign Up"
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    />
+
+            </FrameLayout>
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 </FrameLayout>
