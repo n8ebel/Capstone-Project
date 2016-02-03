@@ -1,11 +1,10 @@
-package com.n8.intouch
+package com.n8.intouch.application
 
 import android.app.Application
 import android.widget.Toast
 import com.firebase.client.Firebase
-import com.n8.intouch.DaggerApplicationComponent
 
-class InTouchApplication : android.app.Application() {
+class InTouchApplication : Application() {
 
     companion object {
         //platformStatic allow access it from java code

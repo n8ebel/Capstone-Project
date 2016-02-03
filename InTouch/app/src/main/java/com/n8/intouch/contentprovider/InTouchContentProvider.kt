@@ -4,7 +4,7 @@ import android.content.ContentProvider
 import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
-import com.n8.intouch.InTouchApplication
+import com.n8.intouch.application.InTouchApplication
 import java.util.*
 
 class InTouchContentProvider : ContentProvider() {

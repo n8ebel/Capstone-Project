@@ -59,7 +59,7 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
         if (currentViewController == addAccountViewController) {
             addAccountViewController.hideView({
                 currentViewController = credentialEntryViewController
-                credentialEntryViewController.showView { }
+                credentialEntryViewController.showView()
             })
             return
         }
@@ -71,7 +71,7 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
 
     override fun onLayoutChange(v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
         rootContentView.removeOnLayoutChangeListener(this)
-        credentialEntryViewController.showView {  }
+        credentialEntryViewController.showView()
     }
 
     // region Implements OnLayoutChangeListener
@@ -107,7 +107,7 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
 
             override fun onAddAccountClicked() {
                 currentViewController = addAccountViewController
-                addAccountViewController.showView({})
+                addAccountViewController.showView()
             }
 
             override fun onSignInClicked() {

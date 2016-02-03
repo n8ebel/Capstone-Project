@@ -10,7 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.n8.intouch.InTouchApplication
+import com.n8.intouch.application.InTouchApplication
 
 import com.n8.intouch.R
 import com.n8.intouch.browsescreen.di.BrowseComponent

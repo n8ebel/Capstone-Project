@@ -1,6 +1,6 @@
 package com.n8.intouch.datepicker.di
 
-import com.n8.intouch.ApplicationComponent
+import com.n8.intouch.application.ApplicationComponent
 import com.n8.intouch.datepicker.DatePickerFragment
 import com.n8.intouch.common.FragmentScope
 import dagger.Component

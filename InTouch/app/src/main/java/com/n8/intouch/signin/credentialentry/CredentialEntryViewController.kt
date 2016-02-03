@@ -40,6 +40,10 @@ class CredentialEntryViewController(val userInteractionListener: CredentialEntry
         return view
     }
 
+    override fun showView() {
+        showView {  }
+    }
+
     override fun showView(function: () -> Unit) {
         if (view.visibility != View.VISIBLE) {
             view.visibility = View.VISIBLE
@@ -65,6 +69,10 @@ class CredentialEntryViewController(val userInteractionListener: CredentialEntry
         })
 
         animSet.start()
+    }
+
+    override fun hideView() {
+        hideView {  }
     }
 
     override fun hideView(function: () -> Unit) {

@@ -7,7 +7,7 @@ import android.support.v4.widget.ContentLoadingProgressBar
 import android.util.Log
 import android.widget.Toast
 
-import com.n8.intouch.InTouchApplication
+import com.n8.intouch.application.InTouchApplication
 import com.n8.intouch.R
 import com.n8.intouch.browsescreen.BrowseFragment
 import com.n8.intouch.browsescreen.di.BrowseModule

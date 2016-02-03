@@ -19,8 +19,6 @@ class AddAccountViewController(var userInteractionListener: AddAccountContract.U
 
     lateinit var submitButton:View
 
-    // region Implements Contract.ViewController
-
     override fun createView(inflater: LayoutInflater, parent: ViewGroup): View {
         view = inflater.inflate(R.layout.fragment_add_account, parent, false)
 
@@ -37,6 +35,10 @@ class AddAccountViewController(var userInteractionListener: AddAccountContract.U
         return view
     }
 
+    override fun showView() {
+        showView {  }
+    }
+
     override fun showView(function: () -> Unit) {
         ViewUtils.revealView(view, object : AnimatorListenerAdapter(){
             override fun onAnimationEnd(animation: Animator?) {
@@ -44,6 +46,10 @@ class AddAccountViewController(var userInteractionListener: AddAccountContract.U
                 run(function)
             }
         })
+    }
+
+    override fun hideView() {
+        hideView {  }
     }
 
     override fun hideView(function: () -> Unit) {
