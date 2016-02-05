@@ -29,7 +29,7 @@ class AddAccountViewController(var userInteractionListener: AddAccountContract.U
 
         submitButton = view.findViewById(R.id.add_account_submit_button)
         submitButton.setOnClickListener(View.OnClickListener {
-            userInteractionListener.onAddAccountClicked()
+            userInteractionListener.onCreateAccountClicked()
         })
 
         return view

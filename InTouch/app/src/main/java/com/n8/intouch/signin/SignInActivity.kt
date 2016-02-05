@@ -84,7 +84,7 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
                 throw UnsupportedOperationException()
             }
 
-            override fun onAddAccountClicked() {
+            override fun onCreateAccountClicked() {
                 throw UnsupportedOperationException()
             }
 
@@ -105,7 +105,7 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
                 throw UnsupportedOperationException()
             }
 
-            override fun onAddAccountClicked() {
+            override fun onAddNewAccountClicked() {
                 currentViewController = addAccountViewController
                 addAccountViewController.showView()
             }

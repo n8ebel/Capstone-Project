@@ -13,7 +13,7 @@ class CredentialEntryContract {
 
         fun onPasswordUpdated(password:String)
 
-        fun onAddAccountClicked()
+        fun onAddNewAccountClicked()
 
         fun onSignInClicked()
     }

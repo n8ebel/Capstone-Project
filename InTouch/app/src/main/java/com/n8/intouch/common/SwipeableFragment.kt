@@ -12,7 +12,7 @@ open class SwipeableFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        view.setOnTouchListener { view, motionEvent ->
+        view!!.setOnTouchListener { view, motionEvent ->
             touchListener?.onTouch(view, motionEvent)
 
             false
@@ -21,7 +21,7 @@ open class SwipeableFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        view.setOnTouchListener { view, motionEvent ->
+        view!!.setOnTouchListener { view, motionEvent ->
             // do nothing
             false
         }

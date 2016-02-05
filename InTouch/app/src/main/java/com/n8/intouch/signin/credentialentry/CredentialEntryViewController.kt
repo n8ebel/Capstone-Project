@@ -99,7 +99,7 @@ class CredentialEntryViewController(val userInteractionListener: CredentialEntry
         animSet.addListener((object: AnimatorListenerAdapter(){
             override fun onAnimationEnd(animation: Animator?) {
                 super.onAnimationEnd(animation)
-                userInteractionListener.onAddAccountClicked()
+                userInteractionListener.onAddNewAccountClicked()
             }
         }))
 

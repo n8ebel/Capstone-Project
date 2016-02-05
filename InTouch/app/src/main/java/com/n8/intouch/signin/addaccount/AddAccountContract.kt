@@ -13,6 +13,6 @@ class AddAccountContract {
 
         fun onPasswordUpdated(password:String)
 
-        fun onAddAccountClicked()
+        fun onCreateAccountClicked()
     }
 }
