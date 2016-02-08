@@ -4,15 +4,11 @@ import com.n8.intouch.common.ViewController
 
 class AddAccountContract {
 
-    public interface AddAccountViewController : ViewController {
+    interface AddAccountViewController : ViewController {
 
     }
 
-    public interface UserInteractionListener {
-        fun onUsernameUpdated(username:String)
-
-        fun onPasswordUpdated(password:String)
-
-        fun onCreateAccountClicked()
+    interface UserInteractionListener {
+        fun onCreateAccountClicked(username:String, password:String)
     }
 }

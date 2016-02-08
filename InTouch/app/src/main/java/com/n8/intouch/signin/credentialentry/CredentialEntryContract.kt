@@ -4,17 +4,13 @@ import com.n8.intouch.common.ViewController
 
 class CredentialEntryContract {
 
-    public interface CredentialEntryViewController : ViewController {
+    interface CredentialEntryViewController : ViewController {
 
     }
 
-    public interface UserInteractionListener {
-        fun onUsernameUpdated(username:String)
-
-        fun onPasswordUpdated(password:String)
-
+    interface UserInteractionListener {
         fun onAddNewAccountClicked()
 
-        fun onSignInClicked()
+        fun onSignInClicked(username:String, password:String)
     }
 }

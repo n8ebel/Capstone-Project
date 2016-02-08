@@ -12,6 +12,7 @@ import android.support.v4.view.animation.LinearOutSlowInInterpolator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import com.n8.intouch.R
 import com.n8.intouch.common.ViewUtils
 import org.json.JSONObject
@@ -40,6 +41,11 @@ class CredentialEntryViewController(val userInteractionListener: CredentialEntry
         addAccountButton = view.findViewById(R.id.floating_action_button) as FloatingActionButton
         addAccountButton.setOnClickListener(View.OnClickListener {
             animateAddAccountButton()
+        })
+
+        val signInButton = view.findViewById(R.id.credential_entry_sign_in_button) as Button
+        signInButton.setOnClickListener(View.OnClickListener {
+            userInteractionListener.onSignInClicked(getUsername(), getPassword())
         })
 
         credentialEntryUsernameInputView = view.findViewById(R.id.credential_entry_username_textInputLayout) as TextInputLayout
@@ -168,5 +174,13 @@ class CredentialEntryViewController(val userInteractionListener: CredentialEntry
             credentialEntryPasswordInputView.editText?.setText(password)
         }
 
+    }
+
+    private fun getUsername() : String {
+        return credentialEntryUsernameInputView.editText?.text.toString()
+    }
+
+    private fun getPassword() : String {
+        return credentialEntryPasswordInputView.editText?.text.toString()
     }
 }

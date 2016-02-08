@@ -29,9 +29,12 @@ class InTouchContentProvider : ContentProvider() {
         val duration = uri.getQueryParameter(ProviderContract.DURATION)
         val message = uri.getQueryParameter(ProviderContract.MESSAGE)
 
-        val newEventRef = InTouchApplication.graph.getFirebase().child("events").push()
+        val authData = InTouchApplication.graph.getFirebase().auth
+
+        val newEventRef = InTouchApplication.graph.getFirebase().child("events").child(authData.getUid())
 
         val newEvent = hashMapOf(
+                Pair("provider", authData.provider),
                 Pair(ProviderContract.START_TIME, start_timestamp),
                 Pair(ProviderContract.START_HOUR, start_hour),
                 Pair(ProviderContract.START_MIN, start_min),
@@ -39,6 +42,11 @@ class InTouchContentProvider : ContentProvider() {
                 Pair(ProviderContract.DURATION, duration),
                 Pair(ProviderContract.MESSAGE, message)
         )
+
+        if (authData.providerData.containsKey("displayName")) {
+            newEvent.put("displayName", authData.getProviderData().get("displayName").toString())
+        }
+
         newEventRef.setValue(newEvent)
 
         return null

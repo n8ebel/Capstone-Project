@@ -36,7 +36,7 @@ class AddAccountViewController(var userInteractionListener: AddAccountContract.U
 
         submitButton = view.findViewById(R.id.add_account_submit_button)
         submitButton.setOnClickListener(View.OnClickListener {
-            userInteractionListener.onCreateAccountClicked()
+            userInteractionListener.onCreateAccountClicked(getUsername(), getPassword())
         })
 
         if (stateBundle != null)  restoreState(stateBundle)
@@ -98,5 +98,13 @@ class AddAccountViewController(var userInteractionListener: AddAccountContract.U
             addAccountPasswordInputView.editText?.setText(password)
         }
 
+    }
+
+    private fun getUsername() : String {
+        return addAccountUsernameInputView.editText?.text.toString()
+    }
+
+    private fun getPassword() : String {
+        return addAccountPasswordInputView.editText?.text.toString()
     }
 }

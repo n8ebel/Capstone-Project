@@ -34,6 +34,11 @@ class MainActivity : BaseActivity() {
                     applicationComponent(InTouchApplication.graph).
                     browseModule(BrowseModule(browseFragment, browseFragment)).
                     build()
+
+            supportFragmentManager.beginTransaction()
+                    .add(R.id.fragmentContainer, browseFragment)
+                    .addToBackStack(FRAG_BROWSE)
+                    .commit()
         }
 
         supportFragmentManager.addOnBackStackChangedListener {

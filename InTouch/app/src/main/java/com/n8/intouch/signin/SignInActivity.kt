@@ -1,15 +1,22 @@
 package com.n8.intouch.signin
 
 import android.animation.*
+import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.ViewGroup
+import android.widget.Toast
+import com.firebase.client.AuthData
+import com.firebase.client.Firebase
+import com.firebase.client.FirebaseError
 import com.n8.intouch.R
+import com.n8.intouch.application.InTouchApplication
 import com.n8.intouch.common.BaseActivity
 import com.n8.intouch.common.ViewController
 import com.n8.intouch.common.ViewUtils
+import com.n8.intouch.main.MainActivity
 import com.n8.intouch.signin.addaccount.AddAccountContract
 import com.n8.intouch.signin.credentialentry.CredentialEntryContract
 import com.n8.intouch.signin.credentialentry.CredentialEntryViewController
@@ -22,6 +29,9 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
 
     val STATE_KEY = "state_${SignInActivity::class.java.simpleName}"
     val STATE_KEY_ADD_ACCOUNT_VISIBLE = "state_key_add_account_visible"
+
+    @Inject
+    lateinit var firebase:Firebase
 
     @Inject
     lateinit var credentialEntryViewController : CredentialEntryContract.CredentialEntryViewController
@@ -43,6 +53,7 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
         super.onCreate(savedInstanceState)
 
         DaggerSignInComponent.builder()
+                .applicationComponent(InTouchApplication.graph)
                 .signInModule(SignInModule(
                         createCredentialEntryInteractionListener(),
                         createAddAccountInteractionListener())
@@ -112,30 +123,14 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
 
     private fun createAddAccountInteractionListener() : AddAccountContract.UserInteractionListener {
         return object:AddAccountContract.UserInteractionListener{
-            override fun onUsernameUpdated(username: String) {
-                throw UnsupportedOperationException()
+            override fun onCreateAccountClicked(username:String, password:String) {
+                createNewUser(username, password)
             }
-
-            override fun onCreateAccountClicked() {
-                throw UnsupportedOperationException()
-            }
-
-            override fun onPasswordUpdated(password: String) {
-                throw UnsupportedOperationException()
-            }
-
         }
     }
 
     private fun createCredentialEntryInteractionListener() : CredentialEntryContract.UserInteractionListener {
         return object:CredentialEntryContract.UserInteractionListener{
-            override fun onUsernameUpdated(username: String) {
-                throw UnsupportedOperationException()
-            }
-
-            override fun onPasswordUpdated(password: String) {
-                throw UnsupportedOperationException()
-            }
 
             override fun onAddNewAccountClicked() {
                 currentViewController = addAccountViewController
@@ -143,11 +138,52 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
                 addAccountVisible = true
             }
 
-            override fun onSignInClicked() {
-                throw UnsupportedOperationException()
+            override fun onSignInClicked(username:String, password:String) {
+                signIn(username, password)
             }
 
         }
+    }
+
+    private fun signIn(username: String, password: String) {
+        val authHandler = object : Firebase.AuthResultHandler{
+            override fun onAuthenticationError(p0: FirebaseError?) {
+                handleAuthenticationError(p0)
+            }
+
+            override fun onAuthenticated(authData: AuthData?) {
+                if (authData != null) {
+                    handleAuthenticationSuccess(authData)
+                }
+            }
+
+        }
+
+        firebase.authWithPassword(username, password, authHandler)
+    }
+
+    private fun createNewUser(username: String, password: String) {
+        val creationHandler = object : Firebase.ResultHandler {
+            override fun onSuccess() {
+                signIn(username, password)
+            }
+
+            override fun onError(p0: FirebaseError?) {
+                handleAuthenticationError(p0)
+            }
+
+        }
+
+        firebase.createUser(username, password, creationHandler)
+    }
+
+    private fun handleAuthenticationError(error: FirebaseError?) {
+        Toast.makeText(baseContext, "Failed to sign in ${error.toString()}", Toast.LENGTH_LONG).show()
+    }
+
+    private fun handleAuthenticationSuccess(authData: AuthData) {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
     }
 
     private fun restoreState(state: Bundle) {
