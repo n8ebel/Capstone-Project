@@ -207,7 +207,7 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener, LoaderManage
 
         }
 
-        firebase.authWithPassword(username, password, authHandler)
+        SignInAsyncTask(firebase, authHandler).execute(username, password)
     }
 
     private fun handleAuthenticationError(error: FirebaseError?) {
