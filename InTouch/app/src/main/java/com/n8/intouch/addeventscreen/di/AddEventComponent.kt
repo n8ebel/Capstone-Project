@@ -1,6 +1,6 @@
 package com.n8.intouch.addeventscreen.di
 
-import com.n8.intouch.ApplicationComponent
+import com.n8.intouch.application.ApplicationComponent
 import com.n8.intouch.addeventscreen.AddEventFragment
 import com.n8.intouch.common.ActivityScope
 import dagger.Component

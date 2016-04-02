@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.n8.intouch.InTouchApplication
+import com.n8.intouch.application.InTouchApplication
 
 import com.n8.intouch.R
 import com.n8.intouch.common.TitleProvider

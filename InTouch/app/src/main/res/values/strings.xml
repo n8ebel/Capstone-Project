@@ -29,4 +29,8 @@
         <item>Years</item>
     </string-array>
 
+    <!-- Sign in Screen -->
+    <string name="password">Passowrd</string>
+    <string name="username">Username</string>
+
 </resources>

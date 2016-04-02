@@ -8,12 +8,15 @@ open class BaseActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount < 1) {
             super.onBackPressed()
+            return
         }
 
         val fragment = getCurrentFragment()
-        if (fragment!= null && fragment is BackPressedListener && !fragment.onBackPressed()) {
-            super.onBackPressed()
+        if (fragment!= null && fragment is BackPressedListener && fragment.onBackPressed()) {
+            return
         }
+
+        super.onBackPressed()
     }
 
     private fun getCurrentFragment() : Fragment? {

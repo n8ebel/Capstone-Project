@@ -10,7 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.n8.intouch.InTouchApplication
+import com.firebase.client.AuthData
+import com.firebase.client.Firebase
+import com.n8.intouch.application.InTouchApplication
 
 import com.n8.intouch.R
 import com.n8.intouch.browsescreen.di.BrowseComponent
@@ -20,6 +22,9 @@ import javax.inject.Inject
 class BrowseFragment : TabbedFragment(), BrowseContract.View {
 
     var component: BrowseComponent? = null
+
+    @Inject
+    lateinit var firebase:Firebase
 
     @Inject
     lateinit var presenter:TabbedFragmentPresenter
@@ -36,6 +41,11 @@ class BrowseFragment : TabbedFragment(), BrowseContract.View {
                               savedInstanceState: Bundle?): View? {
 
         component?.inject(this)
+
+        val authData = firebase.auth
+        if (authData != null) {
+            Toast.makeText(context, authData.uid, Toast.LENGTH_LONG).show()
+        }
 
         var view = inflater!!.inflate(R.layout.fragment_browse, container, false) as ViewGroup
 

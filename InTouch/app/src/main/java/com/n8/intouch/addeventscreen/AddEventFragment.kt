@@ -21,7 +21,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import android.view.*
 import android.widget.*
-import com.n8.intouch.InTouchApplication
+import com.n8.intouch.application.InTouchApplication
 import com.n8.intouch.R
 import com.n8.intouch.datepicker.DatePickerFragment
 import com.n8.intouch.addeventscreen.di.AddEventComponent

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import com.n8.intouch.InTouchApplication
+import com.n8.intouch.application.InTouchApplication
 
 import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.di.AddEventModule

@@ -1,4 +1,4 @@
-package com.n8.intouch
+package com.n8.intouch.application
 
 import android.app.Application
 import android.content.ContentResolver

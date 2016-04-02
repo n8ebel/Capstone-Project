@@ -7,17 +7,16 @@ import android.support.v4.widget.ContentLoadingProgressBar
 import android.util.Log
 import android.widget.Toast
 
-import com.n8.intouch.InTouchApplication
+import com.n8.intouch.application.InTouchApplication
 import com.n8.intouch.R
 import com.n8.intouch.browsescreen.BrowseFragment
 import com.n8.intouch.browsescreen.di.BrowseModule
 import com.n8.intouch.browsescreen.di.DaggerBrowseComponent
 import com.n8.intouch.common.BackPressedListener
 import com.n8.intouch.common.BaseActivity
-import com.n8.intouch.signin.SignInFragment
 import javax.inject.Inject
 
-class MainActivity : BaseActivity() {
+class BrowseActivity : BaseActivity() {
     val TAG = "MainActivity"
 
     val FRAG_BROWSE = "browse"
@@ -30,18 +29,16 @@ class MainActivity : BaseActivity() {
         // Only add the tabbed fragment the first time the activity is created
         //
         if (savedInstanceState == null) {
-//            var browseFragment = BrowseFragment()
-//            browseFragment.component = DaggerBrowseComponent.builder().
-//                    applicationComponent(InTouchApplication.graph).
-//                    browseModule(BrowseModule(browseFragment, browseFragment)).
-//                    build()
+            var browseFragment = BrowseFragment()
+            browseFragment.component = DaggerBrowseComponent.builder().
+                    applicationComponent(InTouchApplication.graph).
+                    browseModule(BrowseModule(browseFragment, browseFragment)).
+                    build()
 
-            val browseFragment = SignInFragment()
-
-            supportFragmentManager.beginTransaction().
-                    add(R.id.fragmentContainer, browseFragment, null).
-                    addToBackStack(FRAG_BROWSE).
-                    commit()
+            supportFragmentManager.beginTransaction()
+                    .add(R.id.fragmentContainer, browseFragment)
+                    .addToBackStack(FRAG_BROWSE)
+                    .commit()
         }
 
         supportFragmentManager.addOnBackStackChangedListener {
