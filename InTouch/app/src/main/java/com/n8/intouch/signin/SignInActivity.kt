@@ -16,7 +16,7 @@ import com.n8.intouch.application.InTouchApplication
 import com.n8.intouch.common.BaseActivity
 import com.n8.intouch.common.ViewController
 import com.n8.intouch.common.ViewUtils
-import com.n8.intouch.main.MainActivity
+import com.n8.intouch.main.BrowseActivity
 import com.n8.intouch.signin.addaccount.AddAccountContract
 import com.n8.intouch.signin.credentialentry.CredentialEntryContract
 import com.n8.intouch.signin.credentialentry.CredentialEntryViewController
@@ -182,7 +182,7 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
     }
 
     private fun handleAuthenticationSuccess(authData: AuthData) {
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, BrowseActivity::class.java)
         startActivity(intent)
     }
 

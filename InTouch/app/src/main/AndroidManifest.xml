@@ -14,13 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
 
-        <activity android:name=".main.MainActivity" />
-
-        <activity
-            android:name=".addeventscreen.AddEventActivity"
-            android:label="@string/title_activity_add"
-            android:theme="@style/AppTheme" />
-
         <activity
             android:name=".signin.SignInActivity"
             android:theme="@style/AppTheme"
@@ -31,6 +24,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".main.BrowseActivity" />
+
+        <activity
+            android:name=".addeventscreen.AddEventActivity"
+            android:label="@string/title_activity_add"
+            android:theme="@style/AppTheme" />
+
 
         <provider
             android:name=".contentprovider.InTouchContentProvider"

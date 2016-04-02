@@ -16,7 +16,7 @@ import com.n8.intouch.common.BackPressedListener
 import com.n8.intouch.common.BaseActivity
 import javax.inject.Inject
 
-class MainActivity : BaseActivity() {
+class BrowseActivity : BaseActivity() {
     val TAG = "MainActivity"
 
     val FRAG_BROWSE = "browse"
