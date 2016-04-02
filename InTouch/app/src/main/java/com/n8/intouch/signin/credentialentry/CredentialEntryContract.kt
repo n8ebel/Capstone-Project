@@ -5,7 +5,7 @@ import com.n8.intouch.common.ViewController
 class CredentialEntryContract {
 
     interface CredentialEntryViewController : ViewController {
-
+        fun setUsername(username:String)
     }
 
     interface UserInteractionListener {

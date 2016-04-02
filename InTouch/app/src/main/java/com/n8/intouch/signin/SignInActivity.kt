@@ -1,9 +1,14 @@
 package com.n8.intouch.signin
 
 import android.animation.*
+import android.content.ContentValues
 import android.content.Intent
+import android.database.Cursor
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.support.v4.app.LoaderManager
+import android.support.v4.content.CursorLoader
+import android.support.v4.content.Loader
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.ViewGroup
@@ -25,7 +30,7 @@ import com.n8.intouch.signin.di.SignInModule
 import org.json.JSONObject
 import javax.inject.Inject
 
-class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
+class SignInActivity : BaseActivity(), View.OnLayoutChangeListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     val STATE_KEY = "state_${SignInActivity::class.java.simpleName}"
     val STATE_KEY_ADD_ACCOUNT_VISIBLE = "state_key_add_account_visible"
@@ -80,19 +85,14 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
         addAccountView.visibility = if (addAccountVisible) View.VISIBLE else View.INVISIBLE
 
         rootContentView.addOnLayoutChangeListener(this)
+
+        supportLoaderManager.initLoader(1, null, this)
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
 
-        credentialEntryViewController.saveState(outState)
-        addAccountViewController.saveState(outState)
-
-        val state = JSONObject()
-
-        state.put(STATE_KEY_ADD_ACCOUNT_VISIBLE, addAccountVisible)
-
-        outState?.putString(STATE_KEY, state.toString())
+        saveState(outState)
     }
 
     override fun onBackPressed() {
@@ -118,6 +118,39 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
     }
 
     // region Implements OnLayoutChangeListener
+
+    // region Implements LoaderManager.LoaderCallbacks
+
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor>? {
+        return CursorLoader(
+                baseContext,
+                ProviderContract.buildCurrentUsernameUri(),
+                null,
+                null,
+                null,
+                null
+        )
+    }
+
+    override fun onLoaderReset(loader: Loader<Cursor>?) {
+        // noop
+    }
+
+    override fun onLoadFinished(loader: Loader<Cursor>?, data: Cursor?) {
+        if (data == null || data.count == 0) {
+            return
+        }
+
+        data.moveToFirst();
+        val username:String? = data.getString(0)
+
+        if (username != null) {
+            credentialEntryViewController.setUsername(username)
+        }
+
+    }
+
+    // endregion Implements LoaderManager.LoaderCallbacks
 
     // region Private Functions
 
@@ -145,6 +178,21 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
         }
     }
 
+    private fun createNewUser(username: String, password: String) {
+        val creationHandler = object : Firebase.ResultHandler {
+            override fun onSuccess() {
+                signIn(username, password)
+            }
+
+            override fun onError(p0: FirebaseError?) {
+                handleAuthenticationError(p0)
+            }
+
+        }
+
+        firebase.createUser(username, password, creationHandler)
+    }
+
     private fun signIn(username: String, password: String) {
         val authHandler = object : Firebase.AuthResultHandler{
             override fun onAuthenticationError(p0: FirebaseError?) {
@@ -162,28 +210,32 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener {
         firebase.authWithPassword(username, password, authHandler)
     }
 
-    private fun createNewUser(username: String, password: String) {
-        val creationHandler = object : Firebase.ResultHandler {
-            override fun onSuccess() {
-                signIn(username, password)
-            }
-
-            override fun onError(p0: FirebaseError?) {
-                handleAuthenticationError(p0)
-            }
-
-        }
-
-        firebase.createUser(username, password, creationHandler)
-    }
-
     private fun handleAuthenticationError(error: FirebaseError?) {
         Toast.makeText(baseContext, "Failed to sign in ${error.toString()}", Toast.LENGTH_LONG).show()
     }
 
     private fun handleAuthenticationSuccess(authData: AuthData) {
+        val contentValues = ContentValues(1)
+        val username = authData.providerData.get("email") as String
+
+        if (username != null) {
+            contentValues.put(ProviderContract.USER_NAME, username)
+            contentResolver.insert(ProviderContract.buildCurrentUsernameUri(), contentValues)
+        }
+
         val intent = Intent(this, BrowseActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun saveState(outState: Bundle?) {
+        credentialEntryViewController.saveState(outState)
+        addAccountViewController.saveState(outState)
+
+        val state = JSONObject()
+
+        state.put(STATE_KEY_ADD_ACCOUNT_VISIBLE, addAccountVisible)
+
+        outState?.putString(STATE_KEY, state.toString())
     }
 
     private fun restoreState(state: Bundle) {

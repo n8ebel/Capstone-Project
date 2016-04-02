@@ -34,7 +34,7 @@
 
 
         <provider
-            android:name=".contentprovider.InTouchContentProvider"
+            android:name=".signin.InTouchContentProvider"
             android:authorities="com.n8.intouch.provider"
             android:enabled="true"
             android:exported="true" />

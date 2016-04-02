@@ -128,6 +128,10 @@ class CredentialEntryViewController(val userInteractionListener: CredentialEntry
         }
     }
 
+    override fun setUsername(username: String) {
+        credentialEntryUsernameInputView.editText?.setText(username)
+    }
+
     // endregion Implements OnLayoutChangeListner
 
     // endregion Implements Contract.ViewController
