@@ -45,22 +45,21 @@ import javax.inject.Inject
 /**
  * Fragment that allows a user to create a new scheduled event for a contact.
  */
-class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
+class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.ViewController,
         DatePickerFragment.Listener, RepeatPickerFragment.Listener, MessageEntryFragment.Listener {
 
-    // TODO make this locale safe
-    val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
+    companion object {
+        // TODO make this locale safe
+        val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
+    }
 
-    var component: AddEventComponent? = null
+    lateinit var component: AddEventComponent
 
     @Inject
     lateinit var contactUri:Uri
 
     @Inject
     lateinit var presenter:AddEventContract.UserInteractionListener
-
-    @Inject
-    lateinit var contentResolver:ContentResolver
 
     lateinit var rootView:ViewGroup
 
@@ -88,18 +87,10 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
 
     var scheduledMessage = ""
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-
-        if (component == null) {
-            throw IllegalStateException("AddEventComponent must be set")
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        component?.inject(this)
+        component.inject(this)
 
         // Inflate the layout for this fragment
         rootView = inflater!!.inflate(R.layout.fragment_add_for_date, container, false) as ViewGroup
@@ -119,13 +110,19 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
 
         headerTextView = rootView.findViewById(R.id.header_textView) as TextView
 
+        presenter.start()
+
         return rootView
     }
 
     override fun onStart() {
         super.onStart()
-
         presenter.onContactUriReceived(contactUri)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        presenter.stop()
     }
 
     // region Implements BackPressedListener

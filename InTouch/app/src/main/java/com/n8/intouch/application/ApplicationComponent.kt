@@ -7,6 +7,8 @@ import com.firebase.client.Firebase
 import com.n8.intouch.browsescreen.di.BrowseComponent
 import com.n8.intouch.common.BaseComponent
 import com.n8.intouch.common.CurrentActivityProvider
+import com.n8.intouch.data.EventsDataManager
+import com.n8.intouch.model.User
 import dagger.Component
 import javax.inject.Singleton
 
@@ -22,4 +24,8 @@ interface ApplicationComponent : BaseComponent {
     fun getContentResolver() : ContentResolver
 
     fun getCurrentActivityProvider() : CurrentActivityProvider
+
+    fun getCurrentUser() : User
+
+    fun getDataManager() : EventsDataManager
 }

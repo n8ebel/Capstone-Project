@@ -22,9 +22,6 @@ class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
 
     val contactsUri = Uri.parse("content://contacts")
 
-    private var currentActivity = currentActivityProvider.getCurrentActivity()
-        get() = currentActivityProvider.getCurrentActivity()
-
     override fun start() {
         viewController.setUsernameText(currentUser.getUsername())
 
@@ -43,7 +40,7 @@ class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
         // Show user only contacts w/ phone numbers
         pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
 
-        currentActivity.startActivityForResult(pickContactIntent, 1);
+        currentActivityProvider.getCurrentActivity().startActivityForResult(pickContactIntent, 1);
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -53,6 +50,7 @@ class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
             // Get the URI that points to the selected contact
             var contactUri = data?.getData();
 
+            val currentActivity = currentActivityProvider.getCurrentActivity()
             if (contactUri != null) {
                 var intent = AddEventActivity.createAddForDateIntent(currentActivity, contactUri)
                 currentActivity.startActivity(intent)

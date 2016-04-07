@@ -4,11 +4,9 @@ import android.net.Uri
 import com.n8.intouch.addeventscreen.data.ContactLoader
 import com.n8.intouch.model.Contact
 
-/**
- * Created by n8 on 12/4/15.
- */
 class AddEventContract {
-    interface View {
+
+    interface ViewController {
         fun finish()
 
         fun showProgress()
@@ -21,6 +19,10 @@ class AddEventContract {
     }
 
     interface UserInteractionListener {
+        fun start()
+
+        fun stop()
+
         fun onContactUriReceived(contactUri: Uri)
 
         fun onNavIconPressed()

@@ -2,22 +2,38 @@ package com.n8.intouch.addeventscreen
 
 import android.net.Uri
 import com.n8.intouch.addeventscreen.data.ContactLoader
+import com.n8.intouch.data.EventsDataManager
+import com.n8.intouch.model.User
 
 /**
  * Created by n8 on 11/30/15.
  */
-class AddEventPresenter(val view: AddEventContract.View, val interactor: ContactLoader) : AddEventContract.UserInteractionListener {
+class AddEventPresenter(val viewController: AddEventContract.ViewController,
+                        val interactor: ContactLoader,
+                        val currentUser: User,
+                        val eventManager: EventsDataManager) : AddEventContract.UserInteractionListener {
+
+    override fun start() {
+        eventManager.getEvents {
+
+        }
+    }
+
+    override fun stop() {
+
+    }
+
     override fun onContactUriReceived(contactUri: Uri) {
-        view.showProgress()
+        viewController.showProgress()
 
         interactor.loadContact(contactUri, { contact ->
-            view.hideProgress()
+            viewController.hideProgress()
 
-            view.displayContactInfo(contact)
+            viewController.displayContactInfo(contact)
         })
     }
 
     override fun onNavIconPressed() {
-        view.finish()
+        viewController.finish()
     }
 }

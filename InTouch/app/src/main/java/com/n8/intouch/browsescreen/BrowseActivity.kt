@@ -1,5 +1,6 @@
 package com.n8.intouch.browsescreen
 
+import android.content.Intent
 import android.os.Bundle
 import com.n8.intouch.R
 import com.n8.intouch.browsescreen.di.BrowseModule
@@ -29,7 +30,7 @@ class BrowseActivity : BaseActivity() {
             }
 
             with(supportFragmentManager.beginTransaction()){
-                add(R.id.fragmentContainer, browseFragment)
+                add(R.id.fragmentContainer, browseFragment, TAG_BROWSE_FRAGMENT)
                 addToBackStack(TAG_BROWSE_FRAGMENT)
                 commit()
             }
@@ -40,5 +41,11 @@ class BrowseActivity : BaseActivity() {
                 finish()
             }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        supportFragmentManager.findFragmentByTag(TAG_BROWSE_FRAGMENT)?.onActivityResult(requestCode, resultCode, data)
     }
 }

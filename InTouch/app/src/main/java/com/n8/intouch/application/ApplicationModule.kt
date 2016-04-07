@@ -7,6 +7,10 @@ import android.content.SharedPreferences
 import com.firebase.client.Firebase
 import com.n8.intouch.R
 import com.n8.intouch.common.CurrentActivityProvider
+import com.n8.intouch.data.EventsDataManager
+import com.n8.intouch.data.FirebaseEventsDataManager
+import com.n8.intouch.model.FirebaseUser
+import com.n8.intouch.model.User
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -39,5 +43,15 @@ class ApplicationModule(private val application: Application, private val activi
     @Provides
     fun provideCurrentActivityProvider(): CurrentActivityProvider {
         return activityProvider
+    }
+
+    @Provides
+    fun provideCurrentUser(firebase: Firebase) : User {
+        return FirebaseUser(firebase.auth)
+    }
+
+    @Provides
+    fun provideEventsDataManager(firebase: Firebase) : EventsDataManager {
+        return FirebaseEventsDataManager(firebase)
     }
 }

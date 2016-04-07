@@ -24,14 +24,4 @@ class BrowseModule(val viewController: BrowseContract.ViewController) {
 
         return BrowsePresenter(currentActivityProvider, viewController, user, dataManager)
     }
-
-    @Provides
-    fun provideCurrentUser(firebase: Firebase) : User {
-        return FirebaseUser(firebase.auth)
-    }
-
-    @Provides
-    fun provideEventsDataManager(firebase: Firebase) : EventsDataManager {
-        return FirebaseEventsDataManager(firebase)
-    }
 }
