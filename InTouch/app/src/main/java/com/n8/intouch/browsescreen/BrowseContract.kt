@@ -1,16 +1,22 @@
 package com.n8.intouch.browsescreen
 
 import android.content.Intent
+import com.n8.intouch.model.Event
 
-/**
- * Created by n8 on 12/4/15.
- */
 class BrowseContract {
-    interface View {
+    interface ViewController {
+        fun setUsernameText(username:String)
+
+        fun displayEvents(events:List<Event>)
+
         fun displayError(error:Throwable)
     }
 
     interface UserInteractionListener {
+        fun start()
+
+        fun stop()
+
         fun onAddPressed()
 
         fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)

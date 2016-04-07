@@ -10,17 +10,18 @@ import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.di.AddEventModule
 import com.n8.intouch.addeventscreen.di.DaggerAddEventComponent
 import com.n8.intouch.common.BaseActivity
+import com.n8.intouch.getComponent
 
 /**
  * Activity to host different fragments that allow the user to create/edit events
  */
 class AddEventActivity : BaseActivity() {
 
-    val TAG_ADD_EVENT_FRAGMENT = "add_event_fragment"
-
     companion object Factory {
 
         val ARG_CONTACT_URI = "contactUri"
+
+        private val TAG_ADD_EVENT_FRAGMENT = "add_event_fragment"
 
         fun createAddForDateIntent(context:Context, contactUri: Uri): Intent {
             var intent = Intent(context, AddEventActivity::class.java)
@@ -37,12 +38,9 @@ class AddEventActivity : BaseActivity() {
             return
         }
 
-        var contactUri = intent?.getParcelableExtra<Uri>(ARG_CONTACT_URI)
-        if (contactUri != null) {
-            showAddEventFragment(contactUri)
-        } else {
-            throw IllegalStateException("Activity was not launched with valid arguments.  AddActivity.Factory should be used to create intents")
-        }
+        intent?.getParcelableExtra<Uri>(ARG_CONTACT_URI)?.apply{
+            showAddEventFragment(this)
+        } ?: throw IllegalStateException("Activity was not launched with valid arguments.  AddActivity.Factory should be used to create intents")
 
         supportFragmentManager.addOnBackStackChangedListener {
             if (supportFragmentManager.backStackEntryCount == 0) {
@@ -54,12 +52,12 @@ class AddEventActivity : BaseActivity() {
     // region Private Methods
 
     private fun showAddEventFragment(contactUri: Uri) {
-        var fragment = AddEventFragment()
-        var component = DaggerAddEventComponent.builder().
-                applicationComponent(InTouchApplication.graph).
-                addEventModule(AddEventModule(contactUri, fragment)).
-                build()
-        fragment.component = component
+        var fragment = AddEventFragment().apply{
+            component = DaggerAddEventComponent.builder().
+                    applicationComponent(application.getComponent()).
+                    addEventModule(AddEventModule(contactUri, this)).
+                    build()
+        }
 
         supportFragmentManager.beginTransaction().
                 add(R.id.fragmentContainer, fragment, TAG_ADD_EVENT_FRAGMENT).

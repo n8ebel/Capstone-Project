@@ -10,6 +10,7 @@ import com.n8.intouch.application.InTouchApplication
 
 import com.n8.intouch.R
 import com.n8.intouch.common.TitleProvider
+import com.n8.intouch.getComponent
 
 /**
  * A simple [Fragment] subclass.
@@ -28,7 +29,7 @@ class ContactsFragment : Fragment(), TitleProvider {
         // Use app context here so if this fragment is nested in another, and its title is needed before
         // it's created, the string resource can be found
         //
-        return InTouchApplication.graph.getContext().getString(R.string.contacts)
+        return InTouchApplication.component.getContext().getString(R.string.contacts)
     }
 
     // endregion Implements TitleProvider

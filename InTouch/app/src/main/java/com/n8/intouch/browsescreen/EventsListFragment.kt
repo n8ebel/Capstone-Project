@@ -28,7 +28,7 @@ class EventsListFragment : Fragment(), TitleProvider {
         // Use app context here so if this fragment is nested in another, and its title is needed before
         // it's created, the string resource can be found
         //
-        return InTouchApplication.graph.getContext().getString(R.string.events)
+        return InTouchApplication.component.getContext().getString(R.string.events)
     }
 
     // endregion Implements TitleProvider

@@ -10,7 +10,8 @@ import java.text.SimpleDateFormat
 
 data class Contact(val name:String, val thumbnail: Bitmap? = null, val events:List<Event> = listOf())
 
-open class Event(val type:String, val label:String?, private val dateString:String){
+open class Event(val type:String = "", val label:String? = "", private val dateString:String = "", val message:String = ""){
+
 
     val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
 

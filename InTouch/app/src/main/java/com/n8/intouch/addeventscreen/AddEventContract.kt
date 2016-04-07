@@ -2,13 +2,12 @@ package com.n8.intouch.addeventscreen
 
 import android.net.Uri
 import com.n8.intouch.addeventscreen.data.ContactLoader
+import com.n8.intouch.common.SwipeableFragment
 import com.n8.intouch.model.Contact
 
-/**
- * Created by n8 on 12/4/15.
- */
 class AddEventContract {
-    interface View {
+
+    interface ViewController {
         fun finish()
 
         fun showProgress()
@@ -18,11 +17,21 @@ class AddEventContract {
         fun displayError(error:Throwable)
 
         fun displayContactInfo(contact: Contact)
+
+        fun setHeaderText(text:String?)
+
+        fun showDatePicker(fragment:SwipeableFragment)
     }
 
     interface UserInteractionListener {
+        fun start()
+
+        fun stop()
+
         fun onContactUriReceived(contactUri: Uri)
 
         fun onNavIconPressed()
+
+        fun scheduleEvent()
     }
 }
