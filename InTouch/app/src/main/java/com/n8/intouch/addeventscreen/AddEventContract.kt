@@ -20,7 +20,7 @@ class AddEventContract {
 
         fun setHeaderText(text:String?)
 
-        fun showDatePicker(fragment:SwipeableFragment)
+        fun showSwipeableFragment(fragment:SwipeableFragment, tag:String, swipeable:Boolean)
     }
 
     interface UserInteractionListener {

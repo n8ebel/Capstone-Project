@@ -1,16 +1,6 @@
 package com.n8.intouch.addeventscreen
 
 
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
-import android.animation.LayoutTransition
-import android.animation.ObjectAnimator
-import android.app.DatePickerDialog
-import android.content.ContentResolver
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
-import android.graphics.Point
 import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.CollapsingToolbarLayout
@@ -21,37 +11,24 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import android.view.*
 import android.widget.*
-import com.n8.intouch.application.InTouchApplication
 import com.n8.intouch.R
-import com.n8.intouch.datepicker.DatePickerFragment
 import com.n8.intouch.addeventscreen.di.AddEventComponent
 import com.n8.intouch.common.BackPressedListener
 import com.n8.intouch.common.SwipeableFragment
-import com.n8.intouch.signin.ProviderContract
-import com.n8.intouch.datepicker.di.DaggerDatePickerComponent
-import com.n8.intouch.datepicker.di.DatePickerModule
-import com.n8.intouch.getComponent
 import com.n8.intouch.messageentryscreen.di.DaggerMessageEntryComponent
 import com.n8.intouch.messageentryscreen.di.MessageEntryModule
 import com.n8.intouch.model.Contact
 import com.n8.intouch.messageentryscreen.MessageEntryFragment
 import com.n8.intouch.repeatpicker.RepeatPickerFragment
-import com.n8.intouch.repeatpicker.di.DaggerRepeatPickerComponent
-import com.n8.intouch.repeatpicker.di.RepeatPickerModule
 import com.n8.intouch.setupBackNavigation
-import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 /**
  * Fragment that allows a user to create a new scheduled event for a contact.
  */
 class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.ViewController,
-        DatePickerFragment.Listener, RepeatPickerFragment.Listener, MessageEntryFragment.Listener {
+        RepeatPickerFragment.Listener, MessageEntryFragment.Listener {
 
-    companion object {
-        // TODO make this locale safe
-        val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
-    }
 
     lateinit var component: AddEventComponent
 
@@ -168,21 +145,11 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.ViewC
         mHeaderTextView?.text = text
     }
 
-    override fun showDatePicker(fragment:SwipeableFragment){
-        addViewToStack(fragment, "DatePicker", false)
+    override fun showSwipeableFragment(fragment:SwipeableFragment, tag:String, swipeable:Boolean){
+        addViewToStack(fragment, tag, swipeable)
     }
 
     // endregion Implements AddEventView
-
-    // region Implements DatePickerFragment.Listener
-
-    override fun onDateSelected(time: Long) {
-//        startDateTimestamp = time
-//        setHeaderText(DATE_FORMAT.format(Date(time)))
-//        showRepeatPicker()
-    }
-
-    // endregion Implements DatePickerFragment.Listener
 
     // region Implements RepeatPickerFragment.Listener
 
@@ -222,17 +189,6 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.ViewC
 
     private fun addViewToStack(fragment: SwipeableFragment, tag: String, swipeable: Boolean) {
         mCardStack?.addView(fragment, tag, swipeable)
-    }
-
-    private fun showRepeatPicker() {
-        var fragment = RepeatPickerFragment()
-
-        var component = DaggerRepeatPickerComponent.builder().
-                repeatPickerModule(RepeatPickerModule(context, fragment, this)).
-                build()
-        fragment.component = component
-
-        addViewToStack(fragment, "RepeatPicker", true)
     }
 
     private fun showMessageEntry() {
