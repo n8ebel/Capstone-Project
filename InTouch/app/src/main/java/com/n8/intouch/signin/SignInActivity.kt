@@ -147,6 +147,11 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener, LoaderManage
 
         if (username != null) {
             credentialEntryViewController.setUsername(username)
+
+            val authData = firebase.getAuth()
+            with(authData){
+                if(getExpires() > System.currentTimeMillis()/1000) handleAuthenticationSuccess(this)
+            }
         }
 
     }

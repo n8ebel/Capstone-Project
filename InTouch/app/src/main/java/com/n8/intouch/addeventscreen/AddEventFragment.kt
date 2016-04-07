@@ -26,6 +26,7 @@ import com.n8.intouch.R
 import com.n8.intouch.datepicker.DatePickerFragment
 import com.n8.intouch.addeventscreen.di.AddEventComponent
 import com.n8.intouch.common.BackPressedListener
+import com.n8.intouch.common.SwipeableFragment
 import com.n8.intouch.signin.ProviderContract
 import com.n8.intouch.datepicker.di.DaggerDatePickerComponent
 import com.n8.intouch.datepicker.di.DatePickerModule
@@ -39,7 +40,6 @@ import com.n8.intouch.repeatpicker.di.DaggerRepeatPickerComponent
 import com.n8.intouch.repeatpicker.di.RepeatPickerModule
 import com.n8.intouch.setupBackNavigation
 import java.text.SimpleDateFormat
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -61,58 +61,54 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.ViewC
     @Inject
     lateinit var presenter:AddEventContract.UserInteractionListener
 
-    lateinit var rootView:ViewGroup
+    var mProgressBar:ContentLoadingProgressBar? = null
 
-    lateinit var progressBar:ContentLoadingProgressBar
+    var mCollapsingToolbar:CollapsingToolbarLayout? = null
 
-    lateinit var collapsingToolbar:CollapsingToolbarLayout
+    var mContactThumbnailPlaceholder:ImageView? = null
 
-    lateinit var contactThumbnailPlaceholder:ImageView
+    var mContactThumbnailImageView:ImageView? = null
 
-    lateinit var contactThumbnailImageView:ImageView
+    var mHeaderTextView:TextView? = null
 
-    lateinit var headerTextView:TextView
+    var mCardStack:CardStack? = null
 
-    lateinit var cardStack:CardStack
-
-    var startDateTimestamp = -1L
-
-    var startDateHour = -1
-
-    var startDateMin = -1
-
-    var repeatInterval = -1  // value such as '1' or '3'
-
-    var repeatDuration = -1L  // value such as week.inMillis()
-
-    var scheduledMessage = ""
+//    var startDateTimestamp = -1L
+//
+//    var startDateHour = -1
+//
+//    var startDateMin = -1
+//
+//    var repeatInterval = -1  // value such as '1' or '3'
+//
+//    var repeatDuration = -1L  // value such as week.inMillis()
+//
+//    var scheduledMessage = ""
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
         component.inject(this)
 
-        // Inflate the layout for this fragment
-        rootView = inflater!!.inflate(R.layout.fragment_add_for_date, container, false) as ViewGroup
+        return (inflater!!.inflate(R.layout.fragment_add_for_date, container, false) as ViewGroup).apply {
+            mCollapsingToolbar = (findViewById(R.id.collapsingToolbar) as CollapsingToolbarLayout).apply {
+                isTitleEnabled = true
+            }
 
-        collapsingToolbar = rootView.findViewById(R.id.collapsingToolbar) as CollapsingToolbarLayout
-        collapsingToolbar.isTitleEnabled = true
+            var toolbar = findViewById(R.id.toolbar) as Toolbar
+            toolbar.setupBackNavigation { presenter.onNavIconPressed() }
 
-        var toolbar = rootView.findViewById(R.id.toolbar) as Toolbar
-        toolbar.setupBackNavigation { presenter.onNavIconPressed() }
+            mContactThumbnailPlaceholder = findViewById(R.id.contactThumbnailPlaceholder) as ImageView
+            mContactThumbnailImageView = findViewById(R.id.contactThumbnail) as ImageView
 
-        contactThumbnailPlaceholder = rootView.findViewById(R.id.contactThumbnailPlaceholder) as ImageView
-        contactThumbnailImageView = rootView.findViewById(R.id.contactThumbnail) as ImageView
+            mProgressBar = ContentLoadingProgressBar(activity)
 
-        cardStack = CardStack(childFragmentManager, rootView, R.id.content_container, R.id.fragment_container)
+            mCardStack = CardStack(childFragmentManager, this, R.id.content_container, R.id.fragment_container)
 
-        progressBar = ContentLoadingProgressBar(activity)
+            mHeaderTextView = rootView.findViewById(R.id.header_textView) as TextView
 
-        headerTextView = rootView.findViewById(R.id.header_textView) as TextView
-
-        presenter.start()
-
-        return rootView
+            presenter.start()
+        }
     }
 
     override fun onStart() {
@@ -142,24 +138,22 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.ViewC
 
     override fun displayContactInfo(contact: Contact) {
 
-        collapsingToolbar.title = contact.name
+        mCollapsingToolbar?.title = contact.name
 
         if (contact.thumbnail != null) {
             var roundedThumbnail = RoundedBitmapDrawableFactory.create(activity.resources, contact.thumbnail)
-            contactThumbnailImageView.setImageDrawable(roundedThumbnail)
-            contactThumbnailPlaceholder.visibility = View.GONE
-            contactThumbnailImageView.visibility = View.VISIBLE
+            mContactThumbnailImageView?.setImageDrawable(roundedThumbnail)
+            mContactThumbnailPlaceholder?.visibility = View.GONE
+            mContactThumbnailImageView?.visibility = View.VISIBLE
         }
-
-        showDatePicker(contact)
     }
 
     override fun showProgress() {
-        progressBar.show()
+        mProgressBar?.show()
     }
 
     override fun hideProgress() {
-        progressBar.hide()
+        mProgressBar?.hide()
     }
 
     override fun displayError(error: Throwable) {
@@ -170,14 +164,22 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.ViewC
         activity.finish()
     }
 
+    override  fun setHeaderText(text: String?) {
+        mHeaderTextView?.text = text
+    }
+
+    override fun showDatePicker(fragment:SwipeableFragment){
+        addViewToStack(fragment, "DatePicker", false)
+    }
+
     // endregion Implements AddEventView
 
     // region Implements DatePickerFragment.Listener
 
     override fun onDateSelected(time: Long) {
-        startDateTimestamp = time
-        headerTextView.text = DATE_FORMAT.format(Date(time))
-        showRepeatPicker()
+//        startDateTimestamp = time
+//        setHeaderText(DATE_FORMAT.format(Date(time)))
+//        showRepeatPicker()
     }
 
     // endregion Implements DatePickerFragment.Listener
@@ -185,11 +187,11 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.ViewC
     // region Implements RepeatPickerFragment.Listener
 
     override fun onRepeatScheduleSelected(hour: Int, min: Int, interval: Int, duration: Long) {
-        startDateHour = hour
-        startDateMin = min
-        repeatInterval = interval
-        repeatDuration = duration
-        showMessageEntry()
+//        startDateHour = hour
+//        startDateMin = min
+//        repeatInterval = interval
+//        repeatDuration = duration
+//        showMessageEntry()
     }
 
     // endregion Implements RepeatPickerFragment.Listener
@@ -197,38 +199,29 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.ViewC
     // region Implements MessageEntryFragment.Listener
 
     override fun onMessageEntered(message: String) {
-        scheduledMessage = message
 
-        var builder = AlertDialog.Builder(context)
-        builder.setTitle("Schedule repeated message")
-        builder.setMessage("Starting:  ${DATE_FORMAT.format(Date(startDateTimestamp))} \n" +
-                "Repating every $repeatInterval ${displayUnitsForRepeatDuration(repeatDuration)} \n" +
-                "at $startDateHour:$startDateMin with message: \n" + scheduledMessage)
-        builder.setPositiveButton("Schedule", DialogInterface.OnClickListener { dialogInterface, i ->
-            throw NotImplementedError()
-        })
-        builder.setNeutralButton("Cancel", DialogInterface.OnClickListener { dialogInterface, i ->
-
-        })
-        builder.create().show()
+//        scheduledMessage = message
+//
+//        var builder = AlertDialog.Builder(context)
+//        builder.setTitle("Schedule repeated message")
+//        builder.setMessage("Starting:  ${DATE_FORMAT.format(Date(startDateTimestamp))} \n" +
+//                "Repating every $repeatInterval ${displayUnitsForRepeatDuration(repeatDuration)} \n" +
+//                "at $startDateHour:$startDateMin with message: \n" + scheduledMessage)
+//        builder.setPositiveButton("Schedule", DialogInterface.OnClickListener { dialogInterface, i ->
+//            throw NotImplementedError()
+//        })
+//        builder.setNeutralButton("Cancel", DialogInterface.OnClickListener { dialogInterface, i ->
+//
+//        })
+//        builder.create().show()
     }
 
     // endregion Implements MessageEntryFragment.Listener
 
     // region Private Methods
 
-    private fun showDatePicker(contact: Contact){
-        headerTextView.text = getString(R.string.pick_date)
-
-        var fragment = DatePickerFragment()
-        var datePickerComponent = DaggerDatePickerComponent.builder().
-                applicationComponent(activity.application.getComponent()).
-                datePickerModule(DatePickerModule(contact, fragment, this)).
-                build()
-
-        fragment.component = datePickerComponent
-
-        cardStack.addView(fragment, "DatePicker", false)
+    private fun addViewToStack(fragment: SwipeableFragment, tag: String, swipeable: Boolean) {
+        mCardStack?.addView(fragment, tag, swipeable)
     }
 
     private fun showRepeatPicker() {
@@ -239,7 +232,7 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.ViewC
                 build()
         fragment.component = component
 
-        cardStack.addView(fragment, "RepeatPicker", true)
+        addViewToStack(fragment, "RepeatPicker", true)
     }
 
     private fun showMessageEntry() {
@@ -250,7 +243,7 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.ViewC
                 build()
         fragment.component = component
 
-        cardStack.addView(fragment, "MessageEntry", true)
+        addViewToStack(fragment, "MessageEntry", true)
     }
 
     private fun displayUnitsForRepeatDuration(duration:Long) : String {

@@ -7,6 +7,7 @@ import com.n8.intouch.addeventscreen.AddEventContract
 import com.n8.intouch.addeventscreen.AddEventPresenter
 import com.n8.intouch.addeventscreen.data.ContactLoader
 import com.n8.intouch.addeventscreen.data.ContentProviderContactLoader
+import com.n8.intouch.common.CurrentActivityProvider
 import com.n8.intouch.data.EventsDataManager
 import com.n8.intouch.data.FirebaseEventsDataManager
 import com.n8.intouch.model.User
@@ -27,9 +28,11 @@ class AddEventModule(val contactUri: Uri, val viewController: AddEventContract.V
     }
 
     @Provides
-    fun providePresenter(interactor: ContactLoader,
+    fun providePresenter(
+            currentActivityProvider: CurrentActivityProvider,
+            interactor: ContactLoader,
                          user: User,
                          dataManager:EventsDataManager) : AddEventContract.UserInteractionListener {
-        return AddEventPresenter(viewController, interactor, user, dataManager)
+        return AddEventPresenter(currentActivityProvider, viewController, interactor, user, dataManager)
     }
 }
