@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.firebase.client.Firebase
 import com.n8.intouch.common.BaseComponent
+import com.n8.intouch.common.CurrentActivityProvider
 import dagger.Component
 import javax.inject.Singleton
 
@@ -18,4 +19,6 @@ interface ApplicationComponent : BaseComponent {
     fun getContext() : Context
 
     fun getContentResolver() : ContentResolver
+
+    fun getCurrentActivityProvider() : CurrentActivityProvider
 }

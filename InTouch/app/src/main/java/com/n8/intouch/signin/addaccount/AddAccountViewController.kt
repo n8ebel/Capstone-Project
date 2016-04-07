@@ -8,36 +8,44 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.n8.intouch.R
+import com.n8.intouch.common.BaseViewController
 import com.n8.intouch.common.ViewUtils
 import com.n8.intouch.signin.credentialentry.CredentialEntryViewController
 import org.json.JSONObject
 
-class AddAccountViewController(var userInteractionListener: AddAccountContract.UserInteractionListener) : AddAccountContract.AddAccountViewController {
+class AddAccountViewController(var userInteractionListener: AddAccountContract.UserInteractionListener) : BaseViewController(), AddAccountContract.AddAccountViewController {
 
-    val STATE_KEY = "state_${AddAccountViewController::class.java.simpleName}"
-    val STATE_KEY_USERNAME = "state_key_username"
-    val STATE_KEY_PASSWORD = "state_key_passowrd"
+    companion object {
+        val STATE_KEY = "state_${AddAccountViewController::class.java.simpleName}"
+        val STATE_KEY_USERNAME = "state_key_username"
+        val STATE_KEY_PASSWORD = "state_key_passowrd"
+    }
 
     lateinit var view:View
 
-    lateinit var addAccountUsernameInputView: TextInputLayout
+    val addAccountUsernameInputView: TextInputLayout by lazy {
+        view.findViewById(R.id.add_account_username_textInputLayout) as TextInputLayout
+    }
 
-    lateinit var addAccountPasswordInputView: TextInputLayout
+    val addAccountPasswordInputView: TextInputLayout by lazy {
+        view.findViewById(R.id.add_account_password_textInputLayout) as TextInputLayout
+    }
 
-    lateinit var submitButton:View
+    val submitButton:View by lazy {
+        view.findViewById(R.id.add_account_submit_button)
+    }
+
+    // region Implements ViewController
 
     override fun createView(inflater: LayoutInflater, parent: ViewGroup, stateBundle: Bundle?): View {
         view = inflater.inflate(R.layout.fragment_add_account, parent, false)
 
-        addAccountUsernameInputView = view.findViewById(R.id.add_account_username_textInputLayout) as TextInputLayout
-        addAccountPasswordInputView = view.findViewById(R.id.add_account_password_textInputLayout) as TextInputLayout
         addAccountUsernameInputView.hint = view.context.getString(R.string.username)
         addAccountPasswordInputView.hint = view.context.getString(R.string.password)
 
-        submitButton = view.findViewById(R.id.add_account_submit_button)
-        submitButton.setOnClickListener(View.OnClickListener {
+        submitButton.setOnClickListener {
             userInteractionListener.onCreateAccountClicked(getUsername(), getPassword())
-        })
+        }
 
         if (stateBundle != null)  restoreState(stateBundle)
 
@@ -52,10 +60,6 @@ class AddAccountViewController(var userInteractionListener: AddAccountContract.U
         stateBundle?.putString(STATE_KEY, state.toString())
     }
 
-    override fun showView() {
-        showView {  }
-    }
-
     override fun showView(function: () -> Unit) {
         ViewUtils.revealView(view, object : AnimatorListenerAdapter(){
             override fun onAnimationEnd(animation: Animator?) {
@@ -63,10 +67,6 @@ class AddAccountViewController(var userInteractionListener: AddAccountContract.U
                 run(function)
             }
         })
-    }
-
-    override fun hideView() {
-        hideView {  }
     }
 
     override fun hideView(function: () -> Unit) {

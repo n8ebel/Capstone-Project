@@ -10,6 +10,7 @@ import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.di.AddEventModule
 import com.n8.intouch.addeventscreen.di.DaggerAddEventComponent
 import com.n8.intouch.common.BaseActivity
+import com.n8.intouch.getComponent
 
 /**
  * Activity to host different fragments that allow the user to create/edit events
@@ -56,7 +57,7 @@ class AddEventActivity : BaseActivity() {
     private fun showAddEventFragment(contactUri: Uri) {
         var fragment = AddEventFragment()
         var component = DaggerAddEventComponent.builder().
-                applicationComponent(InTouchApplication.graph).
+                applicationComponent(application.getComponent()).
                 addEventModule(AddEventModule(contactUri, fragment)).
                 build()
         fragment.component = component

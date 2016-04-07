@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".main.BrowseActivity" />
+        <activity android:name=".browsescreen.BrowseActivity" />
 
         <activity
             android:name=".addeventscreen.AddEventActivity"

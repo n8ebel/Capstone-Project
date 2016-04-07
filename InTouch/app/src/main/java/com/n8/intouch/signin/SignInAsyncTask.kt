@@ -5,7 +5,7 @@ import com.firebase.client.AuthData
 import com.firebase.client.Firebase
 import com.firebase.client.FirebaseError
 
-class SignInAsyncTask(val firebase:Firebase, val authHandler: Firebase.AuthResultHandler) : AsyncTask<String, Void, Void>() {
+open class SignInAsyncTask(private val firebase:Firebase, private val authHandler: Firebase.AuthResultHandler) : AsyncTask<String, Void, Void>() {
 
     override fun doInBackground(vararg params: String?): Void? {
         firebase.authWithPassword(params[0], params[1], authHandler)

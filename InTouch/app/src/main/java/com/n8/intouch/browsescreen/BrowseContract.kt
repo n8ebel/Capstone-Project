@@ -6,7 +6,7 @@ import android.content.Intent
  * Created by n8 on 12/4/15.
  */
 class BrowseContract {
-    interface View {
+    interface ViewController {
         fun displayError(error:Throwable)
     }
 

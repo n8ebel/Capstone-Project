@@ -21,7 +21,8 @@ import com.n8.intouch.application.InTouchApplication
 import com.n8.intouch.common.BaseActivity
 import com.n8.intouch.common.ViewController
 import com.n8.intouch.common.ViewUtils
-import com.n8.intouch.main.BrowseActivity
+import com.n8.intouch.browsescreen.BrowseActivity
+import com.n8.intouch.getComponent
 import com.n8.intouch.signin.addaccount.AddAccountContract
 import com.n8.intouch.signin.credentialentry.CredentialEntryContract
 import com.n8.intouch.signin.credentialentry.CredentialEntryViewController
@@ -56,9 +57,9 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener, LoaderManage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        
         DaggerSignInComponent.builder()
-                .applicationComponent(InTouchApplication.graph)
+                .applicationComponent(application.getComponent())
                 .signInModule(SignInModule(
                         createCredentialEntryInteractionListener(),
                         createAddAccountInteractionListener())
@@ -231,9 +232,7 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener, LoaderManage
         credentialEntryViewController.saveState(outState)
         addAccountViewController.saveState(outState)
 
-        val state = JSONObject()
-
-        state.put(STATE_KEY_ADD_ACCOUNT_VISIBLE, addAccountVisible)
+        val state = JSONObject().put(STATE_KEY_ADD_ACCOUNT_VISIBLE, addAccountVisible)
 
         outState?.putString(STATE_KEY, state.toString())
     }

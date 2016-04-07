@@ -9,7 +9,7 @@ import org.robolectric.annotation.Config
  * Created by n8 on 11/28/15.
  */
 @RunWith(RobolectricGradleTestRunner::class)
-@Config(constants = BuildConfig::class, emulateSdk = 21)
+@Config(constants = BuildConfig::class, sdk = intArrayOf(21))
 class KotlinTest {
     @Test
     fun test1(){

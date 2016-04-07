@@ -1,25 +1,26 @@
 package com.n8.intouch.browsescreen.di
 
-import android.content.Context
-import android.support.v4.app.Fragment
+import com.firebase.client.Firebase
+import com.n8.intouch.application.ApplicationModule
 import com.n8.intouch.browsescreen.BrowseContract
-import com.n8.intouch.browsescreen.TabbedFragmentPresenter
+import com.n8.intouch.browsescreen.BrowsePresenter
+import com.n8.intouch.common.CurrentActivityProvider
+import com.n8.intouch.model.FirebaseUser
+import com.n8.intouch.model.User
+
 import dagger.Module
 import dagger.Provides
 
-/**
- * Created by n8 on 12/2/15.
- */
 @Module
-class BrowseModule(val view: BrowseContract.View, val fragment: Fragment) {
+class BrowseModule(val viewController: BrowseContract.ViewController) {
 
     @Provides
-    fun provideFragment() : Fragment {
-        return fragment
+    fun provideBrowsePresenter(currentActivityProvider: CurrentActivityProvider) : BrowsePresenter {
+        return BrowsePresenter(currentActivityProvider, viewController)
     }
 
     @Provides
-    fun provideTabbedFragmentPresenter(fragment: Fragment) : TabbedFragmentPresenter {
-        return TabbedFragmentPresenter(fragment, view)
+    fun provideCurrentUser(firebase: Firebase) : User {
+        return FirebaseUser(firebase.auth)
     }
 }

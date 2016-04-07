@@ -1,25 +1,22 @@
 package com.n8.intouch.browsescreen
 
-
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.firebase.client.AuthData
 import com.firebase.client.Firebase
-import com.n8.intouch.application.InTouchApplication
 
 import com.n8.intouch.R
 import com.n8.intouch.browsescreen.di.BrowseComponent
-import com.n8.intouch.common.TabbedFragment
+import com.n8.intouch.model.User
 import javax.inject.Inject
 
-class BrowseFragment : TabbedFragment(), BrowseContract.View {
+class BrowseFragment : Fragment(), BrowseContract.ViewController {
 
     var component: BrowseComponent? = null
 
@@ -27,41 +24,31 @@ class BrowseFragment : TabbedFragment(), BrowseContract.View {
     lateinit var firebase:Firebase
 
     @Inject
-    lateinit var presenter:TabbedFragmentPresenter
+    lateinit var currentUser:User
+
+    @Inject
+    lateinit var presenter: BrowsePresenter
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-
-        if (component == null) {
-            throw IllegalStateException("BrowseComponent must be set")
-        }
+        component?.inject(this) ?: throw IllegalStateException("BrowseComponent must be set")
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        component?.inject(this)
-
-        val authData = firebase.auth
-        if (authData != null) {
-            Toast.makeText(context, authData.uid, Toast.LENGTH_LONG).show()
-        }
+        Toast.makeText(context, currentUser.getUsername(), Toast.LENGTH_LONG).show()
 
         var view = inflater!!.inflate(R.layout.fragment_browse, container, false) as ViewGroup
-
-        // Get base implementation layout and add to container
-        //
-        var baseView = super.onCreateView(inflater, container, savedInstanceState)
-        view.addView(baseView, 0)
-
-        fab = view.findViewById(R.id.fab) as FloatingActionButton
-
-        toolbar.title = getString(R.string.app_name)
-
-
-        // TODO Fix this
-        fab.setOnClickListener {
-            presenter.onAddPressed()
+        with(view){
+            (findViewById(R.id.toolbar) as Toolbar).apply{
+                title = getString(R.string.app_name)
+            }
+            findViewById(R.id.floating_action_button)!!.apply {
+                setOnClickListener {
+                    presenter.onAddPressed()
+                }
+            }
         }
 
         return view
@@ -73,15 +60,7 @@ class BrowseFragment : TabbedFragment(), BrowseContract.View {
         presenter.onActivityResult(requestCode, resultCode, data)
     }
 
-    // region Implements TabbedFragmentView
-
     override fun displayError(error: Throwable) {
         Toast.makeText(context, error.message, Toast.LENGTH_LONG).show()
-    }
-
-    // region Implements TabbedFragmentView
-
-    override fun createFragmentList(): List<Fragment>{
-        return listOf<Fragment>(EventsListFragment(), ContactsFragment())
     }
 }

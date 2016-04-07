@@ -29,6 +29,7 @@ import com.n8.intouch.common.BackPressedListener
 import com.n8.intouch.signin.ProviderContract
 import com.n8.intouch.datepicker.di.DaggerDatePickerComponent
 import com.n8.intouch.datepicker.di.DatePickerModule
+import com.n8.intouch.getComponent
 import com.n8.intouch.messageentryscreen.di.DaggerMessageEntryComponent
 import com.n8.intouch.messageentryscreen.di.MessageEntryModule
 import com.n8.intouch.model.Contact
@@ -224,7 +225,7 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.View,
 
         var fragment = DatePickerFragment()
         var datePickerComponent = DaggerDatePickerComponent.builder().
-                applicationComponent(InTouchApplication.graph).
+                applicationComponent(activity.application.getComponent()).
                 datePickerModule(DatePickerModule(contact, fragment, this)).
                 build()
 

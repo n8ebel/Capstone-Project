@@ -11,23 +11,31 @@ import java.util.*
 
 class InTouchContentProvider : ContentProvider() {
 
-    companion object sMatcher {
-        val matcher = UriMatcher(UriMatcher.NO_MATCH)
+    companion object {
+        val MATCHER = UriMatcher(UriMatcher.NO_MATCH)
 
         val USERNAME = 0
 
         init{
-            matcher.addURI(ProviderContract.CONTENT_AUTHORITY, ProviderContract.USER_NAME, USERNAME)
+            MATCHER.addURI(ProviderContract.CONTENT_AUTHORITY, ProviderContract.USER_NAME, USERNAME)
         }
     }
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
-        // Implement this to handle requests to delete one or more rows.
-        throw UnsupportedOperationException("Not yet implemented")
+        if (getType(uri) != ProviderContract.USER_NAME) {
+            return 0
+        }
+
+        InTouchApplication.component.getSharedPreferences()
+                .edit()
+                .remove(ProviderContract.USER_NAME)
+                .apply()
+
+        return 1;
     }
 
     override fun getType(uri: Uri): String? {
-        when (sMatcher.matcher.match(uri)) {
+        when (MATCHER.match(uri)) {
             USERNAME -> return ProviderContract.USER_NAME
         }
 
@@ -39,7 +47,7 @@ class InTouchContentProvider : ContentProvider() {
             return null
         }
 
-        InTouchApplication.graph.getSharedPreferences()
+        InTouchApplication.component.getSharedPreferences()
                 .edit()
                 .putString(
                         ProviderContract.USER_NAME,
@@ -60,7 +68,7 @@ class InTouchContentProvider : ContentProvider() {
             return null
         }
 
-        val username = InTouchApplication.graph.getSharedPreferences().getString(ProviderContract.USER_NAME, null)
+        val username = InTouchApplication.component.getSharedPreferences().getString(ProviderContract.USER_NAME, null)
 
         val cursor = MatrixCursor(arrayOf("username"))
 

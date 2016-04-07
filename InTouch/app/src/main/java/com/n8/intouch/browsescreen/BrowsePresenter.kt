@@ -1,20 +1,23 @@
 package com.n8.intouch.browsescreen
 
+import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.AddEventActivity
+import com.n8.intouch.common.CurrentActivityProvider
 
-/**
- * Created by n8 on 12/2/15.
- */
-class TabbedFragmentPresenter(val fragment: Fragment, val view:BrowseContract.View) : BrowseContract.UserInteractionListener {
+class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider, val viewController:BrowseContract.ViewController) : BrowseContract.UserInteractionListener {
 
     val contactsUri = Uri.parse("content://contacts")
+
+    private var currentActivity = currentActivityProvider.getCurrentActivity()
+        get() = currentActivityProvider.getCurrentActivity()
 
     override fun onAddPressed() {
         var pickContactIntent = Intent(Intent.ACTION_PICK, contactsUri)
@@ -22,7 +25,7 @@ class TabbedFragmentPresenter(val fragment: Fragment, val view:BrowseContract.Vi
         // Show user only contacts w/ phone numbers
         pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
 
-        fragment.startActivityForResult(pickContactIntent, 1);
+        currentActivity.startActivityForResult(pickContactIntent, 1);
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -33,10 +36,10 @@ class TabbedFragmentPresenter(val fragment: Fragment, val view:BrowseContract.Vi
             var contactUri = data?.getData();
 
             if (contactUri != null) {
-                var intent = AddEventActivity.createAddForDateIntent(fragment.context, contactUri)
-                fragment.startActivity(intent)
+                var intent = AddEventActivity.createAddForDateIntent(currentActivity, contactUri)
+                currentActivity.startActivity(intent)
             }else{
-                view.displayError(Throwable(fragment.getString(R.string.invalid_contact_uri)))
+                viewController.displayError(Throwable(currentActivity.getString(R.string.invalid_contact_uri)))
             }
         }
     }

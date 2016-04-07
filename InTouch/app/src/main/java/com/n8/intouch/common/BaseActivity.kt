@@ -2,8 +2,15 @@ package com.n8.intouch.common
 
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import com.n8.intouch.setCurrentActivity
 
 open class BaseActivity : AppCompatActivity() {
+
+    override fun onStart() {
+        super.onStart()
+
+        application.setCurrentActivity( this )
+    }
 
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount < 1) {
