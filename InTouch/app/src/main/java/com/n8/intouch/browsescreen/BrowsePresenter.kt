@@ -8,16 +8,34 @@ import android.provider.ContactsContract
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
 import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.AddEventActivity
 import com.n8.intouch.common.CurrentActivityProvider
+import com.n8.intouch.data.EventsDataManager
+import com.n8.intouch.model.User
 
-class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider, val viewController:BrowseContract.ViewController) : BrowseContract.UserInteractionListener {
+class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
+                      val viewController:BrowseContract.ViewController,
+                      val currentUser: User,
+                      val eventManager:EventsDataManager) : BrowseContract.UserInteractionListener {
 
     val contactsUri = Uri.parse("content://contacts")
 
     private var currentActivity = currentActivityProvider.getCurrentActivity()
         get() = currentActivityProvider.getCurrentActivity()
+
+    override fun start() {
+        viewController.setUsernameText(currentUser.getUsername())
+
+        eventManager.getEvents { events ->
+            viewController.displayEvents(events)
+        }
+    }
+
+    override fun stop() {
+
+    }
 
     override fun onAddPressed() {
         var pickContactIntent = Intent(Intent.ACTION_PICK, contactsUri)

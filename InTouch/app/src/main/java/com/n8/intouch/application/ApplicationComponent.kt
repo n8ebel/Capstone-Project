@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
 import com.firebase.client.Firebase
+import com.n8.intouch.browsescreen.di.BrowseComponent
 import com.n8.intouch.common.BaseComponent
 import com.n8.intouch.common.CurrentActivityProvider
 import dagger.Component
