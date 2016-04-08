@@ -8,6 +8,7 @@
     android:background="@color/primary"
     tools:context=".signin.SignInActivity"
     android:clipChildren="false"
+    android:fitsSystemWindows="true"
     >
 
     <!--<FrameLayout-->

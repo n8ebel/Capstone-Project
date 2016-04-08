@@ -1,10 +1,12 @@
 package com.n8.intouch.browsescreen
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import android.widget.ImageView
 import android.widget.TextView
@@ -44,6 +46,14 @@ class BrowseActivity : BaseActivity() {
         navigationView = findViewById(R.id.browse_navigationView) as NavigationView
         val navigationViewHeader = layoutInflater.inflate(R.layout.navigation_view_header, navigationView, false)
         navigationView.addHeaderView(navigationViewHeader)
+        navigationView.inflateMenu(R.menu.navigation_view_menu)
+        navigationView.setNavigationItemSelectedListener { item ->
+            when(item.itemId){
+                R.id.drawer_sign_out -> confirmSignOut()
+            }
+
+            true
+        }
 
         usernameTextView = navigationViewHeader.findViewById(R.id.textView) as TextView
         val profileImage = navigationViewHeader.findViewById(R.id.imageView) as ImageView
@@ -81,5 +91,19 @@ class BrowseActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         supportFragmentManager.findFragmentByTag(TAG_BROWSE_FRAGMENT)?.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun confirmSignOut() {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.sign_out)
+            .setMessage(R.string.sign_out_confirmation)
+            .setPositiveButton(android.R.string.ok, { p0, p1 ->
+                application.getComponent().getFirebase().unauth()
+                finish()
+            })
+            .setNeutralButton(android.R.string.cancel, { p0, p1 ->
+                
+            })
+            .show()
     }
 }

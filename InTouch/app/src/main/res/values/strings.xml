@@ -36,4 +36,7 @@
     <string name="open_drawer">Open navigation drawer</string>
     <string name="close_drawer">Close navigation drawer</string>
 
+    <string name="sign_out">Sign out</string>
+    <string name="sign_out_confirmation">Signing out will cancel all scheduled events on this device</string>
+
 </resources>
