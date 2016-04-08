@@ -8,10 +8,19 @@ class Contract {
     }
 
     interface UserInteractionListener {
+
+        companion object {
+            val DEFAULT_FREQUENCY = "1"
+        }
+
         fun onViewCreated()
 
         fun onDateSelectorClicked()
 
         fun onContinueClicked()
+
+        fun onFrequencySelected(frequency: Int)
+
+        fun onIntervalSelected(interval: Long)
     }
 }

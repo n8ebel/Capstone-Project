@@ -66,16 +66,19 @@
                 />
 
             <EditText
+                android:id="@+id/repeat_picker_frequency_editText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1"
                 android:layout_marginEnd="@dimen/keyline_0"
+                android:inputType="number"
+                android:maxLines="1"
+                android:maxLength="2"
                 />
 
             <Spinner
+                android:id="@+id/repeat_picker_interval_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:entries="@array/repeat_frequency_spinner_display_values"
                 />
 
         </LinearLayout>

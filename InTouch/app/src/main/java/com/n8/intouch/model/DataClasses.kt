@@ -8,9 +8,9 @@ import java.text.SimpleDateFormat
  * Created by n8 on 12/8/15.
  */
 
-data class Contact(val name:String, val thumbnail: Bitmap? = null, val events:List<Event> = listOf())
+data class Contact(val name:String, val thumbnail: Bitmap? = null, val events:List<SystemEvent> = listOf())
 
-open class Event(val type:String = "", val label:String? = "", private val dateString:String = "", val message:String = ""){
+open class SystemEvent(val type:String = "", val label:String? = "", private val dateString:String = "", val message:String = ""){
 
 
     val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
@@ -29,3 +29,18 @@ open class Event(val type:String = "", val label:String? = "", private val dateS
         return "$type  --  $date"
     }
 }
+
+data class ScheduledEvent(
+        val startDateTimestamp:Long = -1L,
+
+        val startDateHour:Int = -1,
+
+        val startDateMin:Int = -1,
+
+        val repeatInterval:Int = -1,  // value such as '1' or '3'
+
+        val repeatDuration:Long = -1L,  // value such as week.inMillis()
+
+        val scheduledMessage:String = ""
+
+)

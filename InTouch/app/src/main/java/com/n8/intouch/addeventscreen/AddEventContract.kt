@@ -21,6 +21,8 @@ class AddEventContract {
         fun setHeaderText(text:String?)
 
         fun showSwipeableFragment(fragment:SwipeableFragment, tag:String, swipeable:Boolean)
+
+        fun promptToConfirmScheduledEvent(title:String, message:String)
     }
 
     interface UserInteractionListener {

@@ -1,6 +1,7 @@
 package com.n8.intouch.addeventscreen
 
 
+import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.CollapsingToolbarLayout
@@ -14,6 +15,8 @@ import android.widget.*
 import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.di.AddEventComponent
 import com.n8.intouch.common.BackPressedListener
+import com.n8.intouch.common.BaseComponent
+import com.n8.intouch.common.BaseFragment
 import com.n8.intouch.common.SwipeableFragment
 import com.n8.intouch.messageentryscreen.di.DaggerMessageEntryComponent
 import com.n8.intouch.messageentryscreen.di.MessageEntryModule
@@ -21,14 +24,13 @@ import com.n8.intouch.model.Contact
 import com.n8.intouch.messageentryscreen.MessageEntryFragment
 import com.n8.intouch.repeatpicker.RepeatPickerFragment
 import com.n8.intouch.setupBackNavigation
+import java.util.*
 import javax.inject.Inject
 
 /**
  * Fragment that allows a user to create a new scheduled event for a contact.
  */
-class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.ViewController,
-        RepeatPickerFragment.Listener, MessageEntryFragment.Listener {
-
+class AddEventFragment : BaseFragment(), AddEventContract.ViewController {
 
     lateinit var component: AddEventComponent
 
@@ -49,18 +51,6 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.ViewC
     var mHeaderTextView:TextView? = null
 
     var mCardStack:CardStack? = null
-
-//    var startDateTimestamp = -1L
-//
-//    var startDateHour = -1
-//
-//    var startDateMin = -1
-//
-//    var repeatInterval = -1  // value such as '1' or '3'
-//
-//    var repeatDuration = -1L  // value such as week.inMillis()
-//
-//    var scheduledMessage = ""
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -98,20 +88,7 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.ViewC
         presenter.stop()
     }
 
-    // region Implements BackPressedListener
-
-    override fun onBackPressed(): Boolean {
-        if (childFragmentManager.backStackEntryCount > 1) {
-            childFragmentManager.popBackStack()
-            return true
-        }
-
-        return false
-    }
-
-    // endregion Implements BackPressedListener
-
-    // region Implements AddEventView
+    // region Implements AddEventContract.ViewController
 
     override fun displayContactInfo(contact: Contact) {
 
@@ -146,65 +123,21 @@ class AddEventFragment : Fragment(), BackPressedListener, AddEventContract.ViewC
     }
 
     override fun showSwipeableFragment(fragment:SwipeableFragment, tag:String, swipeable:Boolean){
-        addViewToStack(fragment, tag, swipeable)
-    }
-
-    // endregion Implements AddEventView
-
-    // region Implements RepeatPickerFragment.Listener
-
-    override fun onRepeatScheduleSelected(hour: Int, min: Int, interval: Int, duration: Long) {
-//        startDateHour = hour
-//        startDateMin = min
-//        repeatInterval = interval
-//        repeatDuration = duration
-//        showMessageEntry()
-    }
-
-    // endregion Implements RepeatPickerFragment.Listener
-
-    // region Implements MessageEntryFragment.Listener
-
-    override fun onMessageEntered(message: String) {
-
-//        scheduledMessage = message
-//
-//        var builder = AlertDialog.Builder(context)
-//        builder.setTitle("Schedule repeated message")
-//        builder.setMessage("Starting:  ${DATE_FORMAT.format(Date(startDateTimestamp))} \n" +
-//                "Repating every $repeatInterval ${displayUnitsForRepeatDuration(repeatDuration)} \n" +
-//                "at $startDateHour:$startDateMin with message: \n" + scheduledMessage)
-//        builder.setPositiveButton("Schedule", DialogInterface.OnClickListener { dialogInterface, i ->
-//            throw NotImplementedError()
-//        })
-//        builder.setNeutralButton("Cancel", DialogInterface.OnClickListener { dialogInterface, i ->
-//
-//        })
-//        builder.create().show()
-    }
-
-    // endregion Implements MessageEntryFragment.Listener
-
-    // region Private Methods
-
-    private fun addViewToStack(fragment: SwipeableFragment, tag: String, swipeable: Boolean) {
         mCardStack?.addView(fragment, tag, swipeable)
     }
 
-    private fun showMessageEntry() {
-        var fragment = MessageEntryFragment()
+    override fun promptToConfirmScheduledEvent(title: String, message: String) {
+        AlertDialog.Builder(context).apply {
+            setTitle(title)
+            setMessage(message)
+            setPositiveButton("Schedule", DialogInterface.OnClickListener { dialogInterface, i ->
+                presenter.scheduleEvent()
+            })
+            setNeutralButton("Cancel", null)
 
-        var component = DaggerMessageEntryComponent.builder().
-                messageEntryModule(MessageEntryModule(fragment, this)).
-                build()
-        fragment.component = component
-
-        addViewToStack(fragment, "MessageEntry", true)
+            create().show()
+        }
     }
 
-    private fun displayUnitsForRepeatDuration(duration:Long) : String {
-        return "weeks"
-    }
-
-    // endregion Private Methods
+    // endregion Implements AddEventContract.ViewController
 }

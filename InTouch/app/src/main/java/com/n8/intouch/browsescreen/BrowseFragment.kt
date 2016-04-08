@@ -3,23 +3,20 @@ package com.n8.intouch.browsescreen
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import com.firebase.client.Firebase
 
 import com.n8.intouch.R
 import com.n8.intouch.browsescreen.di.BrowseComponent
-import com.n8.intouch.data.EventsDataManager
-import com.n8.intouch.model.Event
-import com.n8.intouch.model.User
+import com.n8.intouch.common.BaseFragment
+import com.n8.intouch.model.ScheduledEvent
 import javax.inject.Inject
 
-class BrowseFragment : Fragment(), BrowseContract.ViewController {
+class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
 
     var component: BrowseComponent? = null
 
@@ -51,14 +48,16 @@ class BrowseFragment : Fragment(), BrowseContract.ViewController {
             eventsTextView = findViewById(R.id.browse_events_textView) as TextView
         }
 
-        presenter.start()
-
         return view
     }
 
-    override fun onDetach() {
-        super.onDetach()
+    override fun onStart() {
+        super.onStart()
+        presenter.start()
+    }
 
+    override fun onStop() {
+        super.onStop()
         presenter.stop()
     }
 
@@ -74,10 +73,10 @@ class BrowseFragment : Fragment(), BrowseContract.ViewController {
         usernameTextView.text = username
     }
 
-    override fun displayEvents(events: List<Event>) {
+    override fun displayEvents(events: List<ScheduledEvent>) {
         var eventsText = ""
         events.forEach {
-            eventsText += "${it.message}\n"
+            eventsText += "${it.scheduledMessage}\n"
         }
 
         eventsTextView.text = eventsText
