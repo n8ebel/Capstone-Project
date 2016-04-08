@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">In Touch</string>
+    <string name="app_name">InTouch</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -32,5 +32,8 @@
     <!-- Sign in Screen -->
     <string name="password">Passowrd</string>
     <string name="username">Username</string>
+
+    <string name="open_drawer">Open navigation drawer</string>
+    <string name="close_drawer">Close navigation drawer</string>
 
 </resources>

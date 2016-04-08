@@ -5,8 +5,6 @@ import com.n8.intouch.model.ScheduledEvent
 
 class BrowseContract {
     interface ViewController {
-        fun setUsernameText(username:String)
-
         fun displayEvents(events:List<ScheduledEvent>)
 
         fun displayError(error:Throwable)
