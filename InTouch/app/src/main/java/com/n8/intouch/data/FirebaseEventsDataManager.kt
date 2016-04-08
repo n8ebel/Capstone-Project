@@ -1,25 +1,32 @@
 package com.n8.intouch.data
 
-import com.firebase.client.DataSnapshot
-import com.firebase.client.Firebase
-import com.firebase.client.FirebaseError
-import com.firebase.client.ValueEventListener
-import com.n8.intouch.model.Event
+import android.util.Log
+import com.firebase.client.*
+import com.n8.intouch.model.ScheduledEvent
 import java.util.*
 
 class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataManager {
 
+    companion object {
+        val TAG = "FirebaseEventsDataManager"
+        val EVENTS_PATH = "events"
+    }
+
     // region Implements EventsDataManager
 
-    override fun getEvents(function:(List<Event>) -> Unit) {
+    override fun getEvents(function:(List<ScheduledEvent>) -> Unit) {
 
-        firebase.child(firebase.auth.uid).child("events").addListenerForSingleValueEvent(object : ValueEventListener {
+        getEventsRef().addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapShot: DataSnapshot?) {
-                var eventsList:MutableList<Event> = ArrayList()
+                var eventsList:MutableList<ScheduledEvent> = ArrayList()
                 dataSnapShot?.children?.forEach {
-                    var eventMap = it.value as HashMap<String, Any>
+                    try {
+                        val event = it.getValue(ScheduledEvent::class.java)
+                        eventsList.add(event)
+                    } catch(e: FirebaseException){
+                        Log.d(TAG, "Failed to parse dataSnapshot: " + e.message)
+                    }
 
-                    eventsList.add(Event("","","", eventMap.get("message") as String))
                 }
                 function(eventsList)
             }
@@ -33,6 +40,20 @@ class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataMana
         function(emptyList())
     }
 
+    override fun addEvent(event: ScheduledEvent, function: (Boolean, FirebaseError?) -> Unit) {
+        getEventsRef().push().setValue(event, Firebase.CompletionListener { error, firebase ->
+                    function(error == null, error)
+                })
+    }
+
     // endregion Implements EventsDataManager
+
+    // region Private Methods
+
+    fun getEventsRef(): Firebase {
+        return firebase.child(firebase.auth.uid).child(EVENTS_PATH)
+    }
+
+    // endregion Private Methods
 
 }

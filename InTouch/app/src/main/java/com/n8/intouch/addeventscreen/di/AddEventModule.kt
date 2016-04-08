@@ -31,8 +31,9 @@ class AddEventModule(val contactUri: Uri, val viewController: AddEventContract.V
     fun providePresenter(
             currentActivityProvider: CurrentActivityProvider,
             interactor: ContactLoader,
-                         user: User,
-                         dataManager:EventsDataManager) : AddEventContract.UserInteractionListener {
+            user: User,
+            dataManager:EventsDataManager) : AddEventContract.UserInteractionListener {
+
         return AddEventPresenter(currentActivityProvider, viewController, interactor, user, dataManager)
     }
 }

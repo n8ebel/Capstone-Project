@@ -6,4 +6,5 @@ package com.n8.intouch.model
 interface User {
     fun getId() : String
     fun getUsername() : String
+    fun getProfileImageUrl() : String
 }

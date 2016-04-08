@@ -20,7 +20,7 @@ import com.n8.intouch.R
 import com.n8.intouch.common.SwipeableFragment
 import com.n8.intouch.datepicker.di.DatePickerComponent
 import com.n8.intouch.model.Contact
-import com.n8.intouch.model.Event
+import com.n8.intouch.model.SystemEvent
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -99,7 +99,7 @@ class DatePickerFragment : SwipeableFragment(), Contract.View {
 
     // region Implements Contract.View
 
-    override fun bindEvents(events: List<Event>) {
+    override fun bindEvents(events: List<SystemEvent>) {
         if (events.size == 0) {
             eventsNoContentView.visibility = View.VISIBLE
             eventsRecyclerView.visibility = View.GONE
@@ -107,7 +107,7 @@ class DatePickerFragment : SwipeableFragment(), Contract.View {
         }
 
         eventsRecyclerView.adapter = DatesRecyclerAdapter(events, object : DatesRecyclerAdapter.ClickListener {
-            override fun onDateClicked(date: Event) {
+            override fun onDateClicked(date: SystemEvent) {
                 customDateView.isSelected = false
                 onDateSelected(date)
             }
@@ -125,7 +125,7 @@ class DatePickerFragment : SwipeableFragment(), Contract.View {
 
     // region Implements DatePickerCard.DateClickedListener
 
-    fun onDateSelected(event: Event) {
+    fun onDateSelected(event: SystemEvent) {
         try {
             presenter.onDateSelected(event.date)
         } catch (e: ParseException) {
@@ -149,7 +149,7 @@ class DatePickerFragment : SwipeableFragment(), Contract.View {
 
     // endregion Implements DatePickerCard.DateClickedListener
 
-    private class CustomDateEvent(val msg:String) : Event("Custom", "Custom", "1900/01/01") {
+    private class CustomDateEvent(val msg:String) : SystemEvent("Custom", "Custom", "1900/01/01") {
 
         public override fun toString(): String {
             return msg
@@ -174,10 +174,10 @@ class DatePickerFragment : SwipeableFragment(), Contract.View {
         }
     }
 
-    private class DatesRecyclerAdapter(val events: List<Event>, val clickListener:DatesRecyclerAdapter.ClickListener) : RecyclerView.Adapter<DateRecyclerViewHolder>(), DateRecyclerViewHolder.ClickListener {
+    private class DatesRecyclerAdapter(val events: List<SystemEvent>, val clickListener:DatesRecyclerAdapter.ClickListener) : RecyclerView.Adapter<DateRecyclerViewHolder>(), DateRecyclerViewHolder.ClickListener {
 
         interface ClickListener {
-            fun onDateClicked(date:Event)
+            fun onDateClicked(date:SystemEvent)
         }
 
         var currentlySelectedItem = -1

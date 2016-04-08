@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">In Touch</string>
+    <string name="app_name">InTouch</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -22,15 +22,18 @@
     <string name="saved_dates">Saved Dates</string>
     <string name="no_events_saved_for_contact">No events saved for contact</string>
 
-    <string-array name="repeat_frequency_spinner_display_values">
-        <item>Days</item>
-        <item>Weeks</item>
-        <item>Months</item>
-        <item>Years</item>
-    </string-array>
+    <string name="days">Days</string>
+    <string name="weeks">Weeks</string>
+    <string name="months">Months</string>
+    <string name="years">Years</string>
+
+    <string name="invalid_frequency">Invalid frequency</string>
 
     <!-- Sign in Screen -->
     <string name="password">Passowrd</string>
     <string name="username">Username</string>
+
+    <string name="open_drawer">Open navigation drawer</string>
+    <string name="close_drawer">Close navigation drawer</string>
 
 </resources>

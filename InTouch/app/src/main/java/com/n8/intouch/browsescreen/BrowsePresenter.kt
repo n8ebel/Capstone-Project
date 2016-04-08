@@ -23,7 +23,6 @@ class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
     val contactsUri = Uri.parse("content://contacts")
 
     override fun start() {
-        viewController.setUsernameText(currentUser.getUsername())
 
         eventManager.getEvents { events ->
             viewController.displayEvents(events)

@@ -13,4 +13,8 @@ class FirebaseUser(private val authData: AuthData) : User {
     override fun getUsername(): String {
         return authData.providerData["email"] as String
     }
+
+    override fun getProfileImageUrl(): String {
+        return authData.providerData["profileImageURL"] as String
+    }
 }
