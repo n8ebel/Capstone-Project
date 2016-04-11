@@ -83,14 +83,17 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
 
     class ScheduledEventViewHolder(val view:View) : RecyclerView.ViewHolder(view) {
 
-        val firstLineText:TextView
+        val messageTextView:TextView
+        val repeatScheduleTextView:TextView
 
         init{
-            firstLineText = view.findViewById(R.id.text1) as TextView
+            messageTextView = view.findViewById(R.id.message_textView) as TextView
+            repeatScheduleTextView = view.findViewById(R.id.repeat_schedule_textView) as TextView
         }
 
         fun bindScheduledEvent(event:ScheduledEvent) {
-            firstLineText.text = event.scheduledMessage
+            messageTextView.text = event.scheduledMessage
+            repeatScheduleTextView.text = "Need to finish this " + event.getStartDate()
         }
 
     }

@@ -28,18 +28,21 @@ class BrowseActivity : BaseActivity() {
 
     lateinit var usernameTextView:TextView
 
+    lateinit var mToolbar:Toolbar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
 
-        val toolbar = (findViewById(R.id.toolbar) as Toolbar).apply{
-            setTitle(getString(R.string.app_name))
+        mToolbar = (findViewById(R.id.toolbar) as Toolbar).apply {
+            // Adding the extra space to fix the text being cut off
+            title = getString(R.string.app_name) + " "
         }
 
         val drawer = findViewById(R.id.browse_drawerLayout) as DrawerLayout
 
-        val drawerToggle = ActionBarDrawerToggle(this, drawer, toolbar, R.string.open_drawer, R.string.close_drawer)
+        val drawerToggle = ActionBarDrawerToggle(this, drawer, mToolbar, R.string.open_drawer, R.string.close_drawer)
         drawer.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
 

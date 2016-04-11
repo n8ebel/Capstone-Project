@@ -1,8 +1,10 @@
 package com.n8.intouch.model
 
 import android.graphics.Bitmap
+import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Created by n8 on 12/8/15.
@@ -43,4 +45,19 @@ data class ScheduledEvent(
 
         val scheduledMessage:String = ""
 
-)
+){
+
+    companion object {
+        val DATE_FORMAT = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.getDefault())
+    }
+
+    fun getStartDate() : String {
+        val cal = Calendar.getInstance().apply {
+            time = Date(startDateTimestamp)
+            set(Calendar.HOUR, startDateHour)
+            set(Calendar.MINUTE, startDateMin)
+        }
+
+        return DATE_FORMAT.format(cal.time)
+    }
+}
