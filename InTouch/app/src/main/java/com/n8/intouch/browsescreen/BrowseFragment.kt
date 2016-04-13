@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 
@@ -72,7 +73,10 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
     // region Implements BrowseContract.ViewController
 
     override fun displayEvents(events: List<ScheduledEvent>) {
-        eventsRecyclerView.adapter = ScheduledEventsRecyclerAdapter(events)
+        eventsRecyclerView.adapter = ScheduledEventsRecyclerAdapter(events,
+                { event -> Toast.makeText(context, "Event ${event.scheduledMessage} clicked", Toast.LENGTH_SHORT).show()},
+                { view -> Toast.makeText(context, "Overflow clicked", Toast.LENGTH_LONG).show() }
+        )
     }
 
     override fun displayError(error: Throwable) {
@@ -85,10 +89,12 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
 
         val messageTextView:TextView
         val repeatScheduleTextView:TextView
+        val overflowImageView:ImageView
 
         init{
             messageTextView = view.findViewById(R.id.message_textView) as TextView
             repeatScheduleTextView = view.findViewById(R.id.repeat_schedule_textView) as TextView
+            overflowImageView = view.findViewById(R.id.overflow_imageView) as ImageView
         }
 
         fun bindScheduledEvent(event:ScheduledEvent) {
@@ -98,10 +104,17 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
 
     }
 
-    class ScheduledEventsRecyclerAdapter(private val scheduledEvents:List<ScheduledEvent>) : RecyclerView.Adapter<ScheduledEventViewHolder>() {
+    class ScheduledEventsRecyclerAdapter(private val scheduledEvents:List<ScheduledEvent>,
+                                         private val eventClickListener: (ScheduledEvent) -> Unit,
+                                         private val overflowClickListener: (View) -> Unit
+                                         ) : RecyclerView.Adapter<ScheduledEventViewHolder>() {
+
         override fun onCreateViewHolder(p0: ViewGroup?, p1: Int): ScheduledEventViewHolder? {
             val view = LayoutInflater.from(p0?.context).inflate(R.layout.scheduled_event_row_item, p0, false)
-            return ScheduledEventViewHolder(view)
+            return ScheduledEventViewHolder(view).apply {
+                itemView.setOnClickListener { eventClickListener(scheduledEvents[adapterPosition]) }
+                overflowImageView.setOnClickListener { overflowClickListener(overflowImageView) }
+            }
         }
 
         override fun onBindViewHolder(holder: ScheduledEventViewHolder?, position: Int) {
