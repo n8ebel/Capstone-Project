@@ -74,13 +74,21 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
 
     override fun displayEvents(events: List<ScheduledEvent>) {
         eventsRecyclerView.adapter = ScheduledEventsRecyclerAdapter(events,
-                { event -> Toast.makeText(context, "Event ${event.scheduledMessage} clicked", Toast.LENGTH_SHORT).show()},
-                { view -> Toast.makeText(context, "Overflow clicked", Toast.LENGTH_LONG).show() }
+                { event -> presenter.onListItemClicked(event)},
+                { view -> presenter.onListItemOverflowClicked(view) }
         )
     }
 
     override fun displayError(error: Throwable) {
         Toast.makeText(context, error.message, Toast.LENGTH_LONG).show()
+    }
+
+    override fun promptToRemoveEvent(event: ScheduledEvent) {
+        throw UnsupportedOperationException()
+    }
+
+    override fun showListItemOverflowMenu() {
+        throw UnsupportedOperationException()
     }
 
     // endregion Implements BrowseContract.ViewController
@@ -99,7 +107,7 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
 
         fun bindScheduledEvent(event:ScheduledEvent) {
             messageTextView.text = event.scheduledMessage
-            repeatScheduleTextView.text = "Need to finish this " + event.getStartDate()
+            repeatScheduleTextView.text = "Need to put formatted date/time here"
         }
 
     }

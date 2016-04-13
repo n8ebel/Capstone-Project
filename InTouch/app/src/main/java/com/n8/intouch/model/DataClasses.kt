@@ -45,19 +45,4 @@ data class ScheduledEvent(
 
         val scheduledMessage:String = ""
 
-){
-
-    companion object {
-        val DATE_FORMAT = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.getDefault())
-    }
-
-    fun getStartDate() : String {
-        val cal = Calendar.getInstance().apply {
-            time = Date(startDateTimestamp)
-            set(Calendar.HOUR, startDateHour)
-            set(Calendar.MINUTE, startDateMin)
-        }
-
-        return DATE_FORMAT.format(cal.time)
-    }
-}
+)
