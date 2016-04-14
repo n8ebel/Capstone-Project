@@ -13,7 +13,7 @@ import com.n8.intouch.data.EventsDataManager
 import com.n8.intouch.model.ScheduledEvent
 import com.n8.intouch.model.User
 
-class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
+open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
                       val viewController:BrowseContract.ViewController,
                       val currentUser: User,
                       val eventManager:EventsDataManager) :
@@ -22,13 +22,23 @@ class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
         EventsDataManager.Listener {
 
 
-    val contactsUri = Uri.parse("content://contacts")
+    companion object {
+        val REQUEST_PICK_CONTACT = 1
+
+        val contactsUri = Uri.parse("content://contacts")
+
+        val PICK_CONTACT_INTENT = Intent(Intent.ACTION_PICK, contactsUri).apply {
+            type = ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE
+        }
+    }
+
+
+
+    val getEventsHandler = { events:List<ScheduledEvent> -> viewController.displayEvents(events)}
 
     override fun start() {
 
-        eventManager.getEvents { events ->
-            viewController.displayEvents(events)
-        }
+        eventManager.getEvents(getEventsHandler)
 
         eventManager.addScheduledEventListener(this)
     }
@@ -38,12 +48,7 @@ class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
     }
 
     override fun onAddPressed() {
-        var pickContactIntent = Intent(Intent.ACTION_PICK, contactsUri)
-
-        // Show user only contacts w/ phone numbers
-        pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
-
-        currentActivityProvider.getCurrentActivity().startActivityForResult(pickContactIntent, 1);
+        currentActivityProvider.getCurrentActivity().startActivityForResult(PICK_CONTACT_INTENT, REQUEST_PICK_CONTACT);
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
