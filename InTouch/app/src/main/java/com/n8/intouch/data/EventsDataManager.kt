@@ -4,6 +4,16 @@ import com.firebase.client.FirebaseError
 import com.n8.intouch.model.ScheduledEvent
 
 interface EventsDataManager {
+
+    interface Listener {
+        fun onScheduledEventAdded(event: ScheduledEvent, index:Int)
+        fun onScheduledEventRemoved(event: ScheduledEvent, index:Int)
+    }
+
+    fun addScheduledEventListener(listener: Listener)
+
+    fun removeScheduledEventListener(listener: Listener)
+
     fun getEvents(function:(List<ScheduledEvent>) -> Unit)
 
     fun addEvent(

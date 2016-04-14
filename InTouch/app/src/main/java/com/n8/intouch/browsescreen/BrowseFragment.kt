@@ -75,10 +75,27 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
     // region Implements BrowseContract.ViewController
 
     override fun displayEvents(events: List<ScheduledEvent>) {
-        eventsRecyclerView.adapter = ScheduledEventsRecyclerAdapter(events,
+        val adapterList:MutableList<ScheduledEvent> = mutableListOf()
+        events.forEach { adapterList.add(it) }
+
+        eventsRecyclerView.adapter = ScheduledEventsRecyclerAdapter(adapterList,
                 { event -> presenter.onListItemClicked(event)},
                 { event, view -> presenter.onListItemOverflowClicked(event, view) }
         )
+    }
+
+    override fun displayAddedEvent(event: ScheduledEvent, index: Int) {
+        with(eventsRecyclerView.adapter as ScheduledEventsRecyclerAdapter){
+            scheduledEvents.add(index, event)
+            notifyItemInserted(index)
+        }
+    }
+
+    override fun hideRemovedEvent(event: ScheduledEvent, index: Int) {
+        with(eventsRecyclerView.adapter as ScheduledEventsRecyclerAdapter){
+            scheduledEvents.removeAt(index)
+            notifyItemRemoved(index)
+        }
     }
 
     override fun displayError(error: Throwable) {
@@ -134,7 +151,7 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
 
     }
 
-    class ScheduledEventsRecyclerAdapter(private val scheduledEvents:List<ScheduledEvent>,
+    class ScheduledEventsRecyclerAdapter(val scheduledEvents:MutableList<ScheduledEvent>,
                                          private val eventClickListener: (ScheduledEvent) -> Unit,
                                          private val overflowClickListener: (ScheduledEvent, View) -> Unit
                                          ) : RecyclerView.Adapter<ScheduledEventViewHolder>() {

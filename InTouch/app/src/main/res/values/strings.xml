@@ -43,4 +43,6 @@
     <string name="remove_event">Remove event</string>
     <string name="confirm_remove_event">Are you sure you want to remove this scheduled event?</string>
 
+    <string name="failed_to_remove_event">Failed to remove event</string>
+
 </resources>

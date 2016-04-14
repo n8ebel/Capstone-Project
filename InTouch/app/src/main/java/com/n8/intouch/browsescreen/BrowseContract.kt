@@ -8,6 +8,10 @@ class BrowseContract {
     interface ViewController {
         fun displayEvents(events:List<ScheduledEvent>)
 
+        fun displayAddedEvent(event: ScheduledEvent, index:Int)
+
+        fun hideRemovedEvent(event: ScheduledEvent, index:Int)
+
         fun displayError(error:Throwable)
 
         fun promptToRemoveEvent(event:ScheduledEvent)

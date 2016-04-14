@@ -1,12 +1,8 @@
 package com.n8.intouch.browsescreen
 
-import android.app.Activity
-import android.app.ActivityOptions
 import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
@@ -20,7 +16,11 @@ import com.n8.intouch.model.User
 class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
                       val viewController:BrowseContract.ViewController,
                       val currentUser: User,
-                      val eventManager:EventsDataManager) : BrowseContract.UserInteractionListener {
+                      val eventManager:EventsDataManager) :
+
+        BrowseContract.UserInteractionListener,
+        EventsDataManager.Listener {
+
 
     val contactsUri = Uri.parse("content://contacts")
 
@@ -29,10 +29,12 @@ class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
         eventManager.getEvents { events ->
             viewController.displayEvents(events)
         }
+
+        eventManager.addScheduledEventListener(this)
     }
 
     override fun stop() {
-
+        eventManager.removeScheduledEventListener(this)
     }
 
     override fun onAddPressed() {
@@ -71,12 +73,31 @@ class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
 
     override fun onRemoveEventConfirmed(event: ScheduledEvent) {
         eventManager.removeEvent(event, { success, error ->
-            Toast.makeText(currentActivityProvider.getCurrentActivity(), "Need to handle the removal callback in BrowsePresenter", Toast.LENGTH_SHORT).show()
+            if (!success) {
+                val currentActivity = currentActivityProvider.getCurrentActivity()
+                Toast.makeText(
+                        currentActivity,
+                        currentActivity.getString(R.string.failed_to_remove_event),
+                        Toast.LENGTH_SHORT).
+                        show()
+            }
         })
     }
 
     override fun onListItemClicked(event: ScheduledEvent) {
-        Toast.makeText(currentActivityProvider.getCurrentActivity(), "Event ${event.scheduledMessage} clicked", Toast.LENGTH_LONG).show()
+        Toast.makeText(currentActivityProvider.getCurrentActivity(), "Event ${event.id} clicked", Toast.LENGTH_LONG).show()
     }
+
+    // region Implements EventDataManager.Listener
+
+    override fun onScheduledEventAdded(event: ScheduledEvent, index:Int) {
+        viewController.displayAddedEvent(event, index)
+    }
+
+    override fun onScheduledEventRemoved(event: ScheduledEvent, index:Int) {
+        viewController.hideRemovedEvent(event, index)
+    }
+
+    // endregion Implements EventDataManager.Listener
 
 }

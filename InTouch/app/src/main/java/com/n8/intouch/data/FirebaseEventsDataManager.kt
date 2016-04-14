@@ -3,41 +3,37 @@ package com.n8.intouch.data
 import android.util.Log
 import com.firebase.client.*
 import com.n8.intouch.model.ScheduledEvent
-import java.util.*
+import java.util.concurrent.CopyOnWriteArraySet
 
-class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataManager {
+class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataManager, ChildEventListener {
 
     companion object {
         val TAG = "FirebaseEventsDataManager"
         val EVENTS_PATH = "events"
     }
 
+    private val mScheduledEventsMap: MutableMap<String, ScheduledEvent> = hashMapOf()
+    private val mScheduledEventsList: MutableList<ScheduledEvent> = mutableListOf()
+
+    private val mScheduledEventListeners = CopyOnWriteArraySet<EventsDataManager.Listener>()
+
+    init {
+        getEventsRef().addChildEventListener(this)
+    }
+
+    override fun addScheduledEventListener(listener: EventsDataManager.Listener) {
+        mScheduledEventListeners.add(listener)
+    }
+
+    override fun removeScheduledEventListener(listener: EventsDataManager.Listener) {
+        mScheduledEventListeners.remove(listener)
+    }
+
     // region Implements EventsDataManager
 
     override fun getEvents(function:(List<ScheduledEvent>) -> Unit) {
-
-        getEventsRef().addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapShot: DataSnapshot?) {
-                var eventsList:MutableList<ScheduledEvent> = ArrayList()
-                dataSnapShot?.children?.forEach {
-                    try {
-                        val event = it.getValue(ScheduledEvent::class.java)
-                        eventsList.add(event)
-                    } catch(e: FirebaseException){
-                        Log.e(TAG, "Failed to parse dataSnapshot: " + e.message)
-                    }
-
-                }
-                function(eventsList)
-            }
-
-            override fun onCancelled(firebaseError: FirebaseError?) {
-                function(emptyList())
-            }
-
-        });
-
-        function(emptyList())
+        val events:List<ScheduledEvent> = mScheduledEventsMap.flatMap { entry -> listOf(entry.value)  }
+        function(events)
     }
 
     override fun addEvent(startDateTimestamp: Long, startDateHour: Int, startDateMin: Int, repeatInterval: Int, repeatDuration: Long, scheduledMessage: String, function: (Boolean, FirebaseError?) -> Unit) {
@@ -57,10 +53,72 @@ class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataMana
 
     // endregion Implements EventsDataManager
 
+    // region Implements ChildEventListener
+
+    override fun onChildRemoved(snapshot: DataSnapshot?) {
+        val event = createEventFromSnapshot(snapshot)
+        if (event != null) {
+            removeScheduledEvent(event)
+        }
+    }
+
+    override fun onCancelled(p0: FirebaseError?) {
+        throw UnsupportedOperationException()
+    }
+
+    override fun onChildChanged(p0: DataSnapshot?, p1: String?) {
+        throw UnsupportedOperationException()
+    }
+
+    override fun onChildMoved(p0: DataSnapshot?, p1: String?) {
+
+    }
+
+    override fun onChildAdded(snapshot: DataSnapshot?, previousChildKey: String?) {
+        val event = createEventFromSnapshot(snapshot)
+        if (event != null) {
+            addScheduledEvent(event)
+        }
+    }
+
+
+    // endregion Implements ChildEventListener
+
     // region Private Methods
+
+    private fun createEventFromSnapshot(snapshot: DataSnapshot?) : ScheduledEvent? {
+        try {
+            return snapshot?.getValue(ScheduledEvent::class.java)
+        } catch(e: FirebaseException) {
+            Log.e(TAG, "Failed to parse dataSnapshot: " + e.message)
+            return null
+        }
+    }
 
     fun getEventsRef(): Firebase {
         return firebase.child(firebase.auth.uid).child(EVENTS_PATH)
+    }
+
+    private fun addScheduledEvent(event: ScheduledEvent) {
+        synchronized(mScheduledEventsMap){
+            mScheduledEventsMap.put(event.id, event)
+            mScheduledEventsList.add(event)
+        }
+
+        mScheduledEventListeners.forEach { it.onScheduledEventAdded(event, mScheduledEventsList.indexOf(event)) }
+    }
+
+    private fun removeScheduledEvent(event: ScheduledEvent) {
+        var index = mScheduledEventsList.indexOf(event)
+
+        synchronized(mScheduledEventsMap){
+            mScheduledEventsMap.remove(event.id)
+            mScheduledEventsList.remove(event)
+        }
+
+        if(index != -1){
+            mScheduledEventListeners.forEach { it.onScheduledEventRemoved(event, index) }
+        }
     }
 
     // endregion Private Methods
