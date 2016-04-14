@@ -24,7 +24,7 @@ class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataMana
                         val event = it.getValue(ScheduledEvent::class.java)
                         eventsList.add(event)
                     } catch(e: FirebaseException){
-                        Log.d(TAG, "Failed to parse dataSnapshot: " + e.message)
+                        Log.e(TAG, "Failed to parse dataSnapshot: " + e.message)
                     }
 
                 }
@@ -40,10 +40,19 @@ class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataMana
         function(emptyList())
     }
 
-    override fun addEvent(event: ScheduledEvent, function: (Boolean, FirebaseError?) -> Unit) {
-        getEventsRef().push().setValue(event, Firebase.CompletionListener { error, firebase ->
-                    function(error == null, error)
-                })
+    override fun addEvent(startDateTimestamp: Long, startDateHour: Int, startDateMin: Int, repeatInterval: Int, repeatDuration: Long, scheduledMessage: String, function: (Boolean, FirebaseError?) -> Unit) {
+        getEventsRef().push().apply {
+            val newEvent = ScheduledEvent(key, startDateTimestamp, startDateHour, startDateMin, repeatInterval, repeatDuration, scheduledMessage)
+            setValue(newEvent, Firebase.CompletionListener { error, firebase ->
+                function(error == null, error)
+            })
+        }
+    }
+
+    override fun removeEvent(event: ScheduledEvent, function: (Boolean, FirebaseError?) -> Unit) {
+        getEventsRef().child(event.id).removeValue { error, firebase ->
+            function(error == null, error)
+        }
     }
 
     // endregion Implements EventsDataManager

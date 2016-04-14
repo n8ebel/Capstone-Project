@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -13,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 
@@ -75,7 +77,7 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
     override fun displayEvents(events: List<ScheduledEvent>) {
         eventsRecyclerView.adapter = ScheduledEventsRecyclerAdapter(events,
                 { event -> presenter.onListItemClicked(event)},
-                { view -> presenter.onListItemOverflowClicked(view) }
+                { event, view -> presenter.onListItemOverflowClicked(event, view) }
         )
     }
 
@@ -84,11 +86,31 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
     }
 
     override fun promptToRemoveEvent(event: ScheduledEvent) {
-        throw UnsupportedOperationException()
+        AlertDialog.Builder(context).apply {
+            setTitle(R.string.remove_event)
+            setMessage(R.string.confirm_remove_event)
+            setNeutralButton(android.R.string.cancel, null)
+            setPositiveButton(android.R.string.ok, { dialog, which ->
+                presenter.onRemoveEventConfirmed(event)
+            })
+            show()
+        }
     }
 
-    override fun showListItemOverflowMenu() {
-        throw UnsupportedOperationException()
+    override fun showListItemOverflowMenu(event:ScheduledEvent, anchorView:View) {
+        PopupMenu(context, anchorView).apply {
+            inflate(R.menu.browse_list_item_overflow_menu)
+            setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.remove_item -> {
+                        presenter.onRemoveEventClicked(event)
+                        true
+                    }
+                    else -> false
+                }
+            }
+            show()
+        }
     }
 
     // endregion Implements BrowseContract.ViewController
@@ -114,14 +136,14 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
 
     class ScheduledEventsRecyclerAdapter(private val scheduledEvents:List<ScheduledEvent>,
                                          private val eventClickListener: (ScheduledEvent) -> Unit,
-                                         private val overflowClickListener: (View) -> Unit
+                                         private val overflowClickListener: (ScheduledEvent, View) -> Unit
                                          ) : RecyclerView.Adapter<ScheduledEventViewHolder>() {
 
         override fun onCreateViewHolder(p0: ViewGroup?, p1: Int): ScheduledEventViewHolder? {
             val view = LayoutInflater.from(p0?.context).inflate(R.layout.scheduled_event_row_item, p0, false)
             return ScheduledEventViewHolder(view).apply {
                 itemView.setOnClickListener { eventClickListener(scheduledEvents[adapterPosition]) }
-                overflowImageView.setOnClickListener { overflowClickListener(overflowImageView) }
+                overflowImageView.setOnClickListener { overflowClickListener(scheduledEvents[adapterPosition], overflowImageView) }
             }
         }
 

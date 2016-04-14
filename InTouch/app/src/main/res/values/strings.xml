@@ -39,4 +39,8 @@
     <string name="sign_out">Sign out</string>
     <string name="sign_out_confirmation">Signing out will cancel all scheduled events on this device</string>
 
+    <string name="remove">Remove</string>
+    <string name="remove_event">Remove event</string>
+    <string name="confirm_remove_event">Are you sure you want to remove this scheduled event?</string>
+
 </resources>

@@ -61,12 +61,18 @@ class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
         }
     }
 
-    override fun onListItemOverflowClicked(view: View) {
-        Toast.makeText(currentActivityProvider.getCurrentActivity(), "Overflow clicked", Toast.LENGTH_LONG).show()
+    override fun onListItemOverflowClicked(event:ScheduledEvent, anchorView: View) {
+        viewController.showListItemOverflowMenu(event, anchorView)
     }
 
     override fun onRemoveEventClicked(event: ScheduledEvent) {
-        Toast.makeText(currentActivityProvider.getCurrentActivity(), "Remove clicked", Toast.LENGTH_LONG).show()
+        viewController.promptToRemoveEvent(event)
+    }
+
+    override fun onRemoveEventConfirmed(event: ScheduledEvent) {
+        eventManager.removeEvent(event, { success, error ->
+            Toast.makeText(currentActivityProvider.getCurrentActivity(), "Need to handle the removal callback in BrowsePresenter", Toast.LENGTH_SHORT).show()
+        })
     }
 
     override fun onListItemClicked(event: ScheduledEvent) {

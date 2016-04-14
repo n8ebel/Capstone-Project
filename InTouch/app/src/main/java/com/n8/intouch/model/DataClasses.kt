@@ -33,6 +33,8 @@ open class SystemEvent(val type:String = "", val label:String? = "", private val
 }
 
 data class ScheduledEvent(
+        val id:String = "",
+
         val startDateTimestamp:Long = -1L,
 
         val startDateHour:Int = -1,

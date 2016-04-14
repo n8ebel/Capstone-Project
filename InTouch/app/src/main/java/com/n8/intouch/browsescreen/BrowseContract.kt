@@ -12,7 +12,7 @@ class BrowseContract {
 
         fun promptToRemoveEvent(event:ScheduledEvent)
 
-        fun showListItemOverflowMenu()
+        fun showListItemOverflowMenu(event:ScheduledEvent, anchorView:View)
     }
 
     interface UserInteractionListener {
@@ -24,9 +24,11 @@ class BrowseContract {
 
         fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?)
 
-        fun onListItemOverflowClicked(view: View)
+        fun onListItemOverflowClicked(event:ScheduledEvent, anchorView: View)
 
         fun onRemoveEventClicked(event:ScheduledEvent)
+
+        fun onRemoveEventConfirmed(event:ScheduledEvent)
 
         fun onListItemClicked(event:ScheduledEvent)
     }
