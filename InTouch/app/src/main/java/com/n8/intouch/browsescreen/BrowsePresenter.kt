@@ -4,8 +4,10 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.Toast
+import com.firebase.client.FirebaseError
 import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.AddEventActivity
 import com.n8.intouch.common.CurrentActivityProvider
@@ -35,6 +37,12 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
 
 
     val getEventsHandler = { events:List<ScheduledEvent> -> viewController.displayEvents(events)}
+    val removeEventhandler = { success:Boolean, error:FirebaseError? ->
+        if (!success) {
+            val currentActivity = currentActivityProvider.getCurrentActivity()
+            viewController.displayError(currentActivity.getString(R.string.failed_to_remove_event))
+        }
+    }
 
     override fun start() {
 
@@ -52,19 +60,22 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        val currentActivity = currentActivityProvider.getCurrentActivity()
+
         // Make sure the request was successful
         if (resultCode == AppCompatActivity.RESULT_OK) {
 
             // Get the URI that points to the selected contact
             var contactUri = data?.getData();
 
-            val currentActivity = currentActivityProvider.getCurrentActivity()
             if (contactUri != null) {
                 var intent = AddEventActivity.createAddForDateIntent(currentActivity, contactUri)
                 currentActivity.startActivity(intent)
-            }else{
-                viewController.displayError(Throwable(currentActivity.getString(R.string.invalid_contact_uri)))
+            } else {
+                viewController.displayError(currentActivity.getString(R.string.invalid_contact_uri))
             }
+        } else {
+            viewController.displayError(currentActivity.getString(R.string.error_getting_contact_uri))
         }
     }
 
@@ -77,20 +88,13 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
     }
 
     override fun onRemoveEventConfirmed(event: ScheduledEvent) {
-        eventManager.removeEvent(event, { success, error ->
-            if (!success) {
-                val currentActivity = currentActivityProvider.getCurrentActivity()
-                Toast.makeText(
-                        currentActivity,
-                        currentActivity.getString(R.string.failed_to_remove_event),
-                        Toast.LENGTH_SHORT).
-                        show()
-            }
-        })
+        eventManager.removeEvent(event, removeEventhandler)
     }
 
     override fun onListItemClicked(event: ScheduledEvent) {
-        Toast.makeText(currentActivityProvider.getCurrentActivity(), "Event ${event.id} clicked", Toast.LENGTH_LONG).show()
+        Toast.makeText(currentActivityProvider.getCurrentActivity(),
+                "Event ${event.id} clicked.  Need to finish implementing this add update tests",
+                Toast.LENGTH_LONG).show()
     }
 
     // region Implements EventDataManager.Listener

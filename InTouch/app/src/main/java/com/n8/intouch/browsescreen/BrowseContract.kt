@@ -14,6 +14,8 @@ class BrowseContract {
 
         fun displayError(error:Throwable)
 
+        fun displayError(message:String)
+
         fun promptToRemoveEvent(event:ScheduledEvent)
 
         fun showListItemOverflowMenu(event:ScheduledEvent, anchorView:View)

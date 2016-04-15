@@ -9,7 +9,8 @@
     <string name="events">Events</string>
     <string name="title_activity_add">AddActivity</string>
 
-    <string name="invalid_contact_uri">Invalid Contact Uri</string>
+    <string name="invalid_contact_uri">Invalid contact uri</string>
+    <string name="error_getting_contact_uri">Error getting contact uri</string>
 
     <string name="select_custom_date">Select custom date</string>
     <string name="pick_date">Pick a Start Date</string>

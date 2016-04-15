@@ -102,6 +102,10 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
         Toast.makeText(context, error.message, Toast.LENGTH_LONG).show()
     }
 
+    override fun displayError(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    }
+
     override fun promptToRemoveEvent(event: ScheduledEvent) {
         AlertDialog.Builder(context).apply {
             setTitle(R.string.remove_event)
