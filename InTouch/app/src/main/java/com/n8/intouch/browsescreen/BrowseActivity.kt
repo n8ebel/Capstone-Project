@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar
 import android.widget.ImageView
 import android.widget.TextView
 import com.n8.intouch.R
+import com.n8.intouch.settings.SettingsActivity
 import com.n8.intouch.browsescreen.di.BrowseModule
 import com.n8.intouch.browsescreen.di.DaggerBrowseComponent
 import com.n8.intouch.common.BaseActivity
@@ -53,8 +54,9 @@ class BrowseActivity : BaseActivity() {
         navigationView.setNavigationItemSelectedListener { item ->
             when(item.itemId){
                 R.id.drawer_sign_out -> confirmSignOut()
+                R.id.drawer_settings -> showSettings()
             }
-
+            drawer.closeDrawers()
             true
         }
 
@@ -108,5 +110,9 @@ class BrowseActivity : BaseActivity() {
                 
             })
             .show()
+    }
+
+    private fun showSettings() {
+        startActivity(SettingsActivity.createIntent(this))
     }
 }

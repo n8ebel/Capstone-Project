@@ -2,8 +2,11 @@ package com.n8.intouch.alarm
 
 import android.app.job.JobParameters
 import android.app.job.JobService
+import android.preference.PreferenceManager
 import android.widget.Toast
+import com.n8.intouch.R
 import com.n8.intouch.getComponent
+import com.n8.intouch.model.ScheduledEvent
 import java.util.concurrent.CountDownLatch
 
 class ScheduledEventJobService : JobService() {
@@ -19,7 +22,7 @@ class ScheduledEventJobService : JobService() {
             val latch = CountDownLatch(1)
 
             application.getComponent().getDataManager().getEvent(eventId, { event, error ->
-                Toast.makeText(baseContext, event?.id + event?.scheduledMessage, Toast.LENGTH_LONG).show()
+                respondToJob(event)
                 latch.countDown()
             })
 
@@ -35,4 +38,21 @@ class ScheduledEventJobService : JobService() {
     override fun onStopJob(params: JobParameters?): Boolean {
         return false
     }
+
+    // region Private methods
+
+    private fun respondToJob(event: ScheduledEvent?) {
+        if(event == null) return
+
+        val autoSendText = application.getComponent().getSharedPreferences().getBoolean(baseContext.getString(R.string.settings_key_auto_send), false)
+
+        if (autoSendText) {
+            Toast.makeText(baseContext, "Auto-Send", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(baseContext, "Show Notification", Toast.LENGTH_LONG).show()
+        }
+
+    }
+
+    // endregion Private methods
 }

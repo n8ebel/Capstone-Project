@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import com.firebase.client.Firebase
 import com.n8.intouch.R
 import com.n8.intouch.alarm.EventScheduler
@@ -34,7 +35,7 @@ class ApplicationModule(private val application: Application, private val activi
 
     @Provides
     fun provideSharedPreferences(): SharedPreferences {
-        return application.getSharedPreferences(application.javaClass.simpleName, Context.MODE_PRIVATE)
+        return PreferenceManager.getDefaultSharedPreferences(application)
     }
 
     @Provides
