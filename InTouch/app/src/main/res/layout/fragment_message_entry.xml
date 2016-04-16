@@ -19,15 +19,31 @@
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/keyline_0"
+            >
+
+            <EditText
+                android:id="@+id/phone_number_entry_editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/enter_phone_number"
+                android:inputType="phone"
+                />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/keyline_1"
+            android:padding="@dimen/keyline_0"
             >
 
             <EditText
                 android:id="@+id/message_entry_editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/keyline_0"
                 android:hint="@string/enter_message"
-                android:gravity="start|top"
                 />
 
         </android.support.design.widget.TextInputLayout>

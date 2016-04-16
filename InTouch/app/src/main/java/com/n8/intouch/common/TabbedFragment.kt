@@ -11,7 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.n8.intouch.R
-import com.n8.intouch.browsescreen.TabbedFragmentAdapter
+import com.n8.intouch.common.TabbedFragmentAdapter
 
 /**
  * A tabbed fragment to hold multiple other fragments

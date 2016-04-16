@@ -82,6 +82,12 @@ class ContentProviderContactLoader(val context: Context, val contactUri: Uri) : 
             eventsList.add(SystemEvent(eventType, eventLabel, eventDate))
         }
 
-        listener.invoke(Contact(displayName, bitmap, eventsList))
+        // Get phone number
+        val numberCursor = context.contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.Data.LOOKUP_KEY + "=?", arrayOf(lookupKey), null)
+        numberCursor.moveToNext()
+        val phoneNumber = numberCursor.getString(numberCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+
+
+        listener.invoke(Contact(displayName, phoneNumber, bitmap, eventsList))
     }
 }

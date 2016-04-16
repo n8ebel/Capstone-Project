@@ -15,6 +15,7 @@ import com.n8.intouch.getComponent
 import com.n8.intouch.messageentryscreen.MessageEntryFragment
 import com.n8.intouch.messageentryscreen.di.DaggerMessageEntryComponent
 import com.n8.intouch.messageentryscreen.di.MessageEntryModule
+import com.n8.intouch.model.Contact
 import com.n8.intouch.model.ScheduledEvent
 import com.n8.intouch.model.User
 import com.n8.intouch.repeatpicker.RepeatPickerFragment
@@ -44,6 +45,8 @@ class AddEventPresenter(
         val TAG_MESSAGE_ENTRY = "tag_message_entry"
     }
 
+    lateinit var mContact: Contact
+
     var startDateTimestamp = -1L
 
     var startDateHour = -1
@@ -68,6 +71,7 @@ class AddEventPresenter(
         viewController.showProgress()
 
         interactor.loadContact(contactUri, { contact ->
+            mContact = contact
 
             val currentActivity = currentActivityProvider.getCurrentActivity()
 
@@ -160,7 +164,7 @@ class AddEventPresenter(
     private fun showMessageEntry() {
         var fragment = MessageEntryFragment().apply {
             component = DaggerMessageEntryComponent.builder().
-                    messageEntryModule(MessageEntryModule(this, this@AddEventPresenter)).
+                    messageEntryModule(MessageEntryModule(mContact.phoneNumber, this, this@AddEventPresenter)).
                     build()
         }
 

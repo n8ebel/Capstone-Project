@@ -19,6 +19,7 @@
     <string name="every">Every</string>
     <string name="choose_a_time">Choose a time</string>
     <string name="enter_message">Enter Message</string>
+    <string name="enter_phone_number">Enter Phone Number</string>
     <string name="message_entry_hint">ex. Hello, how are you?</string>
     <string name="saved_dates">Saved Dates</string>
     <string name="no_events_saved_for_contact">No events saved for contact</string>

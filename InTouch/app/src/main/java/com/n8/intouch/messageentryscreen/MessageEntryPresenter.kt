@@ -1,11 +1,25 @@
 package com.n8.intouch.messageentryscreen
 
-class MessageEntryPresenter(val viewListener: Contract.ViewListener, val fragmentListener: MessageEntryFragment.Listener) : Contract.UserInteractionListener {
+class MessageEntryPresenter(var mPhoneNumber:String, val viewListener: Contract.ViewListener, val fragmentListener: MessageEntryFragment.Listener) : Contract.UserInteractionListener {
 
-    // region Implements Contract.UserInteractionListener
+    var mMessage = ""
 
-    override fun onTextChanged(text: String) {
-        if (text.length > 0) viewListener.setContinueButtonVisible(true) else viewListener.setContinueButtonVisible(false)
+    override fun start() {
+        viewListener.setPhoneNumber(mPhoneNumber)
+    }
+
+    override fun stop() {
+
+    }
+
+    override fun onMessageTextChanged(text: String) {
+        mMessage = text
+        updateContinueButtonVisibility()
+    }
+
+    override fun onPhoneNumberTextChanged(text: String) {
+        mPhoneNumber = text
+        updateContinueButtonVisibility()
     }
 
     override fun onContinueClicked(test: String) {
@@ -13,5 +27,13 @@ class MessageEntryPresenter(val viewListener: Contract.ViewListener, val fragmen
     }
 
     // endregion Implements Contract.UserInteractionListener
+
+    // region Private Methods
+
+    private fun updateContinueButtonVisibility() {
+        if (mMessage.length > 0 && mPhoneNumber.length > 0) viewListener.setContinueButtonVisible(true) else viewListener.setContinueButtonVisible(false)
+    }
+
+    // endregion Private Methods
 
 }

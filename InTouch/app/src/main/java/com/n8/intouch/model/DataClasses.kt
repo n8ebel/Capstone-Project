@@ -10,7 +10,7 @@ import java.util.*
  * Created by n8 on 12/8/15.
  */
 
-data class Contact(val name:String, val thumbnail: Bitmap? = null, val events:List<SystemEvent> = listOf())
+data class Contact(val name:String, val phoneNumber:String = "null", val thumbnail: Bitmap? = null, val events:List<SystemEvent> = listOf())
 
 open class SystemEvent(val type:String = "", val label:String? = "", private val dateString:String = "", val message:String = ""){
 
