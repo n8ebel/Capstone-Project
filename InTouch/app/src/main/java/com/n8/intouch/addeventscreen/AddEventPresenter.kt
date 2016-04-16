@@ -95,7 +95,7 @@ class AddEventPresenter(
 
     override fun scheduleEvent() {
         eventManager.addEvent(
-                ScheduledEvent(startDateTimestamp, startDateHour, startDateMin, repeatInterval, repeatDuration, scheduledMessage),
+                startDateTimestamp, startDateHour, startDateMin, repeatInterval, repeatDuration, scheduledMessage,
                 { success, error ->
                     if (success) {
                         viewController.finish()

@@ -33,6 +33,8 @@ open class SystemEvent(val type:String = "", val label:String? = "", private val
 }
 
 data class ScheduledEvent(
+        val id:String = "",
+
         val startDateTimestamp:Long = -1L,
 
         val startDateHour:Int = -1,
@@ -45,19 +47,4 @@ data class ScheduledEvent(
 
         val scheduledMessage:String = ""
 
-){
-
-    companion object {
-        val DATE_FORMAT = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.getDefault())
-    }
-
-    fun getStartDate() : String {
-        val cal = Calendar.getInstance().apply {
-            time = Date(startDateTimestamp)
-            set(Calendar.HOUR, startDateHour)
-            set(Calendar.MINUTE, startDateMin)
-        }
-
-        return DATE_FORMAT.format(cal.time)
-    }
-}
+)

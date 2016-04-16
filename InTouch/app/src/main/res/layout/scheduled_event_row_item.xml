@@ -41,4 +41,12 @@
 
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/overflow_imageView"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="end"
+        android:src="@drawable/ic_overflow_24dp"
+        />
+
 </android.support.v7.widget.CardView>

@@ -6,12 +6,15 @@ import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import android.widget.Toast
 
@@ -72,11 +75,63 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
     // region Implements BrowseContract.ViewController
 
     override fun displayEvents(events: List<ScheduledEvent>) {
-        eventsRecyclerView.adapter = ScheduledEventsRecyclerAdapter(events)
+        val adapterList:MutableList<ScheduledEvent> = mutableListOf()
+        events.forEach { adapterList.add(it) }
+
+        eventsRecyclerView.adapter = ScheduledEventsRecyclerAdapter(adapterList,
+                { event -> presenter.onListItemClicked(event)},
+                { event, view -> presenter.onListItemOverflowClicked(event, view) }
+        )
+    }
+
+    override fun displayAddedEvent(event: ScheduledEvent, index: Int) {
+        with(eventsRecyclerView.adapter as ScheduledEventsRecyclerAdapter){
+            scheduledEvents.add(index, event)
+            notifyItemInserted(index)
+        }
+    }
+
+    override fun hideRemovedEvent(event: ScheduledEvent, index: Int) {
+        with(eventsRecyclerView.adapter as ScheduledEventsRecyclerAdapter){
+            scheduledEvents.removeAt(index)
+            notifyItemRemoved(index)
+        }
     }
 
     override fun displayError(error: Throwable) {
         Toast.makeText(context, error.message, Toast.LENGTH_LONG).show()
+    }
+
+    override fun displayError(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    }
+
+    override fun promptToRemoveEvent(event: ScheduledEvent) {
+        AlertDialog.Builder(context).apply {
+            setTitle(R.string.remove_event)
+            setMessage(R.string.confirm_remove_event)
+            setNeutralButton(android.R.string.cancel, null)
+            setPositiveButton(android.R.string.ok, { dialog, which ->
+                presenter.onRemoveEventConfirmed(event)
+            })
+            show()
+        }
+    }
+
+    override fun showListItemOverflowMenu(event:ScheduledEvent, anchorView:View) {
+        PopupMenu(context, anchorView).apply {
+            inflate(R.menu.browse_list_item_overflow_menu)
+            setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.remove_item -> {
+                        presenter.onRemoveEventClicked(event)
+                        true
+                    }
+                    else -> false
+                }
+            }
+            show()
+        }
     }
 
     // endregion Implements BrowseContract.ViewController
@@ -85,23 +140,32 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
 
         val messageTextView:TextView
         val repeatScheduleTextView:TextView
+        val overflowImageView:ImageView
 
         init{
             messageTextView = view.findViewById(R.id.message_textView) as TextView
             repeatScheduleTextView = view.findViewById(R.id.repeat_schedule_textView) as TextView
+            overflowImageView = view.findViewById(R.id.overflow_imageView) as ImageView
         }
 
         fun bindScheduledEvent(event:ScheduledEvent) {
             messageTextView.text = event.scheduledMessage
-            repeatScheduleTextView.text = "Need to finish this " + event.getStartDate()
+            repeatScheduleTextView.text = "Need to put formatted date/time here"
         }
 
     }
 
-    class ScheduledEventsRecyclerAdapter(private val scheduledEvents:List<ScheduledEvent>) : RecyclerView.Adapter<ScheduledEventViewHolder>() {
+    class ScheduledEventsRecyclerAdapter(val scheduledEvents:MutableList<ScheduledEvent>,
+                                         private val eventClickListener: (ScheduledEvent) -> Unit,
+                                         private val overflowClickListener: (ScheduledEvent, View) -> Unit
+                                         ) : RecyclerView.Adapter<ScheduledEventViewHolder>() {
+
         override fun onCreateViewHolder(p0: ViewGroup?, p1: Int): ScheduledEventViewHolder? {
             val view = LayoutInflater.from(p0?.context).inflate(R.layout.scheduled_event_row_item, p0, false)
-            return ScheduledEventViewHolder(view)
+            return ScheduledEventViewHolder(view).apply {
+                itemView.setOnClickListener { eventClickListener(scheduledEvents[adapterPosition]) }
+                overflowImageView.setOnClickListener { overflowClickListener(scheduledEvents[adapterPosition], overflowImageView) }
+            }
         }
 
         override fun onBindViewHolder(holder: ScheduledEventViewHolder?, position: Int) {
