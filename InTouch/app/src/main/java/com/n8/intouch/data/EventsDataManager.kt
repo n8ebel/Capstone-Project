@@ -29,7 +29,9 @@ interface EventsDataManager {
 
             scheduledMessage:String = "",
 
-            function:(Boolean, FirebaseError?) -> Unit)
+            function:(event:ScheduledEvent?, FirebaseError?) -> Unit)
 
     fun removeEvent(event:ScheduledEvent, function:(Boolean, FirebaseError?) -> Unit)
+
+    fun getEvent(id:String, function:(event:ScheduledEvent?, FirebaseError?) -> Unit)
 }

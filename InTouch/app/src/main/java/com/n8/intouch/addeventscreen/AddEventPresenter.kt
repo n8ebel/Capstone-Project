@@ -1,11 +1,19 @@
 package com.n8.intouch.addeventscreen
 
+import android.app.Activity
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
+import android.content.Context
 import android.content.DialogInterface
 import android.net.Uri
+import android.os.PersistableBundle
 import android.text.format.DateUtils
 import com.firebase.client.FirebaseError
 import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.data.ContactLoader
+import com.n8.intouch.alarm.EventScheduler
+import com.n8.intouch.alarm.ScheduledEventJobService
 import com.n8.intouch.common.CurrentActivityProvider
 import com.n8.intouch.data.EventsDataManager
 import com.n8.intouch.datepicker.DatePickerFragment
@@ -29,7 +37,8 @@ class AddEventPresenter(
         val viewController: AddEventContract.ViewController,
                         val interactor: ContactLoader,
                         val currentUser: User,
-                        val eventManager: EventsDataManager) :
+                        val eventManager: EventsDataManager,
+                        val mEventScheduler: EventScheduler) :
         AddEventContract.UserInteractionListener ,
         DatePickerFragment.Listener,
         RepeatPickerFragment.Listener,
@@ -100,8 +109,9 @@ class AddEventPresenter(
     override fun scheduleEvent() {
         eventManager.addEvent(
                 startDateTimestamp, startDateHour, startDateMin, repeatInterval, repeatDuration, scheduledMessage,
-                { success, error ->
-                    if (success) {
+                { event, error ->
+                    if (event != null) {
+                        mEventScheduler.scheduleEvent(event)
                         viewController.finish()
                     } else {
                         viewController.displayError(Throwable(error?.message))
@@ -154,7 +164,7 @@ class AddEventPresenter(
                 "Repating every $repeatInterval ${displayUnitsForRepeatDuration(repeatDuration)} \n" +
                 "at $startDateHour:$startDateMin with message: \n" + scheduledMessage + "\n to number $phoneNumber"
 
-       viewController.promptToConfirmScheduledEvent("Schedule repeated message", msg)
+       viewController.promptToConfirmScheduledEvent(title, msg)
     }
 
     // endregion Implements MessageEntryFragment.Listener
@@ -180,6 +190,10 @@ class AddEventPresenter(
             DateUtils.YEAR_IN_MILLIS -> currentActivity.getString(R.string.years)
             else -> throw IllegalStateException("Invalid duration value: " + duration)
         }
+    }
+
+    private fun getCurrentActivity() : Activity {
+        return currentActivityProvider.getCurrentActivity()
     }
 
     // endregion Private Methods

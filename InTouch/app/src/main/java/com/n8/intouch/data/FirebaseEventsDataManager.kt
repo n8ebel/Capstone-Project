@@ -36,11 +36,11 @@ class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataMana
         function(events)
     }
 
-    override fun addEvent(startDateTimestamp: Long, startDateHour: Int, startDateMin: Int, repeatInterval: Int, repeatDuration: Long, scheduledMessage: String, function: (Boolean, FirebaseError?) -> Unit) {
+    override fun addEvent(startDateTimestamp: Long, startDateHour: Int, startDateMin: Int, repeatInterval: Int, repeatDuration: Long, scheduledMessage: String, function: (event:ScheduledEvent?, FirebaseError?) -> Unit) {
         getEventsRef().push().apply {
             val newEvent = ScheduledEvent(key, startDateTimestamp, startDateHour, startDateMin, repeatInterval, repeatDuration, scheduledMessage)
             setValue(newEvent, Firebase.CompletionListener { error, firebase ->
-                function(error == null, error)
+                if(error == null) function(newEvent, error) else function(null, error)
             })
         }
     }
@@ -49,6 +49,20 @@ class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataMana
         getEventsRef().child(event.id).removeValue { error, firebase ->
             function(error == null, error)
         }
+    }
+
+    override fun getEvent(id: String, function: (ScheduledEvent?, FirebaseError?) -> Unit) {
+        getEventsRef().child(id).addValueEventListener(object: ValueEventListener{
+            override fun onDataChange(dataSnapshot: DataSnapshot?) {
+                val event = createEventFromSnapshot(dataSnapshot)
+                function(event, null)
+            }
+
+            override fun onCancelled(error: FirebaseError?) {
+                function(null, error)
+            }
+
+        })
     }
 
     // endregion Implements EventsDataManager

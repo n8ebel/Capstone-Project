@@ -8,6 +8,7 @@ import android.view.View
 import com.firebase.client.FirebaseError
 import com.n8.intouch.BuildConfig
 import com.n8.intouch.R
+import com.n8.intouch.alarm.EventScheduler
 import com.n8.intouch.common.CurrentActivityProvider
 import com.n8.intouch.data.EventsDataManager
 import com.n8.intouch.model.ScheduledEvent
@@ -35,6 +36,8 @@ class BrowsePresenterTest {
 
     lateinit var mEventsManager:EventsDataManager
 
+    lateinit var mEventScheduler:EventScheduler
+
     @Before
     fun setup(){
         mMockActivity = Mockito.mock(Activity::class.java)
@@ -48,6 +51,8 @@ class BrowsePresenterTest {
         mViewController = Mockito.mock(BrowseContract.ViewController::class.java)
 
         mEventsManager = Mockito.mock(EventsDataManager::class.java)
+
+        mEventScheduler = Mockito.mock(EventScheduler::class.java)
     }
 
     @Test
@@ -192,6 +197,7 @@ class BrowsePresenterTest {
         presenter.onRemoveEventConfirmed(event)
 
         verify(mEventsManager, times(1)).removeEvent(event, presenter.removeEventhandler)
+        verify(mEventScheduler, times(1)).cancelScheduledEvent(event)
         verify(mViewController, times(1)).displayError(errorMsg)
     }
 
@@ -225,7 +231,7 @@ class BrowsePresenterTest {
     // region Private Methods
 
     private fun createBrowsePresenter(): BrowsePresenter {
-        return BrowsePresenter(mCurrentActivityProvider, mViewController, mCurrentUser, mEventsManager)
+        return BrowsePresenter(mCurrentActivityProvider, mViewController, mCurrentUser, mEventsManager, mEventScheduler)
     }
 
     // endregion Private Methods

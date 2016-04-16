@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.firebase.client.Firebase
 import com.n8.intouch.R
+import com.n8.intouch.alarm.EventScheduler
+import com.n8.intouch.alarm.JobSchedulerEventScheduler
 import com.n8.intouch.common.CurrentActivityProvider
 import com.n8.intouch.data.EventsDataManager
 import com.n8.intouch.data.FirebaseEventsDataManager
@@ -53,5 +55,10 @@ class ApplicationModule(private val application: Application, private val activi
     @Provides
     fun provideEventsDataManager(firebase: Firebase) : EventsDataManager {
         return FirebaseEventsDataManager(firebase)
+    }
+
+    @Provides
+    fun provideEventsScheduler(context: Context) : EventScheduler {
+        return JobSchedulerEventScheduler(context)
     }
 }
