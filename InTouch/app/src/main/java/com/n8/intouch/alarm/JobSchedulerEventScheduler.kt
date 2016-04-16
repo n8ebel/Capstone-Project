@@ -18,7 +18,7 @@ class JobSchedulerEventScheduler(private val mContext:Context) : EventScheduler 
                 .setExtras(PersistableBundle(1).apply {
                     putString(ScheduledEventJobService.JOB_EXTRA_SCHEDULED_EVENT_ID, event.id)
                 })
-                .setPeriodic(5000)
+                .setPeriodic(30000)
                 .build()
 
         with(mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler){

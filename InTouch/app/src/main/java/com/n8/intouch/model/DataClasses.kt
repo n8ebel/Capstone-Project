@@ -45,6 +45,8 @@ data class ScheduledEvent(
 
         val repeatDuration:Long = -1L,  // value such as week.inMillis()
 
-        val scheduledMessage:String = ""
+        val scheduledMessage:String = "",
+
+        val phoneNumber:String = ""
 
 )

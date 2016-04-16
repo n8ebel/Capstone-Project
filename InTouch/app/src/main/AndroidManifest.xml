@@ -43,11 +43,6 @@
             android:enabled="true"
             android:exported="true" />
 
-        <receiver
-            android:name=".alarm.CustomAlarmReceiver"
-            android:enabled="true"
-            android:exported="false" />
-
         <service android:name=".alarm.ScheduledEventJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 

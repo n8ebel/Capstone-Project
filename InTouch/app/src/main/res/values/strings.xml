@@ -51,5 +51,7 @@
     <string name="setting_auto_send_title">Automatically send text message</string>
     <string name="setting_auto_send_summary">With this enabled, messages will automatically be sent at the specified times</string>
 
+    <string name="notification_title">Stay InTouch</string>
+    <string name="notification_action_label">Send Message</string>
 
 </resources>

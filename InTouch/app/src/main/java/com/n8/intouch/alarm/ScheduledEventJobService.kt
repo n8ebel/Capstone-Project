@@ -1,18 +1,27 @@
 package com.n8.intouch.alarm
 
+import android.app.Notification
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.job.JobParameters
 import android.app.job.JobService
+import android.content.Intent
+import android.net.Uri
 import android.preference.PreferenceManager
+import android.support.v7.app.NotificationCompat
+import android.telephony.SmsManager
 import android.widget.Toast
 import com.n8.intouch.R
 import com.n8.intouch.getComponent
 import com.n8.intouch.model.ScheduledEvent
+import com.n8.intouch.signin.SignInActivity
 import java.util.concurrent.CountDownLatch
 
 class ScheduledEventJobService : JobService() {
 
     companion object {
         val JOB_EXTRA_SCHEDULED_EVENT_ID = "scheduled_event_id"
+        val NOTIFICATION_ID = 1
     }
 
     override fun onStartJob(params: JobParameters?): Boolean {
@@ -47,10 +56,46 @@ class ScheduledEventJobService : JobService() {
         val autoSendText = application.getComponent().getSharedPreferences().getBoolean(baseContext.getString(R.string.settings_key_auto_send), false)
 
         if (autoSendText) {
-            Toast.makeText(baseContext, "Auto-Send", Toast.LENGTH_LONG).show()
+            sendText(event)
         } else {
-            Toast.makeText(baseContext, "Show Notification", Toast.LENGTH_LONG).show()
+            showNotification(event)
         }
+
+    }
+
+    private fun sendText(event: ScheduledEvent) {
+        SmsManager.getDefault().apply {
+            sendTextMessage(event.phoneNumber, null, event.scheduledMessage, null, null)
+        }
+    }
+
+    private fun showNotification(event: ScheduledEvent) {
+        val title = baseContext.getString(R.string.notification_title)
+        val message = "message"
+        val actionLabel = baseContext.getString(R.string.notification_action_label)
+
+        val signInIntent = Intent(baseContext, SignInActivity::class.java)
+        val contentIntent = PendingIntent.getActivity(baseContext, 0, signInIntent, 0)
+
+        val smsUri = Uri.parse("smsto:" + event.phoneNumber)
+        val smsIntent = Intent(Intent.ACTION_SENDTO, smsUri).apply {
+            putExtra("sms_body", event.scheduledMessage)
+        }
+        val actionIntent = PendingIntent.getActivity(baseContext, 1, smsIntent, 0)
+
+        val notification = NotificationCompat.Builder(baseContext).apply {
+            setCategory(Notification.CATEGORY_PROMO)
+            setContentTitle(title)
+            setContentText(message)
+            setSmallIcon(R.mipmap.ic_launcher)
+            setAutoCancel(true)
+            addAction(android.R.drawable.ic_menu_send, actionLabel, actionIntent)
+            setContentIntent(contentIntent)
+            setPriority(Notification.PRIORITY_HIGH)
+        }.build()
+
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(NOTIFICATION_ID, notification);
 
     }
 

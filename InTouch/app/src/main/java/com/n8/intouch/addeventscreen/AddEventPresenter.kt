@@ -68,6 +68,8 @@ class AddEventPresenter(
 
     var scheduledMessage = ""
 
+    var mPhoneNumber = ""
+
     override fun start() {
 
     }
@@ -108,7 +110,7 @@ class AddEventPresenter(
 
     override fun scheduleEvent() {
         eventManager.addEvent(
-                startDateTimestamp, startDateHour, startDateMin, repeatInterval, repeatDuration, scheduledMessage,
+                startDateTimestamp, startDateHour, startDateMin, repeatInterval, repeatDuration, scheduledMessage, mPhoneNumber,
                 { event, error ->
                     if (event != null) {
                         mEventScheduler.scheduleEvent(event)
@@ -155,7 +157,7 @@ class AddEventPresenter(
     // region Implements MessageEntryFragment.Listener
 
     override fun onMessageEntered(phoneNumber:String, message: String) {
-
+        mPhoneNumber = phoneNumber
         scheduledMessage = message
 
         // TODO FIX THIS

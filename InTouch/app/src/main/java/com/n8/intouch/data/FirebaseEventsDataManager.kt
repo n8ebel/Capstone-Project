@@ -36,9 +36,9 @@ class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataMana
         function(events)
     }
 
-    override fun addEvent(startDateTimestamp: Long, startDateHour: Int, startDateMin: Int, repeatInterval: Int, repeatDuration: Long, scheduledMessage: String, function: (event:ScheduledEvent?, FirebaseError?) -> Unit) {
+    override fun addEvent(startDateTimestamp: Long, startDateHour: Int, startDateMin: Int, repeatInterval: Int, repeatDuration: Long, scheduledMessage: String, phoneNumber:String, function: (event:ScheduledEvent?, FirebaseError?) -> Unit) {
         getEventsRef().push().apply {
-            val newEvent = ScheduledEvent(key, startDateTimestamp, startDateHour, startDateMin, repeatInterval, repeatDuration, scheduledMessage)
+            val newEvent = ScheduledEvent(key, startDateTimestamp, startDateHour, startDateMin, repeatInterval, repeatDuration, scheduledMessage, phoneNumber)
             setValue(newEvent, Firebase.CompletionListener { error, firebase ->
                 if(error == null) function(newEvent, error) else function(null, error)
             })
