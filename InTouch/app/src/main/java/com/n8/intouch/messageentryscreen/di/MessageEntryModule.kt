@@ -7,11 +7,11 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class MessageEntryModule(val view:Contract.ViewListener, val fragmentListener: MessageEntryFragment.Listener) {
+class MessageEntryModule(val phoneNumber:String, val view:Contract.ViewListener, val fragmentListener: MessageEntryFragment.Listener) {
 
     @Provides
     fun provideUserInteractionListener() : Contract.UserInteractionListener {
-        return MessageEntryPresenter(view, fragmentListener)
+        return MessageEntryPresenter(phoneNumber, view, fragmentListener)
     }
 
 }

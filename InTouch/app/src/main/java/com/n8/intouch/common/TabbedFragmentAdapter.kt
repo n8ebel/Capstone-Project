@@ -1,4 +1,4 @@
-package com.n8.intouch.browsescreen
+package com.n8.intouch.common
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
