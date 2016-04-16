@@ -144,7 +144,7 @@ class AddEventPresenter(
 
     // region Implements MessageEntryFragment.Listener
 
-    override fun onMessageEntered(message: String) {
+    override fun onMessageEntered(phoneNumber:String, message: String) {
 
         scheduledMessage = message
 
@@ -152,7 +152,7 @@ class AddEventPresenter(
         val title = "Schedule repeated message"
         val msg = "Starting:  ${DATE_FORMAT.format(Date(startDateTimestamp))} \n" +
                 "Repating every $repeatInterval ${displayUnitsForRepeatDuration(repeatDuration)} \n" +
-                "at $startDateHour:$startDateMin with message: \n" + scheduledMessage
+                "at $startDateHour:$startDateMin with message: \n" + scheduledMessage + "\n to number $phoneNumber"
 
        viewController.promptToConfirmScheduledEvent("Schedule repeated message", msg)
     }

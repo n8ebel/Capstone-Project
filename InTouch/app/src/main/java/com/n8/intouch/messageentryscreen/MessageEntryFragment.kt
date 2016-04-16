@@ -16,15 +16,13 @@ import javax.inject.Inject
 class MessageEntryFragment : SwipeableFragment() , Contract.ViewListener {
 
     interface Listener {
-        fun onMessageEntered(message:String)
+        fun onMessageEntered(phoneNumber:String, message:String)
     }
 
     var component: MessageEntryComponent? = null
 
     @Inject
     lateinit var userInteractionListener:Contract.UserInteractionListener
-
-    lateinit var messageEditText:EditText
 
     lateinit var phoneNumberEditText:EditText
 
@@ -34,42 +32,47 @@ class MessageEntryFragment : SwipeableFragment() , Contract.ViewListener {
 
         component!!.inject(this)
 
-        var rootView = inflater!!.inflate(R.layout.fragment_message_entry, container, false)
+        val rootView = inflater!!.inflate(R.layout.fragment_message_entry, container, false)
 
-        messageEditText = rootView.findViewById(R.id.message_entry_editText) as EditText
-        messageEditText.addTextChangedListener(object : TextWatcher{
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                userInteractionListener.onMessageTextChanged(s.toString())
+        with(rootView){
+            (findViewById(R.id.message_entry_editText) as EditText).apply{
+                addTextChangedListener(object : TextWatcher{
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                        userInteractionListener.onMessageTextChanged(s.toString())
+                    }
+
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                        // noop
+                    }
+
+                    override fun afterTextChanged(s: Editable?) {
+                        // noop
+                    }
+                })
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // noop
+            phoneNumberEditText = (findViewById(R.id.phone_number_entry_editText) as EditText).apply {
+                addTextChangedListener(object : TextWatcher{
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                        userInteractionListener.onPhoneNumberTextChanged(s.toString())
+                    }
+
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                        // noop
+                    }
+
+                    override fun afterTextChanged(s: Editable?) {
+                        // noop
+                    }
+                })
             }
 
-            override fun afterTextChanged(s: Editable?) {
-                // noop
+            continueButton = (rootView.findViewById(R.id.continue_button) as FloatingActionButton).apply {
+                setOnClickListener(View.OnClickListener {
+                    userInteractionListener.onContinueClicked()
+                })
             }
-        })
-
-        phoneNumberEditText = rootView.findViewById(R.id.phone_number_entry_editText) as EditText
-        phoneNumberEditText.addTextChangedListener(object : TextWatcher{
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                userInteractionListener.onPhoneNumberTextChanged(s.toString())
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // noop
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                // noop
-            }
-        })
-
-        continueButton = rootView.findViewById(R.id.continue_button) as FloatingActionButton
-        continueButton.setOnClickListener(View.OnClickListener {
-            userInteractionListener.onContinueClicked(messageEditText.text.toString())
-        })
+        }
 
         userInteractionListener.start()
 

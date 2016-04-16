@@ -22,8 +22,8 @@ class MessageEntryPresenter(var mPhoneNumber:String, val viewListener: Contract.
         updateContinueButtonVisibility()
     }
 
-    override fun onContinueClicked(test: String) {
-        fragmentListener.onMessageEntered(test)
+    override fun onContinueClicked() {
+        fragmentListener.onMessageEntered(mPhoneNumber, mMessage)
     }
 
     // endregion Implements Contract.UserInteractionListener

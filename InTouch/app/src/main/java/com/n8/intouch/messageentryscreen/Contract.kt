@@ -16,6 +16,6 @@ class Contract {
 
         fun onPhoneNumberTextChanged(text:String)
 
-        fun onContinueClicked(test:String)
+        fun onContinueClicked()
     }
 }

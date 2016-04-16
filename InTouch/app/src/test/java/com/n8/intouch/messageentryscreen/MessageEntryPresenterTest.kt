@@ -116,10 +116,11 @@ class MessageEntryPresenterTest {
     @Test
     fun testOnContinueClicked() {
         createPresenter().apply {
-            onContinueClicked(MESSAGE)
+            onMessageTextChanged(MESSAGE)
+            onContinueClicked()
         }
 
-        verify(mMockFragmentListener, times(1)).onMessageEntered(MESSAGE)
+        verify(mMockFragmentListener, times(1)).onMessageEntered(PHONE_NUMBER, MESSAGE)
     }
 
     // region Private Methods
