@@ -1,5 +1,6 @@
 package com.n8.intouch.application
 
+import android.app.AlarmManager
 import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
@@ -31,4 +32,6 @@ interface ApplicationComponent : BaseComponent {
     fun getDataManager() : EventsDataManager
 
     fun getEventScheduler() : EventScheduler
+
+    fun getAlarmManager() : AlarmManager
 }
