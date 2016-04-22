@@ -67,5 +67,6 @@
 
     <string name="notification_title">Stay InTouch</string>
     <string name="notification_action_label">Send Message</string>
+    <string name="notification_message_format">Send scheduled message to %s</string>
 
 </resources>

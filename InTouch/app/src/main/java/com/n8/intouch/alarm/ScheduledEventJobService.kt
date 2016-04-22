@@ -71,11 +71,8 @@ class ScheduledEventJobService : JobService() {
 
     private fun showNotification(event: ScheduledEvent) {
         val title = baseContext.getString(R.string.notification_title)
-        val message = "message"
+        val message = baseContext.getString(R.string.notification_message_format, event.phoneNumber)
         val actionLabel = baseContext.getString(R.string.notification_action_label)
-
-        val signInIntent = Intent(baseContext, SignInActivity::class.java)
-        val contentIntent = PendingIntent.getActivity(baseContext, 0, signInIntent, 0)
 
         val smsUri = Uri.parse("smsto:" + event.phoneNumber)
         val smsIntent = Intent(Intent.ACTION_SENDTO, smsUri).apply {
@@ -90,7 +87,7 @@ class ScheduledEventJobService : JobService() {
             setSmallIcon(R.mipmap.ic_launcher)
             setAutoCancel(true)
             addAction(android.R.drawable.ic_menu_send, actionLabel, actionIntent)
-            setContentIntent(contentIntent)
+            setContentIntent(actionIntent)
             setPriority(Notification.PRIORITY_HIGH)
         }.build()
 
