@@ -2,6 +2,7 @@ package com.n8.intouch.application
 
 import android.app.Activity
 import android.app.Application
+import android.preference.PreferenceManager
 import android.widget.Toast
 import com.firebase.client.Firebase
 import com.n8.intouch.common.CurrentActivityProvider

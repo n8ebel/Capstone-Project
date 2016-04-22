@@ -16,6 +16,8 @@ interface EventsDataManager {
 
     fun getEvents(function:(List<ScheduledEvent>) -> Unit)
 
+    fun refreshEvents(function:(List<ScheduledEvent>) -> Unit)
+
     fun addEvent(
             startDateTimestamp:Long = -1L,
 
