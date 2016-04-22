@@ -16,18 +16,20 @@
         >
 
         <ImageView
-            app:layout_widthPercent="50%"
-            app:layout_heightPercent="50%"
-            app:layout_marginLeftPercent="40%"
+            app:layout_widthPercent="45%"
+            app:layout_heightPercent="45%"
+            app:layout_marginLeftPercent="45%"
             android:src="@drawable/ic_message"
+            android:scaleType="fitXY"
             />
 
         <ImageView
-            app:layout_widthPercent="50%"
-            app:layout_heightPercent="50%"
+            app:layout_widthPercent="45%"
+            app:layout_heightPercent="45%"
             app:layout_marginTopPercent="27%"
             app:layout_marginLeftPercent="10%"
             android:src="@drawable/ic_mood_bad"
+            android:scaleType="fitXY"
             />
 
       <TextView

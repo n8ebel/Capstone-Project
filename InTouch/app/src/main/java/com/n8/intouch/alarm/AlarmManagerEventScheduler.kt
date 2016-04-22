@@ -25,7 +25,7 @@ class AlarmManagerEventScheduler(private val mContext: Context,
         mAlarmManager.apply {
             setRepeating(AlarmManager.RTC_WAKEUP,
                     getTimeUntilFirstAlarm(event),
-                    event.repeatDuration,
+                    10000,//event.repeatDuration,
                    pendingIntent )
         }
     }
@@ -54,7 +54,7 @@ class AlarmManagerEventScheduler(private val mContext: Context,
                 event.startDateHour,
                 event.startDateMin)
 
-        return calendar.timeInMillis - System.currentTimeMillis()
+        return 10000//calendar.timeInMillis - System.currentTimeMillis()
     }
 
     private fun getNextId() : Int {
