@@ -36,4 +36,6 @@ interface EventsDataManager {
     fun removeEvent(event:ScheduledEvent, function:(Boolean, FirebaseError?) -> Unit)
 
     fun getEvent(id:String, function:(event:ScheduledEvent?, FirebaseError?) -> Unit)
+
+    fun getNumberOfEvents() : Int
 }

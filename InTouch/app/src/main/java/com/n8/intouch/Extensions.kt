@@ -2,7 +2,11 @@ package com.n8.intouch
 
 import android.app.Activity
 import android.app.Application
+import android.support.annotation.PluralsRes
+import android.support.annotation.StringRes
 import android.support.v7.widget.Toolbar
+import android.view.View
+import android.view.WindowId
 import com.n8.intouch.application.ApplicationComponent
 import com.n8.intouch.application.InTouchApplication
 
@@ -24,4 +28,12 @@ fun Application.setCurrentActivity(activity:Activity) {
 
 fun Application.getComponent() : ApplicationComponent {
     return InTouchApplication.component
+}
+
+fun View.getString(@StringRes resId:Int) : String {
+    return context.getString(resId)
+}
+
+fun View.getQuantityString(@PluralsRes resId:Int, quantity:Int) : String {
+    return context.resources.getQuantityString(resId, quantity, quantity)
 }

@@ -16,35 +16,48 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/keyline_0"
+        android:paddingStart="@dimen/keyline_0"
         >
-
-        <TextView
-            android:id="@+id/repeat_schedule_textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/keyline_0"
-            android:maxLines="2"
-            android:ellipsize="marquee"
-            android:text="Every 2 months"
-            />
 
         <TextView
             android:id="@+id/message_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/keyline_1"
-            android:layout_marginStart="@dimen/keyline_0"
             android:text="hey there!!"
             android:maxLines="3"
             android:ellipsize="end"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
             />
+
+        <TextView
+            android:id="@+id/repeat_schedule_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/keyline_1"
+            android:maxLines="2"
+            android:ellipsize="marquee"
+            android:text="Every 2 months at 5:30 PM"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            />
+
+        <TextView
+            android:id="@+id/phone_number_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="999 999 9999"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
+
+
 
     </LinearLayout>
 
     <ImageView
         android:id="@+id/overflow_imageView"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:paddingStart="@dimen/keyline_0"
         android:layout_gravity="end"
         android:src="@drawable/ic_overflow_24dp"
         />

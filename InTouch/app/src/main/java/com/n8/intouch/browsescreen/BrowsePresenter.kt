@@ -38,7 +38,16 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
 
 
 
-    val getEventsHandler = { events:List<ScheduledEvent> -> viewController.displayEvents(events)}
+    val getEventsHandler = { events:List<ScheduledEvent> ->
+        viewController.displayEvents(events)
+
+        if(events.size > 0) {
+            viewController.hideNoContentView()
+        }else{
+            viewController.showNoContentView()
+        }
+    }
+
     val removeEventhandler = { success:Boolean, error:FirebaseError? ->
         if (!success) {
             val currentActivity = currentActivityProvider.getCurrentActivity()
@@ -47,9 +56,7 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
     }
 
     override fun start() {
-
         eventManager.getEvents(getEventsHandler)
-
         eventManager.addScheduledEventListener(this)
     }
 
@@ -103,10 +110,15 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
     // region Implements EventDataManager.Listener
 
     override fun onScheduledEventAdded(event: ScheduledEvent, index:Int) {
+        viewController.hideNoContentView()
         viewController.displayAddedEvent(event, index)
+
     }
 
     override fun onScheduledEventRemoved(event: ScheduledEvent, index:Int) {
+        if (eventManager.getNumberOfEvents() == 0) {
+            viewController.showNoContentView()
+        }
         viewController.hideRemovedEvent(event, index)
     }
 

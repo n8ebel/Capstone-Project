@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name">InTouch</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="at">at</string>
 
     <string name="contacts">Contacts</string>
     <string name="content_description_back_navigation">Navigate back</string>
@@ -23,11 +22,26 @@
     <string name="message_entry_hint">ex. Hello, how are you?</string>
     <string name="saved_dates">Saved Dates</string>
     <string name="no_events_saved_for_contact">No events saved for contact</string>
+    <string name="no_scheduled_events">You have no scheduled events</string>
 
     <string name="days">Days</string>
     <string name="weeks">Weeks</string>
-    <string name="months">Months</string>
     <string name="years">Years</string>
+
+    <plurals name="days_format">
+        <item quantity="one">%d Day</item>
+        <item quantity="other">%d Days</item>
+    </plurals>
+
+    <plurals name="weeks_format">
+        <item quantity="one">%d Week</item>
+        <item quantity="other">%d Weeks</item>
+    </plurals>
+
+    <plurals name="years_format">
+        <item quantity="one">%d Year</item>
+        <item quantity="other">%d Years</item>
+    </plurals>
 
     <string name="invalid_frequency">Invalid frequency</string>
 

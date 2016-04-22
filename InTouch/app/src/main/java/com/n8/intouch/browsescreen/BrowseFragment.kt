@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
+import android.support.v4.content.ContextCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
@@ -21,6 +22,9 @@ import android.widget.Toast
 import com.n8.intouch.R
 import com.n8.intouch.browsescreen.di.BrowseComponent
 import com.n8.intouch.common.BaseFragment
+import com.n8.intouch.common.SchedulingUtils
+import com.n8.intouch.getQuantityString
+import com.n8.intouch.getString
 import com.n8.intouch.model.ScheduledEvent
 import javax.inject.Inject
 
@@ -32,6 +36,8 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
     lateinit var presenter: BrowsePresenter
 
     lateinit var eventsRecyclerView:RecyclerView
+
+    lateinit var noContentView:View
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -51,6 +57,8 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
 
             eventsRecyclerView = findViewById(R.id.browse_content) as RecyclerView
             eventsRecyclerView.layoutManager = LinearLayoutManager(context)
+
+            noContentView = findViewById(R.id.browse_no_content)
         }
 
         return view
@@ -73,6 +81,14 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
     }
 
     // region Implements BrowseContract.ViewController
+
+    override fun showNoContentView() {
+        noContentView.visibility = View.VISIBLE
+    }
+
+    override fun hideNoContentView() {
+        noContentView.visibility = View.GONE
+    }
 
     override fun displayEvents(events: List<ScheduledEvent>) {
         val adapterList:MutableList<ScheduledEvent> = mutableListOf()
@@ -139,18 +155,25 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
     class ScheduledEventViewHolder(val view:View) : RecyclerView.ViewHolder(view) {
 
         val messageTextView:TextView
+        val phoneNumberTextView:TextView
         val repeatScheduleTextView:TextView
         val overflowImageView:ImageView
 
         init{
             messageTextView = view.findViewById(R.id.message_textView) as TextView
+            phoneNumberTextView = view.findViewById(R.id.phone_number_textView) as TextView
             repeatScheduleTextView = view.findViewById(R.id.repeat_schedule_textView) as TextView
             overflowImageView = view.findViewById(R.id.overflow_imageView) as ImageView
         }
 
         fun bindScheduledEvent(event:ScheduledEvent) {
             messageTextView.text = event.scheduledMessage
-            repeatScheduleTextView.text = "Need to put formatted date/time here"
+
+            phoneNumberTextView.text = event.phoneNumber
+
+            repeatScheduleTextView.text = view.getString(R.string.every) + " " +
+                    view.getQuantityString( SchedulingUtils.getPluralsStringIdForDuration(view.context, event), event.repeatInterval) + " " +
+                    view.getString(R.string.at) + " " + SchedulingUtils.getTimeDisplayString(event.startDateHour, event.startDateMin)
         }
 
     }

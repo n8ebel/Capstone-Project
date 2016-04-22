@@ -31,6 +31,10 @@ class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataMana
 
     // region Implements EventsDataManager
 
+    override fun getNumberOfEvents(): Int {
+        return mScheduledEventsList.size
+    }
+
     override fun getEvents(function:(List<ScheduledEvent>) -> Unit) {
         val events:List<ScheduledEvent> = mScheduledEventsMap.flatMap { entry -> listOf(entry.value)  }
         function(events)

@@ -15,6 +15,7 @@ import com.n8.intouch.addeventscreen.data.ContactLoader
 import com.n8.intouch.alarm.EventScheduler
 import com.n8.intouch.alarm.ScheduledEventJobService
 import com.n8.intouch.common.CurrentActivityProvider
+import com.n8.intouch.common.SchedulingUtils
 import com.n8.intouch.data.EventsDataManager
 import com.n8.intouch.datepicker.DatePickerFragment
 import com.n8.intouch.datepicker.di.DaggerDatePickerComponent
@@ -46,8 +47,6 @@ class AddEventPresenter(
 {
 
     companion object {
-        // TODO make this locale safe
-        val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
 
         val TAG_DATE_PICKER = "tag_date_picker"
         val TAG_REPEAT_PICKER = "tag_repeat_picker"
@@ -126,7 +125,7 @@ class AddEventPresenter(
 
     override fun onDateSelected(time: Long) {
         startDateTimestamp = time
-        viewController.setHeaderText(DATE_FORMAT.format(Date(time)))
+        viewController.setHeaderText(SchedulingUtils.getDateTimeDisplayString(time))
 
         val currentActivity = currentActivityProvider.getCurrentActivity()
         var fragment = RepeatPickerFragment().apply {
@@ -162,7 +161,7 @@ class AddEventPresenter(
 
         // TODO FIX THIS
         val title = "Schedule repeated message"
-        val msg = "Starting:  ${DATE_FORMAT.format(Date(startDateTimestamp))} \n" +
+        val msg = "Starting:  ${SchedulingUtils.getDateTimeDisplayString(startDateTimestamp)} \n" +
                 "Repating every $repeatInterval ${displayUnitsForRepeatDuration(repeatDuration)} \n" +
                 "at $startDateHour:$startDateMin with message: \n" + scheduledMessage + "\n to number $phoneNumber"
 
@@ -186,12 +185,7 @@ class AddEventPresenter(
     private fun displayUnitsForRepeatDuration(duration:Long) : String {
         val currentActivity = currentActivityProvider.getCurrentActivity()
 
-        return when (duration) {
-            DateUtils.DAY_IN_MILLIS -> currentActivity.getString(R.string.days)
-            DateUtils.WEEK_IN_MILLIS -> currentActivity.getString(R.string.weeks)
-            DateUtils.YEAR_IN_MILLIS -> currentActivity.getString(R.string.years)
-            else -> throw IllegalStateException("Invalid duration value: " + duration)
-        }
+        return SchedulingUtils.getDisplayStringForDuration(getCurrentActivity(), duration)
     }
 
     private fun getCurrentActivity() : Activity {

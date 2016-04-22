@@ -8,6 +8,39 @@
     tools:context="com.n8.intouch.browsescreen.BrowseFragment"
     >
 
+    <android.support.percent.PercentFrameLayout
+        android:id="@+id/browse_no_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        >
+
+        <ImageView
+            app:layout_widthPercent="50%"
+            app:layout_heightPercent="50%"
+            app:layout_marginLeftPercent="40%"
+            android:src="@drawable/ic_message"
+            />
+
+        <ImageView
+            app:layout_widthPercent="50%"
+            app:layout_heightPercent="50%"
+            app:layout_marginTopPercent="27%"
+            app:layout_marginLeftPercent="10%"
+            android:src="@drawable/ic_mood_bad"
+            />
+
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          app:layout_marginTopPercent="75%"
+          android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+          android:gravity="center"
+          android:text="@string/no_scheduled_events"
+          />
+
+    </android.support.percent.PercentFrameLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/browse_content"
         android:layout_width="match_parent"
