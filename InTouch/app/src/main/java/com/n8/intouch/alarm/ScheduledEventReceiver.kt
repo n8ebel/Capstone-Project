@@ -11,6 +11,7 @@ import android.net.Uri
 import android.support.annotation.NonNull
 import android.support.v7.app.NotificationCompat
 import android.telephony.SmsManager
+import android.util.Log
 import com.n8.intouch.R
 import com.n8.intouch.application.InTouchApplication
 import com.n8.intouch.data.EventsDataManager
@@ -20,6 +21,7 @@ import com.n8.intouch.model.ScheduledEvent
 class ScheduledEventReceiver : BroadcastReceiver(){
 
     companion object {
+        val TAG = "ScheduledEventReceiver"
         val EXTRA_EVENT_ID = "event_id"
 
         fun createIntent(@NonNull context: Context, @NonNull event: ScheduledEvent) : Intent {
@@ -30,11 +32,14 @@ class ScheduledEventReceiver : BroadcastReceiver(){
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
+        Log.d(TAG, "onReceive")
+
         if (context == null) {
             return
         }
 
         intent?.getStringExtra(EXTRA_EVENT_ID)?.apply {
+            Log.d(TAG, "getting event with id $this")
             InTouchApplication.component.getDataManager().getEvent(this, { event, error ->
                 handleScheduledEvent(context, event)
             })

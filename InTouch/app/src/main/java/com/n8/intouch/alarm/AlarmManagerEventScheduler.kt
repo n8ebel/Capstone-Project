@@ -54,7 +54,7 @@ class AlarmManagerEventScheduler(private val mContext: Context,
                 event.startDateHour,
                 event.startDateMin)
 
-        return 10000//calendar.timeInMillis - System.currentTimeMillis()
+        return 5000//calendar.timeInMillis - System.currentTimeMillis()
     }
 
     private fun getNextId() : Int {
