@@ -69,4 +69,7 @@
     <string name="notification_action_label">Send Message</string>
     <string name="notification_message_format">Send scheduled message to %s</string>
 
+    <string name="schedule_event_dialog_title">Schedule repeated message</string>
+    <string name="schedule_event_dialog_message_format">To: %1$s \n Starting: %2$s \n Repeating every: %3$s \n With message: \n \n %4$s</string>
+
 </resources>
