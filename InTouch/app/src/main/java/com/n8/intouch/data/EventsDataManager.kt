@@ -16,6 +16,8 @@ interface EventsDataManager {
 
     fun getEvents(function:(List<ScheduledEvent>) -> Unit)
 
+    fun refreshEvents(function:(List<ScheduledEvent>) -> Unit)
+
     fun addEvent(
             startDateTimestamp:Long = -1L,
 
@@ -29,7 +31,13 @@ interface EventsDataManager {
 
             scheduledMessage:String = "",
 
-            function:(Boolean, FirebaseError?) -> Unit)
+            phoneNumber:String = "",
+
+            function:(event:ScheduledEvent?, FirebaseError?) -> Unit)
 
     fun removeEvent(event:ScheduledEvent, function:(Boolean, FirebaseError?) -> Unit)
+
+    fun getEvent(id:String, function:(event:ScheduledEvent?, FirebaseError?) -> Unit)
+
+    fun getNumberOfEvents() : Int
 }

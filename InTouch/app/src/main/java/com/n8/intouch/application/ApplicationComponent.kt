@@ -1,9 +1,11 @@
 package com.n8.intouch.application
 
+import android.app.AlarmManager
 import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
 import com.firebase.client.Firebase
+import com.n8.intouch.alarm.EventScheduler
 import com.n8.intouch.browsescreen.di.BrowseComponent
 import com.n8.intouch.common.BaseComponent
 import com.n8.intouch.common.CurrentActivityProvider
@@ -28,4 +30,8 @@ interface ApplicationComponent : BaseComponent {
     fun getCurrentUser() : User
 
     fun getDataManager() : EventsDataManager
+
+    fun getEventScheduler() : EventScheduler
+
+    fun getAlarmManager() : AlarmManager
 }

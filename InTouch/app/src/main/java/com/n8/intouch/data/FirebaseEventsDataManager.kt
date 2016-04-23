@@ -31,16 +31,42 @@ class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataMana
 
     // region Implements EventsDataManager
 
+    override fun getNumberOfEvents(): Int {
+        return mScheduledEventsList.size
+    }
+
     override fun getEvents(function:(List<ScheduledEvent>) -> Unit) {
         val events:List<ScheduledEvent> = mScheduledEventsMap.flatMap { entry -> listOf(entry.value)  }
         function(events)
     }
 
-    override fun addEvent(startDateTimestamp: Long, startDateHour: Int, startDateMin: Int, repeatInterval: Int, repeatDuration: Long, scheduledMessage: String, function: (Boolean, FirebaseError?) -> Unit) {
+    override fun refreshEvents(function: (List<ScheduledEvent>) -> Unit) {
+        getEventsRef().addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot?) {
+                mScheduledEventsList.clear()
+                mScheduledEventsMap.clear()
+
+                snapshot?.children?.forEach {
+                    createEventFromSnapshot(it)?.apply {
+                        addScheduledEvent(this)
+                    }
+                }
+
+                function(mScheduledEventsList.distinct())
+            }
+
+            override fun onCancelled(p0: FirebaseError?) {
+                function(emptyList())
+            }
+
+        })
+    }
+
+    override fun addEvent(startDateTimestamp: Long, startDateHour: Int, startDateMin: Int, repeatInterval: Int, repeatDuration: Long, scheduledMessage: String, phoneNumber:String, function: (event:ScheduledEvent?, FirebaseError?) -> Unit) {
         getEventsRef().push().apply {
-            val newEvent = ScheduledEvent(key, startDateTimestamp, startDateHour, startDateMin, repeatInterval, repeatDuration, scheduledMessage)
+            val newEvent = ScheduledEvent(key, startDateTimestamp, startDateHour, startDateMin, repeatInterval, repeatDuration, scheduledMessage, phoneNumber)
             setValue(newEvent, Firebase.CompletionListener { error, firebase ->
-                function(error == null, error)
+                if(error == null) function(newEvent, error) else function(null, error)
             })
         }
     }
@@ -51,6 +77,20 @@ class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataMana
         }
     }
 
+    override fun getEvent(id: String, function: (ScheduledEvent?, FirebaseError?) -> Unit) {
+        getEventsRef().child(id).addValueEventListener(object: ValueEventListener{
+            override fun onDataChange(dataSnapshot: DataSnapshot?) {
+                val event = createEventFromSnapshot(dataSnapshot)
+                function(event, null)
+            }
+
+            override fun onCancelled(error: FirebaseError?) {
+                function(null, error)
+            }
+
+        })
+    }
+
     // endregion Implements EventsDataManager
 
     // region Implements ChildEventListener
@@ -58,7 +98,8 @@ class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataMana
     override fun onChildRemoved(snapshot: DataSnapshot?) {
         val event = createEventFromSnapshot(snapshot)
         if (event != null) {
-            removeScheduledEvent(event)
+            val removedIndex = removeScheduledEvent(event)
+            if(removedIndex != -1) notifyScheduledEventRemoved(event, removedIndex)
         }
     }
 
@@ -78,6 +119,7 @@ class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataMana
         val event = createEventFromSnapshot(snapshot)
         if (event != null) {
             addScheduledEvent(event)
+            notifyScheduledEventAdded(event)
         }
     }
 
@@ -96,7 +138,7 @@ class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataMana
     }
 
     fun getEventsRef(): Firebase {
-        return firebase.child(firebase.auth.uid).child(EVENTS_PATH)
+        return firebase.child(firebase.getAuth().getUid()).child(EVENTS_PATH)
     }
 
     private fun addScheduledEvent(event: ScheduledEvent) {
@@ -104,11 +146,13 @@ class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataMana
             mScheduledEventsMap.put(event.id, event)
             mScheduledEventsList.add(event)
         }
+    }
 
+    private fun notifyScheduledEventAdded(event: ScheduledEvent) {
         mScheduledEventListeners.forEach { it.onScheduledEventAdded(event, mScheduledEventsList.indexOf(event)) }
     }
 
-    private fun removeScheduledEvent(event: ScheduledEvent) {
+    private fun removeScheduledEvent(event: ScheduledEvent) : Int {
         var index = mScheduledEventsList.indexOf(event)
 
         synchronized(mScheduledEventsMap){
@@ -116,9 +160,11 @@ class FirebaseEventsDataManager(private val firebase: Firebase) : EventsDataMana
             mScheduledEventsList.remove(event)
         }
 
-        if(index != -1){
-            mScheduledEventListeners.forEach { it.onScheduledEventRemoved(event, index) }
-        }
+        return index
+    }
+
+    private fun notifyScheduledEventRemoved(event: ScheduledEvent, index:Int) {
+        mScheduledEventListeners.forEach { it.onScheduledEventRemoved(event, index) }
     }
 
     // endregion Private Methods

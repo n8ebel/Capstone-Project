@@ -8,6 +8,7 @@ import android.view.View
 import com.firebase.client.FirebaseError
 import com.n8.intouch.BuildConfig
 import com.n8.intouch.R
+import com.n8.intouch.alarm.EventScheduler
 import com.n8.intouch.common.CurrentActivityProvider
 import com.n8.intouch.data.EventsDataManager
 import com.n8.intouch.model.ScheduledEvent
@@ -35,6 +36,10 @@ class BrowsePresenterTest {
 
     lateinit var mEventsManager:EventsDataManager
 
+    lateinit var mEventScheduler:EventScheduler
+
+    val mTestEvent = ScheduledEvent()
+
     @Before
     fun setup(){
         mMockActivity = Mockito.mock(Activity::class.java)
@@ -48,10 +53,12 @@ class BrowsePresenterTest {
         mViewController = Mockito.mock(BrowseContract.ViewController::class.java)
 
         mEventsManager = Mockito.mock(EventsDataManager::class.java)
+
+        mEventScheduler = Mockito.mock(EventScheduler::class.java)
     }
 
     @Test
-    fun test_Start() {
+    fun test_StartWithNoEvents() {
         val events:List<ScheduledEvent> = listOf()
         val present: BrowsePresenter = createBrowsePresenter()
         var callback = present.getEventsHandler
@@ -62,6 +69,23 @@ class BrowsePresenterTest {
 
         verify(mEventsManager, times(1)).getEvents(callback)
         verify(mViewController, times(1)).displayEvents(events)
+        verify(mViewController, times(1)).showNoContentView()
+        verify(mEventsManager, times(1)).addScheduledEventListener(present)
+    }
+
+    @Test
+    fun test_StartWithEvents() {
+        val events:List<ScheduledEvent> = listOf(mTestEvent)
+        val present: BrowsePresenter = createBrowsePresenter()
+        var callback = present.getEventsHandler
+
+        Mockito.`when`(mEventsManager.getEvents(callback)).then { callback.invoke(events) }
+
+        present.start()
+
+        verify(mEventsManager, times(1)).getEvents(callback)
+        verify(mViewController, times(1)).displayEvents(events)
+        verify(mViewController, times(0)).showNoContentView()
         verify(mEventsManager, times(1)).addScheduledEventListener(present)
     }
 
@@ -192,6 +216,7 @@ class BrowsePresenterTest {
         presenter.onRemoveEventConfirmed(event)
 
         verify(mEventsManager, times(1)).removeEvent(event, presenter.removeEventhandler)
+        verify(mEventScheduler, times(1)).cancelScheduledEvent(event)
         verify(mViewController, times(1)).displayError(errorMsg)
     }
 
@@ -209,23 +234,37 @@ class BrowsePresenterTest {
         }
 
         verify(mViewController, times(1)).displayAddedEvent(event, 0)
+        verify(mViewController, times(1)).hideNoContentView()
     }
 
     @Test
-    fun test_onScheduledEventRemoved() {
-        val event = ScheduledEvent()
+    fun test_onScheduledEventRemoved_WithEventsLeft() {
+        Mockito.`when`(mEventsManager.getNumberOfEvents()).thenReturn(1)
 
         createBrowsePresenter().apply {
-            onScheduledEventRemoved(event, 0)
+            onScheduledEventRemoved(mTestEvent, 0)
         }
 
-        verify(mViewController, times(1)).hideRemovedEvent(event, 0)
+        verify(mViewController, times(1)).hideRemovedEvent(mTestEvent, 0)
+        verify(mViewController, times(0)).showNoContentView()
+    }
+
+    @Test
+    fun test_onScheduledEventRemoved_NoEventsLeft() {
+        Mockito.`when`(mEventsManager.getNumberOfEvents()).thenReturn(0)
+
+        createBrowsePresenter().apply {
+            onScheduledEventRemoved(mTestEvent, 0)
+        }
+
+        verify(mViewController, times(1)).hideRemovedEvent(mTestEvent, 0)
+        verify(mViewController, times(1)).showNoContentView()
     }
 
     // region Private Methods
 
     private fun createBrowsePresenter(): BrowsePresenter {
-        return BrowsePresenter(mCurrentActivityProvider, mViewController, mCurrentUser, mEventsManager)
+        return BrowsePresenter(mCurrentActivityProvider, mViewController, mCurrentUser, mEventsManager, mEventScheduler)
     }
 
     // endregion Private Methods

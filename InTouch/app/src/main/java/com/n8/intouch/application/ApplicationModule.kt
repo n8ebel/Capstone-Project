@@ -1,11 +1,15 @@
 package com.n8.intouch.application
 
+import android.app.AlarmManager
 import android.app.Application
 import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import com.firebase.client.Firebase
 import com.n8.intouch.R
+import com.n8.intouch.alarm.AlarmManagerEventScheduler
+import com.n8.intouch.alarm.EventScheduler
 import com.n8.intouch.common.CurrentActivityProvider
 import com.n8.intouch.data.EventsDataManager
 import com.n8.intouch.data.FirebaseEventsDataManager
@@ -32,12 +36,17 @@ class ApplicationModule(private val application: Application, private val activi
 
     @Provides
     fun provideSharedPreferences(): SharedPreferences {
-        return application.getSharedPreferences(application.javaClass.simpleName, Context.MODE_PRIVATE)
+        return PreferenceManager.getDefaultSharedPreferences(application)
     }
 
     @Provides
     fun provideContentResolver(): ContentResolver {
         return application.contentResolver
+    }
+
+    @Provides
+    fun provideAlarmManager() : AlarmManager {
+        return application.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     }
 
     @Provides
@@ -53,5 +62,10 @@ class ApplicationModule(private val application: Application, private val activi
     @Provides
     fun provideEventsDataManager(firebase: Firebase) : EventsDataManager {
         return FirebaseEventsDataManager(firebase)
+    }
+
+    @Provides
+    fun provideEventsScheduler(context: Context, sharedPreferences: SharedPreferences, alarmManager: AlarmManager) : EventScheduler {
+        return AlarmManagerEventScheduler(context, sharedPreferences, alarmManager)
     }
 }

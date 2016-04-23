@@ -6,17 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary"
-    tools:context=".signin.SignInActivity"
     android:clipChildren="false"
     android:fitsSystemWindows="true"
-    >
-
-    <!--<FrameLayout-->
-        <!--android:id="@+id/content_container"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="@color/primary"-->
-        <!--android:layout_margin="@dimen/sign_in_fragment_container_margin"-->
-        <!--/>-->
-
-</android.support.design.widget.CoordinatorLayout>
+    tools:context=".signin.SignInActivity"
+    />

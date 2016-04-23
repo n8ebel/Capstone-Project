@@ -1,12 +1,20 @@
 package com.n8.intouch.addeventscreen
 
+import android.app.Activity
+import android.app.job.JobInfo
+import android.app.job.JobScheduler
+import android.content.ComponentName
+import android.content.Context
 import android.content.DialogInterface
 import android.net.Uri
+import android.os.PersistableBundle
 import android.text.format.DateUtils
 import com.firebase.client.FirebaseError
 import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.data.ContactLoader
+import com.n8.intouch.alarm.EventScheduler
 import com.n8.intouch.common.CurrentActivityProvider
+import com.n8.intouch.common.SchedulingUtils
 import com.n8.intouch.data.EventsDataManager
 import com.n8.intouch.datepicker.DatePickerFragment
 import com.n8.intouch.datepicker.di.DaggerDatePickerComponent
@@ -29,7 +37,8 @@ class AddEventPresenter(
         val viewController: AddEventContract.ViewController,
                         val interactor: ContactLoader,
                         val currentUser: User,
-                        val eventManager: EventsDataManager) :
+                        val eventManager: EventsDataManager,
+                        val mEventScheduler: EventScheduler) :
         AddEventContract.UserInteractionListener ,
         DatePickerFragment.Listener,
         RepeatPickerFragment.Listener,
@@ -37,8 +46,6 @@ class AddEventPresenter(
 {
 
     companion object {
-        // TODO make this locale safe
-        val DATE_FORMAT = SimpleDateFormat("yyyy-MM-dd")
 
         val TAG_DATE_PICKER = "tag_date_picker"
         val TAG_REPEAT_PICKER = "tag_repeat_picker"
@@ -58,6 +65,8 @@ class AddEventPresenter(
     var repeatDuration = -1L  // value such as week.inMillis()
 
     var scheduledMessage = ""
+
+    var mPhoneNumber = ""
 
     override fun start() {
 
@@ -99,9 +108,10 @@ class AddEventPresenter(
 
     override fun scheduleEvent() {
         eventManager.addEvent(
-                startDateTimestamp, startDateHour, startDateMin, repeatInterval, repeatDuration, scheduledMessage,
-                { success, error ->
-                    if (success) {
+                startDateTimestamp, startDateHour, startDateMin, repeatInterval, repeatDuration, scheduledMessage, mPhoneNumber,
+                { event, error ->
+                    if (event != null) {
+                        mEventScheduler.scheduleEvent(event)
                         viewController.finish()
                     } else {
                         viewController.displayError(Throwable(error?.message))
@@ -114,7 +124,7 @@ class AddEventPresenter(
 
     override fun onDateSelected(time: Long) {
         startDateTimestamp = time
-        viewController.setHeaderText(DATE_FORMAT.format(Date(time)))
+        viewController.setHeaderText(SchedulingUtils.getDateTimeDisplayString(time))
 
         val currentActivity = currentActivityProvider.getCurrentActivity()
         var fragment = RepeatPickerFragment().apply {
@@ -145,16 +155,16 @@ class AddEventPresenter(
     // region Implements MessageEntryFragment.Listener
 
     override fun onMessageEntered(phoneNumber:String, message: String) {
-
+        mPhoneNumber = phoneNumber
         scheduledMessage = message
 
         // TODO FIX THIS
         val title = "Schedule repeated message"
-        val msg = "Starting:  ${DATE_FORMAT.format(Date(startDateTimestamp))} \n" +
+        val msg = "Starting:  ${SchedulingUtils.getDateTimeDisplayString(startDateTimestamp)} \n" +
                 "Repating every $repeatInterval ${displayUnitsForRepeatDuration(repeatDuration)} \n" +
                 "at $startDateHour:$startDateMin with message: \n" + scheduledMessage + "\n to number $phoneNumber"
 
-       viewController.promptToConfirmScheduledEvent("Schedule repeated message", msg)
+       viewController.promptToConfirmScheduledEvent(title, msg)
     }
 
     // endregion Implements MessageEntryFragment.Listener
@@ -174,12 +184,11 @@ class AddEventPresenter(
     private fun displayUnitsForRepeatDuration(duration:Long) : String {
         val currentActivity = currentActivityProvider.getCurrentActivity()
 
-        return when (duration) {
-            DateUtils.DAY_IN_MILLIS -> currentActivity.getString(R.string.days)
-            DateUtils.WEEK_IN_MILLIS -> currentActivity.getString(R.string.weeks)
-            DateUtils.YEAR_IN_MILLIS -> currentActivity.getString(R.string.years)
-            else -> throw IllegalStateException("Invalid duration value: " + duration)
-        }
+        return SchedulingUtils.getDisplayStringForDuration(getCurrentActivity(), duration)
+    }
+
+    private fun getCurrentActivity() : Activity {
+        return currentActivityProvider.getCurrentActivity()
     }
 
     // endregion Private Methods

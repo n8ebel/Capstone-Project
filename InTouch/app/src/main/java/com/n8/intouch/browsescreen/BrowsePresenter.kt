@@ -10,6 +10,7 @@ import android.widget.Toast
 import com.firebase.client.FirebaseError
 import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.AddEventActivity
+import com.n8.intouch.alarm.EventScheduler
 import com.n8.intouch.common.CurrentActivityProvider
 import com.n8.intouch.data.EventsDataManager
 import com.n8.intouch.model.ScheduledEvent
@@ -18,7 +19,8 @@ import com.n8.intouch.model.User
 open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
                       val viewController:BrowseContract.ViewController,
                       val currentUser: User,
-                      val eventManager:EventsDataManager) :
+                      val eventManager:EventsDataManager,
+                           val eventScheduler:EventScheduler) :
 
         BrowseContract.UserInteractionListener,
         EventsDataManager.Listener {
@@ -36,7 +38,16 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
 
 
 
-    val getEventsHandler = { events:List<ScheduledEvent> -> viewController.displayEvents(events)}
+    val getEventsHandler = { events:List<ScheduledEvent> ->
+        viewController.displayEvents(events)
+
+        if(events.size > 0) {
+            viewController.hideNoContentView()
+        }else{
+            viewController.showNoContentView()
+        }
+    }
+
     val removeEventhandler = { success:Boolean, error:FirebaseError? ->
         if (!success) {
             val currentActivity = currentActivityProvider.getCurrentActivity()
@@ -45,9 +56,7 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
     }
 
     override fun start() {
-
         eventManager.getEvents(getEventsHandler)
-
         eventManager.addScheduledEventListener(this)
     }
 
@@ -89,6 +98,7 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
 
     override fun onRemoveEventConfirmed(event: ScheduledEvent) {
         eventManager.removeEvent(event, removeEventhandler)
+        eventScheduler.cancelScheduledEvent(event)
     }
 
     override fun onListItemClicked(event: ScheduledEvent) {
@@ -100,10 +110,15 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
     // region Implements EventDataManager.Listener
 
     override fun onScheduledEventAdded(event: ScheduledEvent, index:Int) {
+        viewController.hideNoContentView()
         viewController.displayAddedEvent(event, index)
+
     }
 
     override fun onScheduledEventRemoved(event: ScheduledEvent, index:Int) {
+        if (eventManager.getNumberOfEvents() == 0) {
+            viewController.showNoContentView()
+        }
         viewController.hideRemovedEvent(event, index)
     }
 
