@@ -10,7 +10,6 @@ import com.firebase.client.Firebase
 import com.n8.intouch.R
 import com.n8.intouch.alarm.AlarmManagerEventScheduler
 import com.n8.intouch.alarm.EventScheduler
-import com.n8.intouch.alarm.JobSchedulerEventScheduler
 import com.n8.intouch.common.CurrentActivityProvider
 import com.n8.intouch.data.EventsDataManager
 import com.n8.intouch.data.FirebaseEventsDataManager

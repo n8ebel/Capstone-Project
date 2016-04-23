@@ -13,7 +13,6 @@ import com.firebase.client.FirebaseError
 import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.data.ContactLoader
 import com.n8.intouch.alarm.EventScheduler
-import com.n8.intouch.alarm.ScheduledEventJobService
 import com.n8.intouch.common.CurrentActivityProvider
 import com.n8.intouch.common.SchedulingUtils
 import com.n8.intouch.data.EventsDataManager
