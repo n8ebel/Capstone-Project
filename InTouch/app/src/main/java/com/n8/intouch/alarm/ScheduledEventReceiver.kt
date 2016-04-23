@@ -23,6 +23,7 @@ class ScheduledEventReceiver : BroadcastReceiver(){
     companion object {
         val TAG = "ScheduledEventReceiver"
         val EXTRA_EVENT_ID = "event_id"
+        val NOTIFICATION_ID = 1
 
         fun createIntent(@NonNull context: Context, @NonNull event: ScheduledEvent) : Intent {
             return Intent(context, ScheduledEventReceiver::class.java).apply {
@@ -89,7 +90,7 @@ class ScheduledEventReceiver : BroadcastReceiver(){
         }.build()
 
         val notificationManager = context.getSystemService(JobService.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(ScheduledEventJobService.NOTIFICATION_ID, notification);
+        notificationManager.notify(NOTIFICATION_ID, notification);
 
     }
 

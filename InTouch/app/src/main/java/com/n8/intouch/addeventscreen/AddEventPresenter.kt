@@ -158,11 +158,13 @@ class AddEventPresenter(
         mPhoneNumber = phoneNumber
         scheduledMessage = message
 
-        // TODO FIX THIS
-        val title = "Schedule repeated message"
-        val msg = "Starting:  ${SchedulingUtils.getDateTimeDisplayString(startDateTimestamp)} \n" +
-                "Repating every $repeatInterval ${displayUnitsForRepeatDuration(repeatDuration)} \n" +
-                "at $startDateHour:$startDateMin with message: \n" + scheduledMessage + "\n to number $phoneNumber"
+        val title = getCurrentActivity().getString(R.string.schedule_event_dialog_title)
+        val msg = getCurrentActivity().
+                        getString(R.string.schedule_event_dialog_message_format,
+                        mPhoneNumber,
+                        SchedulingUtils.getDateTimeDisplayString(startDateTimestamp),
+                        "$repeatInterval ${displayUnitsForRepeatDuration(repeatDuration)}",
+                        scheduledMessage)
 
        viewController.promptToConfirmScheduledEvent(title, msg)
     }
