@@ -13,4 +13,11 @@
 
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
+
+    <integer-array name="progress_colors">
+        <item>@color/colorAccent</item>
+        <item>@color/primary</item>
+        <item>@color/colorAccentLight</item>
+        <item>@color/primaryLight</item>
+    </integer-array>
 </resources>

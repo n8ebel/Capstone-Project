@@ -7,6 +7,10 @@ import com.n8.intouch.model.ScheduledEvent
 class BrowseContract {
     interface ViewController {
 
+        fun showProgress()
+
+        fun hideProgress()
+
         fun showNoContentView()
 
         fun hideNoContentView()

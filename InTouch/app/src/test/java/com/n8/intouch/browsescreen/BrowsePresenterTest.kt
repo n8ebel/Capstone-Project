@@ -63,14 +63,17 @@ class BrowsePresenterTest {
         val present: BrowsePresenter = createBrowsePresenter()
         var callback = present.getEventsHandler
 
-        Mockito.`when`(mEventsManager.getEvents(callback)).then { callback.invoke(events) }
+        Mockito.`when`(mEventsManager.refreshEvents(callback)).then { callback.invoke(events) }
 
         present.start()
 
-        verify(mEventsManager, times(1)).getEvents(callback)
+        verify(mEventsManager, times(1)).refreshEvents(callback)
         verify(mViewController, times(1)).displayEvents(events)
         verify(mViewController, times(1)).showNoContentView()
         verify(mEventsManager, times(1)).addScheduledEventListener(present)
+        verify(mEventScheduler, times(0)).scheduleEvent(mTestEvent)
+        verify(mViewController, times(1)).showProgress()
+        verify(mViewController, times(1)).hideProgress()
     }
 
     @Test
@@ -79,14 +82,17 @@ class BrowsePresenterTest {
         val present: BrowsePresenter = createBrowsePresenter()
         var callback = present.getEventsHandler
 
-        Mockito.`when`(mEventsManager.getEvents(callback)).then { callback.invoke(events) }
+        Mockito.`when`(mEventsManager.refreshEvents(callback)).then { callback.invoke(events) }
 
         present.start()
 
-        verify(mEventsManager, times(1)).getEvents(callback)
+        verify(mEventsManager, times(1)).refreshEvents(callback)
         verify(mViewController, times(1)).displayEvents(events)
         verify(mViewController, times(0)).showNoContentView()
         verify(mEventsManager, times(1)).addScheduledEventListener(present)
+        verify(mEventScheduler, times(1)).scheduleEvent(mTestEvent)
+        verify(mViewController, times(1)).showProgress()
+        verify(mViewController, times(1)).hideProgress()
     }
 
     @Test

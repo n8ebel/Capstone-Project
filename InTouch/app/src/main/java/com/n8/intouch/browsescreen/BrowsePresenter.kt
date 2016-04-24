@@ -20,7 +20,7 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
                       val viewController:BrowseContract.ViewController,
                       val currentUser: User,
                       val eventManager:EventsDataManager,
-                           val eventScheduler:EventScheduler) :
+                           val mEventScheduler:EventScheduler) :
 
         BrowseContract.UserInteractionListener,
         EventsDataManager.Listener {
@@ -39,6 +39,7 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
 
 
     val getEventsHandler = { events:List<ScheduledEvent> ->
+        viewController.hideProgress()
         viewController.displayEvents(events)
 
         if(events.size > 0) {
@@ -46,6 +47,8 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
         }else{
             viewController.showNoContentView()
         }
+
+        events.forEach { mEventScheduler.scheduleEvent(it) }
     }
 
     val removeEventhandler = { success:Boolean, error:FirebaseError? ->
@@ -56,7 +59,8 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
     }
 
     override fun start() {
-        eventManager.getEvents(getEventsHandler)
+        viewController.showProgress()
+        eventManager.refreshEvents(getEventsHandler)
         eventManager.addScheduledEventListener(this)
     }
 
@@ -98,7 +102,7 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
 
     override fun onRemoveEventConfirmed(event: ScheduledEvent) {
         eventManager.removeEvent(event, removeEventhandler)
-        eventScheduler.cancelScheduledEvent(event)
+        mEventScheduler.cancelScheduledEvent(event)
     }
 
     override fun onListItemClicked(event: ScheduledEvent) {
@@ -112,7 +116,7 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
     override fun onScheduledEventAdded(event: ScheduledEvent, index:Int) {
         viewController.hideNoContentView()
         viewController.displayAddedEvent(event, index)
-
+        mEventScheduler.scheduleEvent(event)
     }
 
     override fun onScheduledEventRemoved(event: ScheduledEvent, index:Int) {
@@ -120,6 +124,7 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
             viewController.showNoContentView()
         }
         viewController.hideRemovedEvent(event, index)
+        mEventScheduler.cancelScheduledEvent(event)
     }
 
     // endregion Implements EventDataManager.Listener
