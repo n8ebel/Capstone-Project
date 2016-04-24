@@ -111,7 +111,6 @@ class AddEventPresenter(
                 startDateTimestamp, startDateHour, startDateMin, repeatInterval, repeatDuration, scheduledMessage, mPhoneNumber,
                 { event, error ->
                     if (event != null) {
-                        mEventScheduler.scheduleEvent(event)
                         viewController.finish()
                     } else {
                         viewController.displayError(Throwable(error?.message))
