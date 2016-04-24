@@ -8,6 +8,30 @@
     tools:context="com.n8.intouch.browsescreen.BrowseFragment"
     >
 
+    <FrameLayout
+        android:id="@+id/browse_progress_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        >
+
+        <com.github.glomadrian.loadingballs.BallView
+            android:layout_margin="30dp"
+            android:layout_width="175dp"
+            android:layout_height="175dp"
+            app:balls="3"
+            app:movement_cycle_time="5000"
+            app:enable_size_animation="true"
+            app:size_cycle_time="1000"
+            app:min_ball_size="4dp"
+            app:max_ball_size="16dp"
+            app:ball_colors="@array/progress_colors"
+            app:path="triangle"
+            android:layout_gravity="center"
+            />
+
+    </FrameLayout>
+
     <android.support.percent.PercentFrameLayout
         android:id="@+id/browse_no_content"
         android:layout_width="match_parent"

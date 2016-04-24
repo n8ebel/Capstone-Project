@@ -39,6 +39,8 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
 
     lateinit var noContentView:View
 
+    lateinit var mProgressView:View
+
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         component?.inject(this) ?: throw IllegalStateException("BrowseComponent must be set")
@@ -59,6 +61,8 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
             eventsRecyclerView.layoutManager = LinearLayoutManager(context)
 
             noContentView = findViewById(R.id.browse_no_content)
+
+            mProgressView = findViewById(R.id.browse_progress_layout)
         }
 
         return view
@@ -81,6 +85,14 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
     }
 
     // region Implements BrowseContract.ViewController
+
+    override fun showProgress() {
+        mProgressView.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        mProgressView.visibility = View.GONE
+    }
 
     override fun showNoContentView() {
         noContentView.visibility = View.VISIBLE

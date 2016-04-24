@@ -39,6 +39,7 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
 
 
     val getEventsHandler = { events:List<ScheduledEvent> ->
+        viewController.hideProgress()
         viewController.displayEvents(events)
 
         if(events.size > 0) {
@@ -46,6 +47,8 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
         }else{
             viewController.showNoContentView()
         }
+
+        events.forEach { mEventScheduler.scheduleEvent(it) }
     }
 
     val removeEventhandler = { success:Boolean, error:FirebaseError? ->
@@ -56,7 +59,8 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
     }
 
     override fun start() {
-        eventManager.getEvents(getEventsHandler)
+        viewController.showProgress()
+        eventManager.refreshEvents(getEventsHandler)
         eventManager.addScheduledEventListener(this)
     }
 
