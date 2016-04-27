@@ -1,5 +1,6 @@
 package com.n8.intouch.browsescreen
 
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -19,12 +20,24 @@ import com.n8.intouch.browsescreen.di.DaggerBrowseComponent
 import com.n8.intouch.common.BaseActivity
 import com.n8.intouch.common.CircularTransform
 import com.n8.intouch.getComponent
+import com.n8.intouch.getString
 import com.squareup.picasso.Picasso
 
 class BrowseActivity : BaseActivity() {
 
     companion object {
         val TAG_BROWSE_FRAGMENT = "BrowseActivity"
+        val EXTRA_AUTO_ADD = "auto_add"
+
+        fun createIntent(context: Context) : Intent  {
+            return Intent(context, BrowseActivity::class.java)
+        }
+
+        fun createIntentToAutoAdd(context:Context) : Intent {
+            return Intent(context, BrowseActivity::class.java).apply {
+                putExtra(EXTRA_AUTO_ADD, true)
+            }
+        }
     }
 
     lateinit var navigationView:NavigationView
