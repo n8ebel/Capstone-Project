@@ -11,3 +11,6 @@
   - Use Firebase for backend support
   - Dagger2 for dependency injection
 
+### Sign In Screen
+
+<img src="screenshots/sign_in.png" width="275" height="450">
