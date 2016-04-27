@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_spinner_arrow"
                 android:contentDescription="@string/content_description_time_dropdown_arrow"
-                android:nextFocusDown="@+id/repeat_picker_frequency_editText"
+                android:nextFocusForward="@+id/repeat_picker_frequency_editText"
                 />
 
         </LinearLayout>
@@ -81,7 +81,7 @@
                 />
 
             <Spinner
-                android:id="@+id/repeat_picker_interval_spinner"
+                android:id="@id/repeat_picker_interval_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:nextFocusDown="@id/continue_button"
