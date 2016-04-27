@@ -23,7 +23,7 @@ android {
         config {
             keyAlias 'udacityKeystore'
             keyPassword 'udacity'
-            storeFile file('/Users/nate7313/AndroidStudioProjects/Capstone-Project/InTouch/keystore.jks')
+            storeFile file('buildSupport/keystore.jks')
             storePassword 'udacity'
         }
     }
