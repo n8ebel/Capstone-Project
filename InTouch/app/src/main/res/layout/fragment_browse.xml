@@ -2,10 +2,10 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.n8.intouch.browsescreen.BrowseFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     >
 
     <FrameLayout
@@ -45,15 +45,17 @@
             app:layout_marginLeftPercent="45%"
             android:src="@drawable/ic_message"
             android:scaleType="fitXY"
+            android:contentDescription="@string/content_description_no_content_message_icon"
             />
 
         <ImageView
             app:layout_widthPercent="45%"
             app:layout_heightPercent="45%"
             app:layout_marginTopPercent="27%"
-            app:layout_marginLeftPercent="10%"
+            app:layout_marginStartPercent="10%"
             android:src="@drawable/ic_mood_bad"
             android:scaleType="fitXY"
+            android:contentDescription="@string/content_description_no_content_user_icon"
             />
 
       <TextView

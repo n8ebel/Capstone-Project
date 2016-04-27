@@ -73,5 +73,17 @@
   <string name="schedule_event_dialog_message_format">To: %1$s \n Starting: %2$s \n Repeating every: %3$s \n With message: \n \n %4$s</string>
 
   <string name="widget_text">Schedule a message</string>
+  <string name="create_account">Create Account</string>
+  <string name="sign_up">Sign Up</string>
+  <string name="login">Login</string>
+  <string name="sign_in">Sign In</string>
+  <string name="content_description_widget_icon">App icon</string>
+  <string name="content_description_drawer_user_icon">User icon</string>
+  <string name="content_description_contact_thumbnail_placeholder">Contact thumbnail placeholder</string>
+  <string name="content_description_contact_thumbnail">Contact thumbnail</string>
+  <string name="content_description_no_content_message_icon">Message icon</string>
+  <string name="content_description_no_content_user_icon">Sad user icon</string>
+  <string name="content_description_time_dropdown_arrow">Dropdown arrow</string>
+  <string name="content_description_overflow_icon">Overflow icon</string>
 
 </resources>

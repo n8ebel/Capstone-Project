@@ -13,6 +13,7 @@
       android:layout_width="56dp"
       android:layout_height="56dp"
       android:src="@drawable/widget_icon"
+      android:contentDescription="@string/content_description_widget_icon"
       />
 
   <TextView
