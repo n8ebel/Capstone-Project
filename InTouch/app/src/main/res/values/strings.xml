@@ -1,75 +1,77 @@
 <resources>
-    <string name="app_name">InTouch</string>
+  <string name="app_name">InTouch</string>
 
-    <string name="at">at</string>
+  <string name="at">at</string>
 
-    <string name="contacts">Contacts</string>
-    <string name="content_description_back_navigation">Navigate back</string>
-    <string name="events">Events</string>
-    <string name="title_activity_add">AddActivity</string>
+  <string name="contacts">Contacts</string>
+  <string name="content_description_back_navigation">Navigate back</string>
+  <string name="events">Events</string>
+  <string name="title_activity_add">AddActivity</string>
 
-    <string name="invalid_contact_uri">Invalid contact uri</string>
-    <string name="error_getting_contact_uri">Error getting contact uri</string>
+  <string name="invalid_contact_uri">Invalid contact uri</string>
+  <string name="error_getting_contact_uri">Error getting contact uri</string>
 
-    <string name="select_custom_date">Select custom date</string>
-    <string name="pick_date">Pick a Start Date</string>
-    <string name="start_by_selecting_a_date">Start By Selecting A Date</string>
-    <string name="choose_repeat_schedule">Choose Repeat Schedule</string>
-    <string name="every">Every</string>
-    <string name="choose_a_time">Choose a time</string>
-    <string name="enter_message">Enter Message</string>
-    <string name="enter_phone_number">Enter Phone Number</string>
-    <string name="message_entry_hint">ex. Hello, how are you?</string>
-    <string name="saved_dates">Saved Dates</string>
-    <string name="no_events_saved_for_contact">No events saved for contact</string>
-    <string name="no_scheduled_events">You have no scheduled events</string>
+  <string name="select_custom_date">Select custom date</string>
+  <string name="pick_date">Pick a Start Date</string>
+  <string name="start_by_selecting_a_date">Start By Selecting A Date</string>
+  <string name="choose_repeat_schedule">Choose Repeat Schedule</string>
+  <string name="every">Every</string>
+  <string name="choose_a_time">Choose a time</string>
+  <string name="enter_message">Enter Message</string>
+  <string name="enter_phone_number">Enter Phone Number</string>
+  <string name="message_entry_hint">ex. Hello, how are you?</string>
+  <string name="saved_dates">Saved Dates</string>
+  <string name="no_events_saved_for_contact">No events saved for contact</string>
+  <string name="no_scheduled_events">You have no scheduled events</string>
 
-    <string name="days">Days</string>
-    <string name="weeks">Weeks</string>
-    <string name="years">Years</string>
+  <string name="days">Days</string>
+  <string name="weeks">Weeks</string>
+  <string name="years">Years</string>
 
-    <plurals name="days_format">
-        <item quantity="one">%d Day</item>
-        <item quantity="other">%d Days</item>
-    </plurals>
+  <plurals name="days_format">
+    <item quantity="one">%d Day</item>
+    <item quantity="other">%d Days</item>
+  </plurals>
 
-    <plurals name="weeks_format">
-        <item quantity="one">%d Week</item>
-        <item quantity="other">%d Weeks</item>
-    </plurals>
+  <plurals name="weeks_format">
+    <item quantity="one">%d Week</item>
+    <item quantity="other">%d Weeks</item>
+  </plurals>
 
-    <plurals name="years_format">
-        <item quantity="one">%d Year</item>
-        <item quantity="other">%d Years</item>
-    </plurals>
+  <plurals name="years_format">
+    <item quantity="one">%d Year</item>
+    <item quantity="other">%d Years</item>
+  </plurals>
 
-    <string name="invalid_frequency">Invalid frequency</string>
+  <string name="invalid_frequency">Invalid frequency</string>
 
-    <!-- Sign in Screen -->
-    <string name="password">Passowrd</string>
-    <string name="username">Username</string>
+  <!-- Sign in Screen -->
+  <string name="password">Passowrd</string>
+  <string name="username">Username</string>
 
-    <string name="open_drawer">Open navigation drawer</string>
-    <string name="close_drawer">Close navigation drawer</string>
+  <string name="open_drawer">Open navigation drawer</string>
+  <string name="close_drawer">Close navigation drawer</string>
 
-    <string name="settings">Settings</string>
-    <string name="sign_out">Sign out</string>
-    <string name="sign_out_confirmation">Signing out will cancel all scheduled events on this device</string>
+  <string name="settings">Settings</string>
+  <string name="sign_out">Sign out</string>
+  <string name="sign_out_confirmation">Signing out will cancel all scheduled events on this device</string>
 
-    <string name="remove">Remove</string>
-    <string name="remove_event">Remove event</string>
-    <string name="confirm_remove_event">Are you sure you want to remove this scheduled event?</string>
+  <string name="remove">Remove</string>
+  <string name="remove_event">Remove event</string>
+  <string name="confirm_remove_event">Are you sure you want to remove this scheduled event?</string>
 
-    <string name="failed_to_remove_event">Failed to remove event</string>
+  <string name="failed_to_remove_event">Failed to remove event</string>
 
-    <string name="setting_auto_send_title">Automatically send text message</string>
-    <string name="setting_auto_send_summary">With this enabled, messages will automatically be sent at the specified times</string>
+  <string name="setting_auto_send_title">Automatically send text message</string>
+  <string name="setting_auto_send_summary">With this enabled, messages will automatically be sent at the specified times</string>
 
-    <string name="notification_title">Stay InTouch</string>
-    <string name="notification_action_label">Send Message</string>
-    <string name="notification_message_format">Send scheduled message to %s</string>
+  <string name="notification_title">Stay InTouch</string>
+  <string name="notification_action_label">Send Message</string>
+  <string name="notification_message_format">Send scheduled message to %s</string>
 
-    <string name="schedule_event_dialog_title">Schedule repeated message</string>
-    <string name="schedule_event_dialog_message_format">To: %1$s \n Starting: %2$s \n Repeating every: %3$s \n With message: \n \n %4$s</string>
+  <string name="schedule_event_dialog_title">Schedule repeated message</string>
+  <string name="schedule_event_dialog_message_format">To: %1$s \n Starting: %2$s \n Repeating every: %3$s \n With message: \n \n %4$s</string>
+
+  <string name="widget_text">Schedule a message</string>
 
 </resources>

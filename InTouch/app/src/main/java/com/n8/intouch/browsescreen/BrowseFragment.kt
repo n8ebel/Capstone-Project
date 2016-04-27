@@ -65,6 +65,10 @@ class BrowseFragment : BaseFragment(), BrowseContract.ViewController {
             mProgressView = findViewById(R.id.browse_progress_layout)
         }
 
+        if (activity.intent?.getBooleanExtra(BrowseActivity.EXTRA_AUTO_ADD, false) ?: false){
+            presenter.onAddPressed()
+        }
+
         return view
     }
 
