@@ -230,6 +230,7 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener, LoaderManage
 
         val intent = Intent(this, BrowseActivity::class.java)
         startActivity(intent)
+        finish()
     }
 
     private fun saveState(outState: Bundle?) {
