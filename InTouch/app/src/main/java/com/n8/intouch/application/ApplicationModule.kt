@@ -10,6 +10,8 @@ import com.firebase.client.Firebase
 import com.n8.intouch.R
 import com.n8.intouch.alarm.AlarmManagerEventScheduler
 import com.n8.intouch.alarm.EventScheduler
+import com.n8.intouch.analytics.AnalyticsTracker
+import com.n8.intouch.analytics.GoogleAnalyticsTracker
 import com.n8.intouch.common.CurrentActivityProvider
 import com.n8.intouch.data.EventsDataManager
 import com.n8.intouch.data.FirebaseEventsDataManager
@@ -67,5 +69,11 @@ class ApplicationModule(private val application: Application, private val activi
     @Provides
     fun provideEventsScheduler(context: Context, sharedPreferences: SharedPreferences, alarmManager: AlarmManager) : EventScheduler {
         return AlarmManagerEventScheduler(context, sharedPreferences, alarmManager)
+    }
+
+    @Singleton
+    @Provides
+    fun provideAnalyticsTracker(context: Context) : AnalyticsTracker {
+        return GoogleAnalyticsTracker(context)
     }
 }

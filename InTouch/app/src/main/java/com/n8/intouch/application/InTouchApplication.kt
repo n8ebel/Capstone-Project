@@ -5,6 +5,7 @@ import android.app.Application
 import android.preference.PreferenceManager
 import android.widget.Toast
 import com.firebase.client.Firebase
+import com.n8.intouch.analytics.AnalyticsTrackers
 import com.n8.intouch.common.CurrentActivityProvider
 
 class InTouchApplication : Application(), CurrentActivityProvider {
@@ -17,7 +18,7 @@ class InTouchApplication : Application(), CurrentActivityProvider {
 
     override fun onCreate() {
         super.onCreate()
-        Firebase.setAndroidContext(this);
+        Firebase.setAndroidContext(this)
 
         component = DaggerApplicationComponent
                 .builder()
