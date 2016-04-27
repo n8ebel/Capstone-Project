@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/enter_phone_number"
                 android:inputType="phone"
-                android:nextFocusDown="@id/message_entry_editText"
+                android:nextFocusDown="@+id/message_entry_editText"
                 />
 
         </android.support.design.widget.TextInputLayout>
