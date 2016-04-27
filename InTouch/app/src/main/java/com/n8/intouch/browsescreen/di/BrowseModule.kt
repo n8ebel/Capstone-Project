@@ -2,6 +2,7 @@ package com.n8.intouch.browsescreen.di
 
 import com.firebase.client.Firebase
 import com.n8.intouch.alarm.EventScheduler
+import com.n8.intouch.analytics.AnalyticsTracker
 import com.n8.intouch.application.ApplicationModule
 import com.n8.intouch.browsescreen.BrowseContract
 import com.n8.intouch.browsescreen.BrowsePresenter
@@ -22,8 +23,9 @@ class BrowseModule(val viewController: BrowseContract.ViewController) {
             currentActivityProvider: CurrentActivityProvider,
             user:User,
             dataManager:EventsDataManager,
-            eventScheduler:EventScheduler) : BrowsePresenter {
+            eventScheduler:EventScheduler,
+            analyticsTracker:AnalyticsTracker) : BrowsePresenter {
 
-        return BrowsePresenter(currentActivityProvider, viewController, user, dataManager, eventScheduler)
+        return BrowsePresenter(currentActivityProvider, viewController, user, dataManager, eventScheduler, analyticsTracker)
     }
 }

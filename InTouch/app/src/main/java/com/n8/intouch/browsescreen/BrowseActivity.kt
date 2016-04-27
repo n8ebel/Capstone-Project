@@ -10,6 +10,8 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
 import com.n8.intouch.R
 import com.n8.intouch.settings.SettingsActivity
 import com.n8.intouch.browsescreen.di.BrowseModule
@@ -67,6 +69,10 @@ class BrowseActivity : BaseActivity() {
 
         usernameTextView.text = currentUser.getUsername()
         Picasso.with(this).load(currentUser.getProfileImageUrl()).transform(CircularTransform()).into(profileImage)
+
+        (findViewById(R.id.adView) as AdView).apply {
+            loadAd(AdRequest.Builder().build())
+        }
 
         // Only add the tabbed fragment the first time the activity is created
         //

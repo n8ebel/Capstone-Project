@@ -11,6 +11,7 @@ import com.firebase.client.FirebaseError
 import com.n8.intouch.R
 import com.n8.intouch.addeventscreen.AddEventActivity
 import com.n8.intouch.alarm.EventScheduler
+import com.n8.intouch.analytics.AnalyticsTracker
 import com.n8.intouch.common.CurrentActivityProvider
 import com.n8.intouch.data.EventsDataManager
 import com.n8.intouch.model.ScheduledEvent
@@ -20,13 +21,16 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
                       val viewController:BrowseContract.ViewController,
                       val currentUser: User,
                       val eventManager:EventsDataManager,
-                           val mEventScheduler:EventScheduler) :
+                           val mEventScheduler:EventScheduler,
+                           val mAnalyticsTracker: AnalyticsTracker) :
 
         BrowseContract.UserInteractionListener,
         EventsDataManager.Listener {
 
 
     companion object {
+        val ANALYTICS_SCREEN_NAME = "browse_screen"
+        val ANALYTICS_ACTION_ADD_EVENT_CLICKED = "add_event_clicked"
         val REQUEST_PICK_CONTACT = 1
 
         val contactsUri = Uri.parse("content://contacts")
@@ -62,6 +66,8 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
         viewController.showProgress()
         eventManager.refreshEvents(getEventsHandler)
         eventManager.addScheduledEventListener(this)
+
+        mAnalyticsTracker.trackScreen(ANALYTICS_SCREEN_NAME)
     }
 
     override fun stop() {
@@ -70,6 +76,7 @@ open class BrowsePresenter(val currentActivityProvider: CurrentActivityProvider,
 
     override fun onAddPressed() {
         currentActivityProvider.getCurrentActivity().startActivityForResult(PICK_CONTACT_INTENT, REQUEST_PICK_CONTACT);
+        mAnalyticsTracker.trackEvent(AnalyticsTracker.CATEGORY_USER_ACTION, ANALYTICS_ACTION_ADD_EVENT_CLICKED)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
