@@ -25,6 +25,7 @@
             android:gravity="center_vertical"
             android:background="@drawable/list_item_selector"
             android:drawableEnd="@drawable/ic_add_date_light"
+            android:nextFocusDown="@+id/dates_recyclerView"
             />
 
         <View
@@ -41,6 +42,7 @@
             android:layout_marginStart="@dimen/keyline_1"
             android:layout_marginEnd="@dimen/keyline_1"
             android:layout_marginTop="@dimen/keyline_0"
+            android:focusable="false"
             />
 
         <FrameLayout
@@ -53,6 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone"
+                android:nextFocusDown="@+id/continue_button"
                 />
 
             <TextView
@@ -63,6 +66,7 @@
                 android:gravity="center"
                 android:text="@string/no_events_saved_for_contact"
                 android:visibility="gone"
+                android:focusable="false"
                 />
 
         </FrameLayout>

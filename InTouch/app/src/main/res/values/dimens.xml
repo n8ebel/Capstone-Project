@@ -1,20 +1,26 @@
 <resources>
-    <dimen name="keyline_0">8dp</dimen>
-    <dimen name="keyline_1">16dp</dimen>
+  <dimen name="keyline_0">8dp</dimen>
+  <dimen name="keyline_1">16dp</dimen>
 
-    <dimen name="app_bar_height_large">256dp</dimen>
-    <dimen name="app_bar_elevation">4dp</dimen>
+  <dimen name="app_bar_height_large">256dp</dimen>
+  <dimen name="app_bar_elevation">4dp</dimen>
 
-    <dimen name="card_elevation_resting">2dp</dimen>
-    <dimen name="card_elevation_raised">8dp</dimen>
-    <dimen name="card_corner_radius">3dp</dimen>
+  <dimen name="card_elevation_resting">2dp</dimen>
+  <dimen name="card_elevation_raised">8dp</dimen>
+  <dimen name="card_corner_radius">3dp</dimen>
 
-    <dimen name="fab_elevation_resting">6dp</dimen>
-    <dimen name="fab_elevation_raised">12dp</dimen>
+  <dimen name="fab_elevation_resting">6dp</dimen>
+  <dimen name="fab_elevation_raised">12dp</dimen>
 
-    <dimen name="subtitle_height">48dp</dimen>
-    <dimen name="list_item_height">72dp</dimen>
+  <dimen name="subtitle_height">48dp</dimen>
+  <dimen name="list_item_height">72dp</dimen>
 
-    <dimen name="sign_in_fragment_container_margin">64dp</dimen>
+  <dimen name="sign_in_fragment_container_margin">64dp</dimen>
+
+  <!--
+Refer to App Widget Documentation for margin information
+http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
+    -->
+  <dimen name="widget_margin">8dp</dimen>
 
 </resources>

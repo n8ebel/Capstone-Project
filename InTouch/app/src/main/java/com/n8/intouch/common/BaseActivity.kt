@@ -7,9 +7,8 @@ import com.n8.intouch.setCurrentActivity
 open class BaseActivity : AppCompatActivity() {
 
     override fun onStart() {
-        super.onStart()
-
         application.setCurrentActivity( this )
+        super.onStart()
     }
 
     override fun onBackPressed() {

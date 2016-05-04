@@ -34,11 +34,20 @@
             <FrameLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
+                tools:context=".browsescreen.BrowseActivity"
                 android:id="@+id/fragmentContainer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context=".browsescreen.BrowseActivity"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 />
+
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:adSize="BANNER"
+                app:adUnitId="@string/banner_ad_unit_id">
+            </com.google.android.gms.ads.AdView>
 
         </LinearLayout>
 
@@ -50,6 +59,5 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         />
-
 
 </android.support.v4.widget.DrawerLayout>

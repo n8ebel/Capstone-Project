@@ -228,8 +228,8 @@ class SignInActivity : BaseActivity(), View.OnLayoutChangeListener, LoaderManage
             contentResolver.insert(ProviderContract.buildCurrentUsernameUri(), contentValues)
         }
 
-        val intent = Intent(this, BrowseActivity::class.java)
-        startActivity(intent)
+        startActivity(BrowseActivity.createIntent(this))
+        finish()
     }
 
     private fun saveState(outState: Bundle?) {

@@ -13,39 +13,44 @@ buildscript {
 repositories {
     mavenCentral()
 
-    maven{
+    maven {
         url "http://dl.bintray.com/glomadrian/maven"
     }
 }
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'udacityKeystore'
+            keyPassword 'udacity'
+            storeFile file('buildSupport/keystore.jks')
+            storePassword 'udacity'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
-
     defaultConfig {
         applicationId "com.n8.intouch"
-        minSdkVersion 17
+        minSdkVersion 21
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-
     testOptions {
         unitTests.returnDefaultValues = true
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
-
     packagingOptions {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE-FIREBASE.txt'
@@ -81,8 +86,8 @@ dependencies {
     // dagger2
     kapt 'com.google.dagger:dagger-compiler:2.0.2'
     provided 'org.glassfish:javax.annotation:10.0-b28'
-    compile 'com.google.dagger:dagger:2.0.2'
     // firebase
+    compile 'com.google.dagger:dagger:2.0.2'
     compile 'com.firebase:firebase-client-android:2.4.1'
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:design:23.3.0'
@@ -90,6 +95,7 @@ dependencies {
     compile 'com.android.support:cardview-v7:23.3.0'
     compile 'com.squareup.picasso:picasso:2.3.2'
     compile 'com.android.support:percent:23.3.0'
-
     compile 'com.github.glomadrian:loadingballs:1.1@aar'
+    compile 'com.google.android.gms:play-services-analytics:8.4.0'
+    compile 'com.google.android.gms:play-services-ads:8.4.0'
 }

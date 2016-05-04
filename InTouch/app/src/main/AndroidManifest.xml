@@ -1,68 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.n8.intouch"
-    android:installLocation="internalOnly"
-    >
-
+    android:installLocation="internalOnly" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-
-    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".application.InTouchApplication"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
         android:supportsRtl="true"
-        android:allowBackup="true"
-        >
-
-        <activity
-            android:name=".signin.SignInActivity"
-            >
+        android:theme="@style/AppTheme" >
+        <activity android:name=".signin.SignInActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".browsescreen.BrowseActivity" />
-
         <activity
             android:name=".addeventscreen.AddEventActivity"
-            android:label="@string/title_activity_add"
-            />
-
+            android:label="@string/title_activity_add" />
         <activity
             android:name=".settings.SettingsActivity"
-            android:label="@string/settings"
-            />
+            android:label="@string/settings" />
 
         <provider
             android:name=".signin.InTouchContentProvider"
             android:authorities="com.n8.intouch.provider"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
 
-        <service android:name=".alarm.ScheduledEventJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <receiver android:name=".alarm.ScheduledEventReceiver"/>
-
-        <receiver android:name=".alarm.BootReceiver"
-            android:enabled="true"
-            >
+        <receiver android:name=".alarm.ScheduledEventReceiver" />
+        <receiver
+            android:name=".alarm.BootReceiver"
+            android:enabled="true" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
             </intent-filter>
         </receiver>
 
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <receiver android:name=".signin.QuickAddWidget" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/quick_add_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

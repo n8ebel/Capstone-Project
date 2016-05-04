@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="settings_key_auto_send">auto_send</string>
+    <string name="settings_key_auto_send" translatable="false">auto_send</string>
+
+    <!--Test banner ad id-->
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+
 </resources>

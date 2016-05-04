@@ -23,6 +23,7 @@
             android:text="@string/choose_repeat_schedule"
             android:gravity="center"
             android:layout_marginBottom="@dimen/keyline_1"
+            android:focusable="false"
             />
 
         <!-- Time Picker Layout -->
@@ -46,6 +47,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_spinner_arrow"
+                android:contentDescription="@string/content_description_time_dropdown_arrow"
+                android:nextFocusForward="@+id/repeat_picker_frequency_editText"
                 />
 
         </LinearLayout>
@@ -63,6 +66,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/every"
                 android:layout_marginEnd="@dimen/keyline_0"
+                android:focusable="false"
                 />
 
             <EditText
@@ -73,12 +77,14 @@
                 android:inputType="number"
                 android:maxLines="1"
                 android:maxLength="2"
+                android:nextFocusDown="@+id/repeat_picker_interval_spinner"
                 />
 
             <Spinner
-                android:id="@+id/repeat_picker_interval_spinner"
+                android:id="@id/repeat_picker_interval_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:nextFocusDown="@id/continue_button"
                 />
 
         </LinearLayout>

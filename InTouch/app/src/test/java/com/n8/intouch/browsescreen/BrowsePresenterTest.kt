@@ -9,6 +9,7 @@ import com.firebase.client.FirebaseError
 import com.n8.intouch.BuildConfig
 import com.n8.intouch.R
 import com.n8.intouch.alarm.EventScheduler
+import com.n8.intouch.analytics.AnalyticsTracker
 import com.n8.intouch.common.CurrentActivityProvider
 import com.n8.intouch.data.EventsDataManager
 import com.n8.intouch.model.ScheduledEvent
@@ -38,6 +39,8 @@ class BrowsePresenterTest {
 
     lateinit var mEventScheduler:EventScheduler
 
+    lateinit var mAnalyticsTracker:AnalyticsTracker
+
     val mTestEvent = ScheduledEvent()
 
     @Before
@@ -55,6 +58,8 @@ class BrowsePresenterTest {
         mEventsManager = Mockito.mock(EventsDataManager::class.java)
 
         mEventScheduler = Mockito.mock(EventScheduler::class.java)
+
+        mAnalyticsTracker = Mockito.mock(AnalyticsTracker::class.java)
     }
 
     @Test
@@ -74,6 +79,7 @@ class BrowsePresenterTest {
         verify(mEventScheduler, times(0)).scheduleEvent(mTestEvent)
         verify(mViewController, times(1)).showProgress()
         verify(mViewController, times(1)).hideProgress()
+        verify(mAnalyticsTracker, times(1)).trackScreen(BrowsePresenter.ANALYTICS_SCREEN_NAME)
     }
 
     @Test
@@ -93,6 +99,7 @@ class BrowsePresenterTest {
         verify(mEventScheduler, times(1)).scheduleEvent(mTestEvent)
         verify(mViewController, times(1)).showProgress()
         verify(mViewController, times(1)).hideProgress()
+        verify(mAnalyticsTracker, times(1)).trackScreen(BrowsePresenter.ANALYTICS_SCREEN_NAME)
     }
 
     @Test
@@ -111,6 +118,7 @@ class BrowsePresenterTest {
         }
 
         verify(mMockActivity, times(1)).startActivityForResult(BrowsePresenter.PICK_CONTACT_INTENT, BrowsePresenter.REQUEST_PICK_CONTACT)
+        verify(mAnalyticsTracker, times(1)).trackEvent(AnalyticsTracker.CATEGORY_USER_ACTION, BrowsePresenter.ANALYTICS_ACTION_ADD_EVENT_CLICKED)
     }
 
     @Test
@@ -270,7 +278,7 @@ class BrowsePresenterTest {
     // region Private Methods
 
     private fun createBrowsePresenter(): BrowsePresenter {
-        return BrowsePresenter(mCurrentActivityProvider, mViewController, mCurrentUser, mEventsManager, mEventScheduler)
+        return BrowsePresenter(mCurrentActivityProvider, mViewController, mCurrentUser, mEventsManager, mEventScheduler, mAnalyticsTracker)
     }
 
     // endregion Private Methods
